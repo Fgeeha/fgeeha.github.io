@@ -237,8 +237,8 @@ body{
 {
     100%
     {
-        background-color: #ff6e00;
-        box-shadow: 0 0 10px #ff6e00, 0 0 10px #ff6e00;
+        background-color: #d92bc3;
+        box-shadow: 0 0 10px #d92bc3, 0 0 10px #d92bc3;
     }
 }
 .dot-1
@@ -273,7 +273,7 @@ body{
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: #ff6e00;
+    background-color: #a60e93;
     z-index: 9996;
     transition: 1s;
 }
