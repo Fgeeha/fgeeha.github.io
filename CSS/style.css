@@ -33,7 +33,7 @@ body{
 
 .button{
 	outline: none; /* Для синий ободки */
- 	 border: 0;
+ 	border: 0;
   	background: transparent;
   	margin-left:62.5%;
 	border: 1% solid black;
@@ -184,6 +184,24 @@ body{
 	border: 0% solid #db4639;
 	outline: unset;
 }
+
+.Time_test{
+	margin-left: 90%;
+	color: white;
+	font-size:14pt;
+	background: ;
+	width: 150px;
+	height: 36px;
+	padding:5px;
+
+}
+
+
+
+
+
+
+
 
 
 .preloader
