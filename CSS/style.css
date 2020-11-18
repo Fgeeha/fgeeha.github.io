@@ -1,8 +1,5 @@
 
-*{
-	box-sizing: border-box;
-}
-/*-------ШРИФТ-----------*/
+
 
 
  @font-face {
@@ -14,121 +11,100 @@
     src: url(fonts/robotocondensed/robotocondensed.css); /* Путь к файлу со шрифтом */
    }
 
-body{
-		background-image: url(images/background.png); 
-		background-size: cover;
-			}
-
-
-
 /*-------main часть-----------*/
-.mainBox{
-	background-color: ;
-	width: 400px;
-	height: 400px;
-	margin-left: 39.356%;
-	margin-top: 10%;
-	position: absolute;
-}
 
-.button{
-	outline: none; /* Для синий ободки */
- 	 border: 0;
-  	background: transparent;
-  	margin-left:62.5%;
-	border: 1% solid black;
-	font-size: 150%;
-	opacity: 0.75;
-	color: black;
-	background: white;
-	text-align:  center;
-	width: 150px;
-	height: 36px;
-	position: absolute;
-	text-decoration: none;	
-	
-} 
-.name{
+
+
+.name1{
 	font-family: robotocondensed;
-	margin-left: 0px;
-	margin-top: 0px;
 	border: 1% solid black;
 	font-size: 150%;
 	opacity: 0.75;
 	color: black;
-	background: white;
 	text-align:  center;
-	width: 100%;
-	height: 40px;
-	position: absolute;
-	min-width: 20%;
 	color:white;
-	background-color: black;
 	
 	
 }
 
-.button2{
-	font-family: notoserif;
-	margin-left:0px;
-	border: 1% solid black;
-	font-size: 150%;
-	opacity: 0.75;
+.MyWork{
+	font-size: 120%;
 	color: black;
-	background-color: white;
+	background: white;
+	opacity: 0.75;
 	text-align:  center;
-	width: 150px;
-	height: 36px;
-	position: absolute;
 	text-decoration: none;	
 }
 
 
 .steam{
-	
-	margin-top: 8%;
-
-}
-.vk{
-	
-	margin-top: 19%;
-}
-.pikabu{
-	margin-top: 30%;
-}
-.github{
-	margin-top: 41%;
-}
-
-.button1{
-	font-family: notoserif;
-	margin-left:62.5%;
-	border: 1% solid black;
-	font-size: 150%;
-	opacity: 0.75;
+	font-size: 120%;
 	color: black;
 	background: white;
+	opacity: 0.75;
 	text-align:  center;
-	width: 150px;
-	height: 36px;
-	position: absolute;
 	text-decoration: none;	
 }
-.instagram{
-	
-	margin-top: 8%;
+.vk{
+	font-size: 120%;	
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.pikabu{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.github{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
 
+.instagram{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
 }
 .telegram{
-	margin-top: 19%;
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
 }
 
+
+
 .discord{
-	margin-top: 30%;
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
 }
 
 .gmail{
-	margin-top: 41%;
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
 }
 
 
@@ -141,13 +117,30 @@ body{
 	transition: 0.3s linear;
 }
 
+.steam:hover .steamty{
+	color:white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
+
 .vk:hover{
+	color: white;
+	background-color: #4a76a8 ;
+	transition: 0.3s linear;
+}
+.vk:hover .vkty{
 	color: white;
 	background-color: #4a76a8 ;
 	transition: 0.3s linear;
 }
 
 .pikabu:hover{
+	color: #e34218;
+	background-color: #f9cc6a;
+	transition: 0.3s linear;
+}
+.pikabu:hover .pikabuty{
 	color: #e34218;
 	background-color: #f9cc6a;
 	transition: 0.3s linear;
@@ -159,11 +152,24 @@ body{
 	transition: 0.3s linear;
 }
 
+.github:hover .githubty{
+	color: white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
 .instagram:hover{
 	color:white ;
 	background-color:#d3308a ;
 	transition: 0.3s linear;
 }
+
+.instagram:hover .instagramty{
+	color:white ;
+	background-color:#d3308a ;
+	transition: 0.3s linear;
+}
+
 
 .telegram:hover{
 	color: white;
@@ -171,119 +177,41 @@ body{
 	transition: 0.3s linear;
 }
 
+
+.telegram:hover .telegramty{
+	color: white;
+	background-color: #32a9dd;
+	transition: 0.3s linear;
+}
 .discord:hover{
+	color: white ;
+	background-color:#7289d9;
+	transition: 0.3s linear;
+}
+.discord:hover .discordty{
 	color: white ;
 	background-color:#7289d9;
 	transition: 0.3s linear;
 }
 
 .gmail:hover{
-	color: white ;
+	color: white;
 	background-color:#db4639;
-	transition: 0.3s linear;
+	transition: 0.5s linear;
 	border: 0% solid #db4639;
 	outline: unset;
 }
 
-
-.preloader
-{
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 9999;
+.gmail:hover .gmailty{
+	color: white;
+	background-color:#db4639;
+	transition: 0.5s linear;
+	border: 0% solid #db4639;
+	outline: unset;
 }
-.item-1
-{
-    position: relative;
-    height: 100%;
-    width: 50%;
-    background-color: #111;
-    transition: 1.5s ease;
-    z-index: 9998;
+a{
+	text-decoration: none;
 }
-.right-side
-{
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.item-1 span
-{
-    color: silver;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.left-side span
-{
-    right: 0;
-}
-.right-side span
-{
-    left: 0;
-}
-.dot
-{
-    height: 7px;
-    width: 7px;
-    border-radius: 100%;
-    position: absolute;
-    top: 53%;
-}
-@keyframes dot-light
-{
-    100%
-    {
-        background-color: #d92bc3;
-        box-shadow: 0 0 10px #d92bc3, 0 0 10px #d92bc3;
-    }
-}
-.dot-1
-{
-    right: 20px;
-}
-.dot-2
-{
-    right: 5px;
-}
-.dot-3
-{
-    left: 5px;
-}
-.dot-4
-{
-    left: 20px;
-}
-.item-2
-{
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #222;
-    z-index: 9997;
-    transition: 1s;
-}
-.item-3
-{
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #a60e93;
-    z-index: 9996;
-    transition: 1s;
-}
-.item-4
-{
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #444;
-    z-index: 9995;
-    transition: 1s;
+a:hover{
+	text-decoration: none;
 }
