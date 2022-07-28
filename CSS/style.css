@@ -4,16 +4,30 @@
 
  @font-face {
     font-family: notoserif; /* Гарнитура шрифта */
-    src: url(fonts/notoserif/notoserif.css); /* Путь к файлу со шрифтом */
+    src: url(../fonts/notoserif/notoserif.css); /* Путь к файлу со шрифтом */
    }
   @font-face {
     font-family: robotocondensed; /* Гарнитура шрифта */
-    src: url(fonts/robotocondensed/robotocondensed.css); /* Путь к файлу со шрифтом */
+    src: url(../fonts/robotocondensed/robotocondensed.css); /* Путь к файлу со шрифтом */
    }
 
 /*-------main часть-----------*/
 
-
+body{
+	background: url('../images/background.png') no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	-o-background-size: cover;
+	}
+a{
+	text-decoration: none;
+	color: white;
+}
+a:hover{
+		text-decoration: none;
+		color: bleu;
+}
 
 .name1{
 	font-family: robotocondensed;
