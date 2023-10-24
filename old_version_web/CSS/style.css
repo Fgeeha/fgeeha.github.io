@@ -1,0 +1,231 @@
+
+
+
+
+ @font-face {
+    font-family: notoserif; /* Гарнитура шрифта */
+    src: url(../fonts/notoserif/notoserif.css); /* Путь к файлу со шрифтом */
+   }
+  @font-face {
+    font-family: robotocondensed; /* Гарнитура шрифта */
+    src: url(../fonts/robotocondensed/robotocondensed.css); /* Путь к файлу со шрифтом */
+   }
+
+/*-------main часть-----------*/
+
+body{
+	background: url('../images/background.png') no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	-o-background-size: cover;
+	}
+a{
+	text-decoration: none;
+	color: white;
+}
+a:hover{
+		text-decoration: none;
+		color: bleu;
+}
+
+.name1{
+	font-family: robotocondensed;
+	border: 1% solid black;
+	font-size: 150%;
+	opacity: 0.75;
+	color: black;
+	text-align:  center;
+	color:white;
+	
+	
+}
+
+.MyWork{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+
+
+.steam{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.vk{
+	font-size: 120%;	
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.pikabu{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.github{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+
+.instagram{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+.telegram{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+
+
+
+.discord{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+
+.gmail{
+	font-size: 120%;
+	color: black;
+	background: white;
+	opacity: 0.75;
+	text-align:  center;
+	text-decoration: none;	
+}
+
+
+/*----------------------hover----------------------*/
+
+
+.steam:hover{
+	color:white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
+.steam:hover .steamty{
+	color:white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
+
+.vk:hover{
+	color: white;
+	background-color: #4a76a8 ;
+	transition: 0.3s linear;
+}
+.vk:hover .vkty{
+	color: white;
+	background-color: #4a76a8 ;
+	transition: 0.3s linear;
+}
+
+.pikabu:hover{
+	color: #e34218;
+	background-color: #f9cc6a;
+	transition: 0.3s linear;
+}
+.pikabu:hover .pikabuty{
+	color: #e34218;
+	background-color: #f9cc6a;
+	transition: 0.3s linear;
+}
+
+.github:hover{
+	color: white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
+.github:hover .githubty{
+	color: white;
+	background-color: black;
+	transition: 0.3s linear;
+}
+
+.instagram:hover{
+	color:white ;
+	background-color:#d3308a ;
+	transition: 0.3s linear;
+}
+
+.instagram:hover .instagramty{
+	color:white ;
+	background-color:#d3308a ;
+	transition: 0.3s linear;
+}
+
+
+.telegram:hover{
+	color: white;
+	background-color: #32a9dd;
+	transition: 0.3s linear;
+}
+
+
+.telegram:hover .telegramty{
+	color: white;
+	background-color: #32a9dd;
+	transition: 0.3s linear;
+}
+.discord:hover{
+	color: white ;
+	background-color:#7289d9;
+	transition: 0.3s linear;
+}
+.discord:hover .discordty{
+	color: white ;
+	background-color:#7289d9;
+	transition: 0.3s linear;
+}
+
+.gmail:hover{
+	color: white;
+	background-color:#db4639;
+	transition: 0.5s linear;
+	border: 0% solid #db4639;
+	outline: unset;
+}
+
+.gmail:hover .gmailty{
+	color: white;
+	background-color:#db4639;
+	transition: 0.5s linear;
+	border: 0% solid #db4639;
+	outline: unset;
+}
+a{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}

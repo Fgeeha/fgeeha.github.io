@@ -14,7 +14,7 @@
 /*-------main часть-----------*/
 
 body{
-	background: url('../images/background.png') no-repeat center center fixed;
+	background: url('../images/background_2.jpeg') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	background-size: cover;
@@ -229,3 +229,27 @@ a{
 a:hover{
 	text-decoration: none;
 }
+
+main{
+	
+	text-align: center; /* Центрируем содержимое внутри контейнера по горизонтали */
+    padding: 0.5%; /* Добавляем отступ для красоты */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+	
+    height: 98%; /* Занимает всю доступную высоту по вертикали */
+}
+
+main .container .row .col{
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.7);
+}
+p, h1, h3{
+	opacity: 1;
+}
+
+li {
+    list-style-type: none; /* Убираем маркеры */
+   }
