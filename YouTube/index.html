@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Video Gallery</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .video-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .video {
+        width: 30%;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      iframe {
+        width: 100%;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouTube Video Gallery</h1>
+    <div class="video-container" id="video-container"></div>
+
+    <script>
+      // Array of YouTube video links
+      const videos = [
+        "https://www.youtube.com/watch?v=nXjhQL1IoVk",
+        "https://www.youtube.com/watch?v=__VL695p0wI",
+      ];
+
+      const videoContainer = document.getElementById("video-container");
+
+      videos.forEach((video) => {
+        const videoId = video.split("v=")[1];
+        const iframe = `
+                <div class="video">
+                    <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                </div>`;
+        videoContainer.innerHTML += iframe;
+      });
+    </script>
+  </body>
+</html>
