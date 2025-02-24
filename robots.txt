@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /old_version_web/ # Если есть приватные папки, укажи их
+Disallow: /YouTube/
+Allow: /
