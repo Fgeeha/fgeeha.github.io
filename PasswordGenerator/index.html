@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Генератор надёжных паролей с учётом движений мыши. Secure password generator using mouse movements.">
+    <meta name="keywords" content="генератор паролей, безопасность, случайный, password generator, secure, random">
+    <link rel="canonical" href="https://example.ru/">
+    <title>Генератор надёжных паролей | Secure Password Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Secure Password Generator",
+      "description": "Generate strong random passwords using mouse movements.",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+    <link rel="alternate" href="?lang=ru" hreflang="ru">
+    <link rel="alternate" href="?lang=en" hreflang="en">
+</head>
+<body>
+    <header>
+        <nav class="lang-switcher">
+            <button data-lang="ru" class="lang-btn" aria-label="Переключиться на русский">Русский</button>
+            <button data-lang="en" class="lang-btn" aria-label="Switch to English">English</button>
+        </nav>
+        <h1 data-i18n="title">Генератор надёжных паролей</h1>
+    </header>
+    <main>
+        <form id="password-form" autocomplete="off">
+            <label for="password-length" data-i18n="password_length">Длина пароля</label>
+            <input type="number" id="password-length" min="4" max="128" value="12" required>
+
+            <label for="password-count" data-i18n="password_count">Количество паролей</label>
+            <input type="number" id="password-count" min="1" max="20" value="1" required>
+
+            <label for="lowercase-characters" data-i18n="lowercase">Буквы в нижнем регистре</label>
+            <input type="text" id="lowercase-characters" value="abcdefghijklmnopqrstuvwxyz" required>
+
+            <label for="uppercase-characters" data-i18n="uppercase">Буквы в верхнем регистре</label>
+            <input type="text" id="uppercase-characters" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ" required>
+
+            <label for="numbers" data-i18n="numbers">Цифры</label>
+            <input type="text" id="numbers" value="0123456789" required>
+
+            <label for="symbols" data-i18n="symbols">Символы</label>
+            <input type="text" id="symbols" value="!@#$%^&*()_+[]{}|;:,.<>?" required>
+
+            <label for="exclude-similar-characters" data-i18n="exclude_similar">Исключить похожие символы</label>
+            <input type="text" id="exclude-similar-characters" value="oO0iIl1">
+
+            <label for="exclude-ambiguous-characters" data-i18n="exclude_ambiguous">Исключить неоднозначные символы</label>
+            <input type="text" id="exclude-ambiguous-characters" value="{}[]()/\'`~,;:.<>">
+
+            <button id="generate-password" type="button" data-i18n="generate">Сгенерировать пароль</button>
+        </form>
+        <section id="movement-section">
+            <h2 data-i18n="movement_entropy_title">Влияние движения мыши</h2>
+            <div id="movement-entropy" class="movement-window" aria-live="polite">0</div>
+        </section>
+        <section id="result">
+            <h2 data-i18n="generated_password_title">Сгенерированные пароли</h2>
+            <ul id="generated-passwords" aria-live="polite"></ul>
+        </section>
+    </main>
+    <footer>
+        <p data-i18n="about_project">Этот проект создаёт безопасные пароли на основе ваших параметров и движений мыши.</p>
+        <p>&copy; <span id="year"></span> <span data-i18n="footer_note">Генератор паролей</span></p>
+    </footer>
+
+    <script src="script.js" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
+</html>
