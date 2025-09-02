@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ru" class="no-js" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenSentry — ИИ-диагностика растений на месте</title>
+  <meta name="description" content="GreenSentry — интеллектуальная система диагностики состояния растений с ИИ и edge-вычислениями. Быстрая оценка здоровья культур прямо в поле со смартфона." />
+  <meta property="og:title" content="GreenSentry — ИИ-диагностика растений" />
+  <meta property="og:description" content="Быстрая и доступная диагностика растений на месте: смартфон + ИИ + edge." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0ea776" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script>document.documentElement.classList.remove('no-js');</script>
+  <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+</head>
+<body>
+  <!-- Навбар -->
+  <header class="nav">
+    <a class="brand" href="#top">
+      <img src="assets/logo.svg" alt="GreenSentry" class="logo"/>
+      <span>GreenSentry</span>
+    </a>
+    <nav class="menu" id="menu">
+      <a href="#about">О проекте</a>
+      <a href="#features">Преимущества</a>
+      <a href="#how">Как работает</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact" class="btn btn--ghost">Контакты</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+        <span class="icon-sun" aria-hidden="true"></span>
+        <span class="icon-moon" aria-hidden="true"></span>
+      </button>
+      <button class="burger" id="burger" aria-label="Открыть меню"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="hero__content">
+      <h1>
+        Диагностика растений <span class="accent">на месте</span> —
+        за секунды, без лаборатории
+      </h1>
+      <p class="lead">
+        GreenSentry — ИИ-помощник агроному: сфотографируйте растение,
+        получите мгновённый диагноз и рекомендации. Всё работает на устройстве —
+        быстро, надёжно и без передачи данных в облако.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#about">Как это решает проблему</a>
+      </div>
+      <ul class="hero__bullets">
+        <li>⚡ Локальная обработка (edge)</li>
+        <li>🎯 Высокая точность на ранних стадиях</li>
+        <li>📱 Смартфон или компактное устройство</li>
+      </ul>
+    </div>
+    <div class="hero__visual">
+      <div class="phone">
+        <div class="glow"></div>
+      </div>
+    </div>
+    <div class="grid-bg" aria-hidden="true"></div>
+  </section>
+
+  <!-- О проекте (проблема → решение) -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="split">
+        <div class="card glass">
+          <h2>Проблема</h2>
+          <p>
+            Современная диагностика заболеваний растений часто требует
+            лабораторного анализа: дорого, долго и неудобно в поле. Задержки ведут
+            к позднему выявлению, падению урожайности и росту затрат.
+          </p>
+        </div>
+        <div class="card success">
+          <h2>Решение GreenSentry</h2>
+          <p>
+            Мгновенный анализ прямо на участке: снимок листа → локальная ИИ-оценка →
+            диагноз и действия. Без спецоборудования и интернета.
+          </p>
+          <ul class="check">
+            <li>Доступно для фермеров любого масштаба</li>
+            <li>Работает офлайн, данные остаются у вас</li>
+            <li>Рекомендации по обработке и профилактике</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Преимущества -->
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="center">Почему GreenSentry</h2>
+      <p class="sub center">Пять ключевых преимуществ, которые отличают нас от аналогов</p>
+      <div class="grid g-4">
+        <article class="feature">
+          <div class="icon">📱</div>
+          <h3>Удобство использования</h3>
+          <p>Интерфейс под смартфоны. Пошаговая подсказка съёмки, простые результаты.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">💸</div>
+          <h3>Доступность</h3>
+          <p>Без лабораторий и специализированной техники — достаточно камеры телефона.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">🧠</div>
+          <h3>Точность ИИ</h3>
+          <p>Модели CV определяют заболевания на ранних стадиях и предлагают действия.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">⚙️</div>
+          <h3>Edge-вычисления</h3>
+          <p>Обработка на устройстве — скорость, приватность, отсутствие задержек.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">⏱️</div>
+          <h3>Скорость реакции</h3>
+          <p>Результат за секунды — успейте обработать участок вовремя.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">🌱</div>
+          <h3>Низкая стоимость внедрения</h3>
+          <p>Экономически выгодно для малых и средних хозяйств.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Как это работает -->
+  <section class="section" id="how">
+    <div class="container">
+      <h2 class="center">Как это работает</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="badge">1</span>
+          <h3>Снимок</h3>
+          <p>Наведи камеру на лист, следуй разметке в кадре и сделай фото.</p>
+        </div>
+        <div class="step">
+          <span class="badge">2</span>
+          <h3>Анализ</h3>
+          <p>Модель ИИ обрабатывает изображение локально и классифицирует симптомы.</p>
+        </div>
+        <div class="step">
+          <span class="badge">3</span>
+          <h3>Рекомендации</h3>
+          <p>Получите диагноз, вероятности, карту рисков и действия: обработка, сроки, дозировки.</p>
+        </div>
+        <div class="step">
+          <span class="badge">4</span>
+          <h3>Отчёт</h3>
+          <p>Экспортируйте PDF/CSV, поделитесь с агрономом, сохраните историю поля.</p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <h3>Технологический стек</h3>
+        <ul class="stack__list">
+          <li>Mobile: PWA / iOS / Android</li>
+          <li>ML: PyTorch / ONNX / TensorRT (опционально)</li>
+          <li>Edge: on-device inference (Metal/NNAPI)</li>
+          <li>Backend (по желанию): FastAPI + PostgreSQL</li>
+          <li>Privacy: офлайн-режим, шифрование данных</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <h2 class="center">Частые вопросы</h2>
+      <details class="faq">
+        <summary>Нужен ли интернет для работы?</summary>
+        <p>Нет. Диагностика происходит локально. Интернет требуется только для обновления моделей (по желанию).</p>
+      </details>
+      <details class="faq">
+        <summary>Какие культуры поддерживаются?</summary>
+        <p>Стартовый набор: пшеница, кукуруза, картофель, томаты. Список расширяется с обновлениями.</p>
+      </details>
+      <details class="faq">
+        <summary>Какая точность распознавания?</summary>
+        <p>Зависит от культуры и стадии болезни. Цель — ≥90% по основных классах при корректной съёмке. В интерфейсе показываем вероятности и уверенность.</p>
+      </details>
+      <details class="faq">
+        <summary>Как защищаются данные?</summary>
+        <p>Фото остаются на устройстве, включено шифрование хранилища. Опционально — анонимная телеметрия для улучшения моделей.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Контакты -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="contact">
+        <div>
+          <h2>Свяжитесь с нами</h2>
+          <ul class="contact-list">
+            <li>📧 <a href="https://t.me/fgeeha">telegram</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Футер -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <img src="assets/logo.svg" alt="GreenSentry" class="logo"/>
+        <strong>GreenSentry</strong>
+        <p>ИИ-диагностика растений на месте.</p>
+      </div>
+      <nav class="footer__nav">
+        <a href="#about">О проекте</a>
+        <a href="#how">Как работает</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="footer__legal">
+        <a href="https://t.me/fgeeha">Политика конфиденциальности</a>
+        <span>© <span id="year"></span> GreenSentry</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Модалка инвайта -->
+  <dialog id="invite" class="modal">
+    <form method="dialog" class="modal__card">
+      <button class="modal__close" aria-label="Закрыть">✕</button>
+      <h3>Ранний доступ</h3>
+      <p>Оставьте email — отправим приглашение в тест и обновления о запуске.</p>
+      <label class="sr-only" for="inviteEmail">Email</label>
+      <input id="inviteEmail" type="email" placeholder="you@farm.com" required />
+      <div class="row">
+        <button class="btn btn--primary" id="inviteSubmit">Запросить</button>
+        <button class="btn btn--ghost" value="cancel">Отмена</button>
+      </div>
+      <p class="form-note" id="inviteNote" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
