@@ -1,81 +1,123 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Генератор надёжных паролей с учётом движений мыши. Secure password generator using mouse movements.">
-    <meta name="keywords" content="генератор паролей, безопасность, случайный, password generator, secure, random">
-    <link rel="canonical" href="https://example.ru/">
-    <title>Генератор надёжных паролей | Secure Password Generator</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Secure Password Generator",
-      "description": "Generate strong random passwords using mouse movements.",
-      "applicationCategory": "SecurityApplication",
-      "operatingSystem": "All",
-      "offers": {
-        "@type": "Offer",
-        "price": "0"
-      }
-    }
-    </script>
-    <link rel="alternate" href="?lang=ru" hreflang="ru">
-    <link rel="alternate" href="?lang=en" hreflang="en">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Генератор надёжных паролей со смешиванием пользовательской энтропии (мышь/клавиатура) и CSPRNG." />
+  <meta name="keywords" content="генератор паролей, безопасность, случайный, password generator, secure, random" />
+  <link rel="canonical" href="https://fgeeha.github.io/PasswordGenerator/" />
+  <title data-i18n="meta_title">Генератор надёжных паролей | Secure Password Generator</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
 </head>
 <body>
-    <header>
-        <nav class="lang-switcher">
-            <button data-lang="ru" class="lang-btn" aria-label="Переключиться на русский">Русский</button>
-            <button data-lang="en" class="lang-btn" aria-label="Switch to English">English</button>
-        </nav>
-        <h1 data-i18n="title">Генератор надёжных паролей</h1>
-    </header>
-    <main>
-        <form id="password-form" autocomplete="off">
-            <label for="password-length" data-i18n="password_length">Длина пароля</label>
-            <input type="number" id="password-length" min="4" max="128" value="12" required>
+  <header>
+    <div class="container topbar" role="navigation" aria-label="Language switcher">
+      <h1 data-i18n="title">Генератор надёжных паролей</h1>
+      <nav class="lang-switcher">
+        <button class="btn ghost lang-btn active" data-lang="ru" aria-label="Переключиться на русский">Русский</button>
+        <button class="btn ghost lang-btn" data-lang="en" aria-label="Switch to English">English</button>
+      </nav>
+    </div>
+  </header>
 
-            <label for="password-count" data-i18n="password_count">Количество паролей</label>
-            <input type="number" id="password-count" min="1" max="20" value="1" required>
+  <main class="container">
+    <div class="grid">
+      <!-- Controls -->
+      <section class="card" aria-labelledby="controls-h2">
+        <h2 id="controls-h2" data-i18n="controls">Параметры генерации</h2>
 
-            <label for="lowercase-characters" data-i18n="lowercase">Буквы в нижнем регистре</label>
-            <input type="text" id="lowercase-characters" value="abcdefghijklmnopqrstuvwxyz" required>
+        <div class="row" style="align-items:end">
+          <div>
+            <label for="length" data-i18n="password_length">Длина пароля</label>
+            <input id="length" type="number" min="4" max="128" value="16" inputmode="numeric" />
+            <div class="help" id="lengthHelp"></div>
+          </div>
+          <div style="min-width:180px">
+            <label class="sr-only" for="length-range" data-i18n="password_length">Длина пароля</label>
+            <input id="length-range" type="range" min="4" max="128" value="16" />
+          </div>
+        </div>
 
-            <label for="uppercase-characters" data-i18n="uppercase">Буквы в верхнем регистре</label>
-            <input type="text" id="uppercase-characters" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ" required>
+        <div class="row">
+          <div>
+            <label for="count" data-i18n="password_count">Количество паролей</label>
+            <input id="count" type="number" min="1" max="20" value="3" inputmode="numeric" />
+            <div class="help" data-i18n="count_help">От 1 до 20 паролей за раз.</div>
+          </div>
+          <div class="switches" aria-label="Character classes">
+            <label class="switch"><input id="chk-l" type="checkbox" checked /> <span data-i18n="lowercase">Буквы в нижнем регистре</span></label>
+            <label class="switch"><input id="chk-u" type="checkbox" checked /> <span data-i18n="uppercase">Буквы в верхнем регистре</span></label>
+            <label class="switch"><input id="chk-d" type="checkbox" checked /> <span data-i18n="numbers">Цифры</span></label>
+            <label class="switch"><input id="chk-s" type="checkbox" /> <span data-i18n="symbols">Символы</span></label>
+          </div>
+        </div>
 
-            <label for="numbers" data-i18n="numbers">Цифры</label>
-            <input type="text" id="numbers" value="0123456789" required>
+        <div class="switches" style="grid-template-columns:1fr 1fr">
+          <label class="switch"><input id="ensure-group" type="checkbox" checked /> <span data-i18n="ensure_group">Гарантировать символ из каждой выбранной группы</span></label>
+          <label class="switch"><input id="avoid-amb" type="checkbox" /> <span data-i18n="exclude_ambiguous_chk">Исключить неоднозначные</span></label>
+          <label class="switch"><input id="avoid-sim" type="checkbox" checked /> <span data-i18n="exclude_similar_chk">Исключить похожие</span></label>
+          <label class="switch"><input id="no-repeat" type="checkbox" /> <span data-i18n="no_repeats">Без подряд идущих повторов</span></label>
+        </div>
 
-            <label for="symbols" data-i18n="symbols">Символы</label>
-            <input type="text" id="symbols" value="!@#$%^&*()_+[]{}|;:,.<>?" required>
+        <details>
+          <summary data-i18n="custom_sets">Пользовательские наборы символов</summary>
+          <label for="set-l" data-i18n="lowercase">Буквы в нижнем регистре</label>
+          <input id="set-l" type="text" value="abcdefghijklmnopqrstuvwxyz" />
+          <label for="set-u" data-i18n="uppercase">Буквы в верхнем регистре</label>
+          <input id="set-u" type="text" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+          <label for="set-d" data-i18n="numbers">Цифры</label>
+          <input id="set-d" type="text" value="0123456789" />
+          <label for="set-s" data-i18n="symbols">Символы</label>
+          <input id="set-s" type="text" value="!@#$%^&*()_+[]{}|;:,.<>?~" />
+          <label for="exclude" data-i18n="exclude_ambiguous">Исключить (дополнительно)</label>
+          <input id="exclude" type="text" value="{}[]()/\'\"`~,;:.<>" />
+          <div class="help" data-i18n="custom_hint">Изменяйте наборы и/или исключите символы вручную.</div>
+        </details>
 
-            <label for="exclude-similar-characters" data-i18n="exclude_similar">Исключить похожие символы</label>
-            <input type="text" id="exclude-similar-characters" value="oO0iIl1">
+        <div style="margin-top:.75rem" class="stack">
+          <button id="btn-gen" class="btn primary"><span data-i18n="generate">Сгенерировать</span></button>
+          <button id="btn-copy-all" class="btn"><span data-i18n="copy_all">Скопировать всё</span></button>
+          <button id="btn-download" class="btn"><span data-i18n="download">Скачать .txt</span></button>
+        </div>
 
-            <label for="exclude-ambiguous-characters" data-i18n="exclude_ambiguous">Исключить неоднозначные символы</label>
-            <input type="text" id="exclude-ambiguous-characters" value="{}[]()/\'`~,;:.<>">
+        <hr style="border:none; border-top:1px solid var(--border); margin:1rem 0">
 
-            <button id="generate-password" type="button" data-i18n="generate">Сгенерировать пароль</button>
-        </form>
-        <section id="movement-section">
-            <h2 data-i18n="movement_entropy_title">Влияние движения мыши</h2>
-            <div id="movement-entropy" class="movement-window" aria-live="polite">0</div>
-        </section>
-        <section id="result">
-            <h2 data-i18n="generated_password_title">Сгенерированные пароли</h2>
-            <ul id="generated-passwords" aria-live="polite"></ul>
-        </section>
-    </main>
-    <footer>
-        <p data-i18n="about_project">Этот проект создаёт безопасные пароли на основе ваших параметров и движений мыши.</p>
-        <p>&copy; <span id="year"></span> <span data-i18n="footer_note">Генератор паролей</span></p>
-    </footer>
+        <h2 data-i18n="entropy_title">Пользовательская энтропия</h2>
+        <div class="entropy-row">
+          <div>
+            <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Entropy">
+              <div id="entropy-bar"></div>
+            </div>
+            <div class="help" id="entropy-help">0 <span data-i18n="bits">бит</span></div>
+          </div>
+          <div id="entropy-box" class="entropy-box" aria-live="polite" data-i18n="entropy_box">
+            Двигайте мышь, крутите колесо
+          </div>
+        </div>
+        <div class="help">
+          <span data-i18n="entropy_note">Используется CSPRNG <code>crypto.getRandomValues</code>, а введённая энтропия лишь усиливает источник.</span>
+        </div>
+      </section>
 
-    <script src="script.js" defer></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+      <!-- Results -->
+      <section class="card" aria-labelledby="result-h2">
+        <h2 id="result-h2" data-i18n="generated_password_title">Сгенерированные пароли</h2>
+        <div id="summary" class="help"></div>
+        <div id="list" class="passwords" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <p class="footer">
+      <span data-i18n="about_project">Проект создаёт безопасные пароли на основе ваших параметров и пользовательской энтропии.</span>
+      &nbsp;—&nbsp;© <span id="year"></span>
+    </p>
+  </main>
+
+  <noscript>
+    <div class="container card" role="alert">This app needs JavaScript to generate passwords.</div>
+  </noscript>
+<script src="script.js" defer></script>
 </body>
 </html>
