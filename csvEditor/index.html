@@ -122,11 +122,13 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            min-width: 150px;
         }
 
         td {
             padding: 10px;
             border-bottom: 1px solid #e0e0e0;
+            min-width: 150px;
         }
 
         tbody tr:hover {
@@ -136,6 +138,7 @@
         input[type="text"],
         input[type="tel"] {
             width: 100%;
+            min-width: 200px;
             padding: 8px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
@@ -154,15 +157,23 @@
         }
 
         .coord-input {
-            width: 120px;
+            width: 140px;
+            min-width: 140px;
         }
 
         .time-input {
-            width: 80px;
+            width: 90px;
+            min-width: 90px;
         }
 
         .narrow-input {
-            width: 100px;
+            width: 130px;
+            min-width: 130px;
+        }
+
+        .wide-input {
+            width: 100%;
+            min-width: 300px;
         }
 
         .delete-btn {
@@ -304,10 +315,10 @@
 
             row.innerHTML = `
                 <td class="row-number">${defaultData.num}</td>
-                <td><input type="text" value="${defaultData.name}" placeholder="ООО Компания"></td>
+                <td><input type="text" class="wide-input" value="${defaultData.name}" placeholder="ООО Компания"></td>
                 <td><input type="text" class="narrow-input" value="${defaultData.inn}" placeholder="1234567890" maxlength="12"></td>
-                <td><input type="text" value="${defaultData.pointName}" placeholder="Магазин Центральный"></td>
-                <td><input type="text" value="${defaultData.address}" placeholder="г. Город, ул. Улица, д. 1"></td>
+                <td><input type="text" class="wide-input" value="${defaultData.pointName}" placeholder="Магазин Центральный"></td>
+                <td><input type="text" class="wide-input" value="${defaultData.address}" placeholder="г. Город, ул. Улица, д. 1"></td>
                 <td><input type="text" class="coord-input" value="${defaultData.lat}" placeholder="55.751244" oninput="validateCoordinate(this)"></td>
                 <td><input type="text" class="coord-input" value="${defaultData.lon}" placeholder="37.618423" oninput="validateCoordinate(this)"></td>
                 <td><input type="tel" value="${defaultData.phone}" placeholder="+79091234567" oninput="formatPhone(this)"></td>
