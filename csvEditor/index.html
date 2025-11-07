@@ -319,7 +319,7 @@
                 sat_start: '', sat_end: '',
                 sun_start: '', sun_end: ''
             };
-            
+
             // Экранируем кавычки в строках, чтобы не ломалась HTML-разметка
             const escapeHtml = (str) => String(str).replace(/"/g, '&quot;');
 
@@ -524,9 +524,7 @@
             }
             
             // Конвертация в Windows-1251
-            const encoder = new TextEncoder('windows-1251');
-            const uint8Array = encoder.encode(csvContent);
-            const blob = new Blob([uint8Array], { 
+            const blob = new Blob([convertToWindows1251(csvContent)], { 
                 type: 'text/csv;charset=windows-1251' 
             });
             
@@ -542,6 +540,36 @@
             showNotification(`CSV файл успешно создан (${validRowCount} строк)`, 'success');
         }
 
+        function convertToWindows1251(text) {
+            const win1251 = {
+                'А': 0xC0, 'Б': 0xC1, 'В': 0xC2, 'Г': 0xC3, 'Д': 0xC4, 'Е': 0xC5, 'Ё': 0xA8,
+                'Ж': 0xC6, 'З': 0xC7, 'И': 0xC8, 'Й': 0xC9, 'К': 0xCA, 'Л': 0xCB, 'М': 0xCC,
+                'Н': 0xCD, 'О': 0xCE, 'П': 0xCF, 'Р': 0xD0, 'С': 0xD1, 'Т': 0xD2, 'У': 0xD3,
+                'Ф': 0xD4, 'Х': 0xD5, 'Ц': 0xD6, 'Ч': 0xD7, 'Ш': 0xD8, 'Щ': 0xD9, 'Ъ': 0xDA,
+                'Ы': 0xDB, 'Ь': 0xDC, 'Э': 0xDD, 'Ю': 0xDE, 'Я': 0xDF,
+                'а': 0xE0, 'б': 0xE1, 'в': 0xE2, 'г': 0xE3, 'д': 0xE4, 'е': 0xE5, 'ё': 0xB8,
+                'ж': 0xE6, 'з': 0xE7, 'и': 0xE8, 'й': 0xE9, 'к': 0xEA, 'л': 0xEB, 'м': 0xEC,
+                'н': 0xED, 'о': 0xEE, 'п': 0xEF, 'р': 0xF0, 'с': 0xF1, 'т': 0xF2, 'у': 0xF3,
+                'ф': 0xF4, 'х': 0xF5, 'ц': 0xF6, 'ч': 0xF7, 'ш': 0xF8, 'щ': 0xF9, 'ъ': 0xFA,
+                'ы': 0xFB, 'ь': 0xFC, 'э': 0xFD, 'ю': 0xFE, 'я': 0xFF,
+                '№': 0xB9
+            };
+            
+            const bytes = new Uint8Array(text.length);
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charAt(i);
+                if (win1251[char]) {
+                    bytes[i] = win1251[char];
+                } else if (char.charCodeAt(0) < 128) {
+                    bytes[i] = char.charCodeAt(0);
+                } else {
+                    bytes[i] = 0x3F; // '?'
+                }
+            }
+            
+            return bytes;
+        }
 
         function loadCSV(event) {
             const file = event.target.files[0];
@@ -550,13 +578,41 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const arrayBuffer = e.target.result;
-                const decoder = new TextDecoder('windows-1251');
-                const text = decoder.decode(arrayBuffer);
+                const bytes = new Uint8Array(arrayBuffer);
+                const text = convertFromWindows1251(bytes);
                 parseCSV(text);
             };
             reader.readAsArrayBuffer(file);
         }
 
+        function convertFromWindows1251(bytes) {
+            const win1251Reverse = {
+                0xC0: 'А', 0xC1: 'Б', 0xC2: 'В', 0xC3: 'Г', 0xC4: 'Д', 0xC5: 'Е', 0xA8: 'Ё',
+                0xC6: 'Ж', 0xC7: 'З', 0xC8: 'И', 0xC9: 'Й', 0xCA: 'К', 0xCB: 'Л', 0xCC: 'М',
+                0xCD: 'Н', 0xCE: 'О', 0xCF: 'П', 0xD0: 'Р', 0xD1: 'С', 0xD2: 'Т', 0xD3: 'У',
+                0xD4: 'Ф', 0xD5: 'Х', 0xD6: 'Ц', 0xD7: 'Ч', 0xD8: 'Ш', 0xD9: 'Щ', 0xDA: 'Ъ',
+                0xDB: 'Ы', 0xDC: 'Ь', 0xDD: 'Э', 0xDE: 'Ю', 0xDF: 'Я',
+                0xE0: 'а', 0xE1: 'б', 0xE2: 'в', 0xE3: 'г', 0xE4: 'д', 0xE5: 'е', 0xB8: 'ё',
+                0xE6: 'ж', 0xE7: 'з', 0xE8: 'и', 0xE9: 'й', 0xEA: 'к', 0xEB: 'л', 0xEC: 'м',
+                0xED: 'н', 0xEE: 'о', 0xEF: 'п', 0xF0: 'р', 0xF1: 'с', 0xF2: 'т', 0xF3: 'у',
+                0xF4: 'ф', 0xF5: 'х', 0xF6: 'ц', 0xF7: 'ч', 0xF8: 'ш', 0xF9: 'щ', 0xFA: 'ъ',
+                0xFB: 'ы', 0xFC: 'ь', 0xFD: 'э', 0xFE: 'ю', 0xFF: 'я', 0xB9: '№'
+            };
+            
+            let text = '';
+            for (let i = 0; i < bytes.length; i++) {
+                const byte = bytes[i];
+                if (win1251Reverse[byte]) {
+                    text += win1251Reverse[byte];
+                } else if (byte < 128) {
+                    text += String.fromCharCode(byte);
+                } else {
+                    text += '?';
+                }
+            }
+            
+            return text;
+        }
 
         function parseCSV(text) {
             const lines = text.split('\n').filter(line => line.trim());
@@ -564,26 +620,11 @@
             // Очищаем таблицу
             document.getElementById('tableBody').innerHTML = '';
             rowCounter = 1;
-
+            
             // Пропускаем заголовок
             for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let currentField = '';
-                let inQuotes = false;
+                const values = lines[i].split(';');
                 
-                for (let j = 0; j < lines[i].length; j++) {
-                    const char = lines[i][j];
-
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ';' && !inQuotes) {
-                        values.push(currentField);
-                        currentField = '';
-                        continue;
-                    }
-                    currentField += char;
-                }
-                values.push(currentField); // добавляем последнее поле
                 if (values.length >= 8) {
                     const data = {
                         num: values[0] || rowCounter,
@@ -609,14 +650,14 @@
                         sun_start: values[20] || '',
                         sun_end: values[21] || ''
                     };
+                    
                     addRow(data);
                     rowCounter++;
                 }
             }
-
+            
             showNotification(`Загружено ${lines.length - 1} строк`, 'success');
         }
-
 
         function clearAll() {
             if (confirm('Вы уверены, что хотите удалить все строки?')) {
