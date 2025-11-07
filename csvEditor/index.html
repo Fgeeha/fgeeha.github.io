@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор CSV файлов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(235, 51, 73, 0.4);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input.error {
+            border-color: #eb3349;
+        }
+
+        .coord-input {
+            width: 120px;
+        }
+
+        .time-input {
+            width: 80px;
+        }
+
+        .narrow-input {
+            width: 100px;
+        }
+
+        .delete-btn {
+            background: #eb3349;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #d62839;
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .row-number {
+            font-weight: 600;
+            color: #667eea;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Редактор CSV файлов</h1>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="addRow()">
+                ➕ Добавить строку
+            </button>
+            <button class="btn btn-success" onclick="downloadCSV()">
+                💾 Скачать CSV
+            </button>
+            <div class="file-input-wrapper">
+                <label class="btn btn-primary" for="fileInput">
+                    📂 Загрузить CSV
+                </label>
+                <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(event)">
+            </div>
+            <button class="btn btn-danger" onclick="clearAll()">
+                🗑️ Очистить всё
+            </button>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Наименование</th>
+                        <th>ИНН</th>
+                        <th>Название точки</th>
+                        <th>Адрес точки</th>
+                        <th>Широта</th>
+                        <th>Долгота</th>
+                        <th>Телефон</th>
+                        <th>Пн начало</th>
+                        <th>Пн конец</th>
+                        <th>Вт начало</th>
+                        <th>Вт конец</th>
+                        <th>Ср начало</th>
+                        <th>Ср конец</th>
+                        <th>Чт начало</th>
+                        <th>Чт конец</th>
+                        <th>Пт начало</th>
+                        <th>Пт конец</th>
+                        <th>Сб начало</th>
+                        <th>Сб конец</th>
+                        <th>Вс начало</th>
+                        <th>Вс конец</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 1;
+
+        function addRow(data = null) {
+            const tbody = document.getElementById('tableBody');
+            const row = tbody.insertRow();
+            
+            const defaultData = data || {
+                num: rowCounter++,
+                name: '',
+                inn: '',
+                pointName: '',
+                address: '',
+                lat: '',
+                lon: '',
+                phone: '',
+                mon_start: '', mon_end: '',
+                tue_start: '', tue_end: '',
+                wed_start: '', wed_end: '',
+                thu_start: '', thu_end: '',
+                fri_start: '', fri_end: '',
+                sat_start: '', sat_end: '',
+                sun_start: '', sun_end: ''
+            };
+
+            row.innerHTML = `
+                <td class="row-number">${defaultData.num}</td>
+                <td><input type="text" value="${defaultData.name}" placeholder="ООО Компания"></td>
+                <td><input type="text" class="narrow-input" value="${defaultData.inn}" placeholder="1234567890" maxlength="12"></td>
+                <td><input type="text" value="${defaultData.pointName}" placeholder="Магазин Центральный"></td>
+                <td><input type="text" value="${defaultData.address}" placeholder="г. Город, ул. Улица, д. 1"></td>
+                <td><input type="text" class="coord-input" value="${defaultData.lat}" placeholder="55.751244" oninput="validateCoordinate(this)"></td>
+                <td><input type="text" class="coord-input" value="${defaultData.lon}" placeholder="37.618423" oninput="validateCoordinate(this)"></td>
+                <td><input type="tel" value="${defaultData.phone}" placeholder="+79091234567" oninput="formatPhone(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.mon_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.mon_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.tue_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.tue_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.wed_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.wed_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.thu_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.thu_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.fri_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.fri_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sat_start}" placeholder="10:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sat_end}" placeholder="20:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sun_start}" placeholder="10:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sun_end}" placeholder="20:00" oninput="formatTime(this)"></td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">❌</button></td>
+            `;
+        }
+
+        function deleteRow(btn) {
+            const row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            showNotification('Строка удалена', 'success');
+        }
+
+        function validateCoordinate(input) {
+            let value = input.value.replace(',', '.');
+            
+            // Разрешаем вводить только цифры, точку и минус
+            value = value.replace(/[^\d.-]/g, '');
+            
+            // Проверяем формат
+            const parts = value.split('.');
+            if (parts.length === 2) {
+                // Ограничиваем до 6 знаков после точки
+                if (parts[1].length > 6) {
+                    parts[1] = parts[1].substring(0, 6);
+                    value = parts.join('.');
+                }
+            }
+            
+            input.value = value;
+            
+            // Валидация для подсветки ошибок
+            if (value && parts.length === 2 && parts[1].length === 6) {
+                input.classList.remove('error');
+            } else if (value && parts.length === 2) {
+                input.classList.add('error');
+            }
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            
+            if (value.length > 0) {
+                if (value[0] === '7' || value[0] === '8') {
+                    value = '7' + value.substring(1);
+                }
+                
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                
+                if (value.length >= 1) {
+                    let formatted = '+7';
+                    if (value.length > 1) formatted += value.substring(1, 4);
+                    if (value.length > 4) formatted += value.substring(4, 7);
+                    if (value.length > 7) formatted += value.substring(7, 9);
+                    if (value.length > 9) formatted += value.substring(9, 11);
+                    input.value = formatted;
+                }
+            }
+        }
+
+        function formatTime(input) {
+            let value = input.value.replace(/\D/g, '');
+            
+            if (value.length > 4) {
+                value = value.substring(0, 4);
+            }
+            
+            if (value.length >= 3) {
+                value = value.substring(0, 2) + ':' + value.substring(2, 4);
+            }
+            
+            input.value = value;
+            
+            // Валидация времени
+            if (value.length === 5) {
+                const [hours, minutes] = value.split(':').map(Number);
+                if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+                    input.classList.remove('error');
+                } else {
+                    input.classList.add('error');
+                }
+            }
+        }
+
+        function getRowData(row) {
+            const inputs = row.querySelectorAll('input');
+            const data = [row.cells[0].textContent]; // Номер строки
+            
+            for (let i = 0; i < inputs.length; i++) {
+                data.push(inputs[i].value);
+            }
+            
+            return data;
+        }
+
+        function isRowEmpty(data) {
+            // Проверяем все поля кроме номера строки
+            for (let i = 1; i < 8; i++) { // Основные обязательные поля
+                if (data[i] && data[i].trim() !== '') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function isRowValid(data) {
+            // Если строка пустая - она валидна (просто не включаем в CSV)
+            if (isRowEmpty(data)) return true;
+            
+            // Проверяем обязательные поля (все кроме часов работы)
+            for (let i = 1; i < 8; i++) {
+                if (!data[i] || data[i].trim() === '') {
+                    return false;
+                }
+            }
+            
+            // Проверяем координаты (должны быть с 6 знаками после точки)
+            const lat = data[5];
+            const lon = data[6];
+            
+            if (lat && !lat.match(/^-?\d+\.\d{6}$/)) return false;
+            if (lon && !lon.match(/^-?\d+\.\d{6}$/)) return false;
+            
+            return true;
+        }
+
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tbody tr');
+            
+            if (rows.length === 0) {
+                showNotification('Нет данных для сохранения', 'error');
+                return;
+            }
+            
+            let csvContent = '';
+            
+            // Заголовки
+            const headers = [
+                '№', 'Наименование', 'ИНН', 'Название торговой точки', 'Адрес торговой точки',
+                'Широта', 'Долгота', 'Контакты торговой точки',
+                'Время начала работы в понедельник', 'Время окончания работы в понедельник',
+                'Время начала работы во вторник', 'Время окончания работы во вторник',
+                'Время начала работы в среду', 'Время окончания работы в среду',
+                'Время начала работы в четверг', 'Время окончания работы в четверг',
+                'Время начала работы в пятницу', 'Время окончания работы в пятницу',
+                'Время начала работы в субботу', 'Время окончания работы в субботу',
+                'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
+            ];
+            csvContent += headers.join(';') + '\n';
+            
+            // Данные
+            let validRowCount = 0;
+            let invalidRows = [];
+            
+            rows.forEach((row, index) => {
+                const rowData = getRowData(row);
+                
+                if (!isRowEmpty(rowData)) {
+                    if (!isRowValid(rowData)) {
+                        invalidRows.push(index + 1);
+                        return;
+                    }
+                    csvContent += rowData.join(';') + '\n';
+                    validRowCount++;
+                }
+            });
+            
+            if (invalidRows.length > 0) {
+                showNotification(`Ошибка: строки ${invalidRows.join(', ')} заполнены некорректно`, 'error');
+                return;
+            }
+            
+            if (validRowCount === 0) {
+                showNotification('Нет заполненных строк для сохранения', 'error');
+                return;
+            }
+            
+            // Конвертация в Windows-1251
+            const blob = new Blob([convertToWindows1251(csvContent)], { 
+                type: 'text/csv;charset=windows-1251' 
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`CSV файл успешно создан (${validRowCount} строк)`, 'success');
+        }
+
+        function convertToWindows1251(text) {
+            const win1251 = {
+                'А': 0xC0, 'Б': 0xC1, 'В': 0xC2, 'Г': 0xC3, 'Д': 0xC4, 'Е': 0xC5, 'Ё': 0xA8,
+                'Ж': 0xC6, 'З': 0xC7, 'И': 0xC8, 'Й': 0xC9, 'К': 0xCA, 'Л': 0xCB, 'М': 0xCC,
+                'Н': 0xCD, 'О': 0xCE, 'П': 0xCF, 'Р': 0xD0, 'С': 0xD1, 'Т': 0xD2, 'У': 0xD3,
+                'Ф': 0xD4, 'Х': 0xD5, 'Ц': 0xD6, 'Ч': 0xD7, 'Ш': 0xD8, 'Щ': 0xD9, 'Ъ': 0xDA,
+                'Ы': 0xDB, 'Ь': 0xDC, 'Э': 0xDD, 'Ю': 0xDE, 'Я': 0xDF,
+                'а': 0xE0, 'б': 0xE1, 'в': 0xE2, 'г': 0xE3, 'д': 0xE4, 'е': 0xE5, 'ё': 0xB8,
+                'ж': 0xE6, 'з': 0xE7, 'и': 0xE8, 'й': 0xE9, 'к': 0xEA, 'л': 0xEB, 'м': 0xEC,
+                'н': 0xED, 'о': 0xEE, 'п': 0xEF, 'р': 0xF0, 'с': 0xF1, 'т': 0xF2, 'у': 0xF3,
+                'ф': 0xF4, 'х': 0xF5, 'ц': 0xF6, 'ч': 0xF7, 'ш': 0xF8, 'щ': 0xF9, 'ъ': 0xFA,
+                'ы': 0xFB, 'ь': 0xFC, 'э': 0xFD, 'ю': 0xFE, 'я': 0xFF
+            };
+            
+            const bytes = new Uint8Array(text.length);
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charAt(i);
+                if (win1251[char]) {
+                    bytes[i] = win1251[char];
+                } else if (char.charCodeAt(0) < 128) {
+                    bytes[i] = char.charCodeAt(0);
+                } else {
+                    bytes[i] = 0x3F; // '?'
+                }
+            }
+            
+            return bytes;
+        }
+
+        function loadCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const arrayBuffer = e.target.result;
+                const bytes = new Uint8Array(arrayBuffer);
+                const text = convertFromWindows1251(bytes);
+                parseCSV(text);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function convertFromWindows1251(bytes) {
+            const win1251Reverse = {
+                0xC0: 'А', 0xC1: 'Б', 0xC2: 'В', 0xC3: 'Г', 0xC4: 'Д', 0xC5: 'Е', 0xA8: 'Ё',
+                0xC6: 'Ж', 0xC7: 'З', 0xC8: 'И', 0xC9: 'Й', 0xCA: 'К', 0xCB: 'Л', 0xCC: 'М',
+                0xCD: 'Н', 0xCE: 'О', 0xCF: 'П', 0xD0: 'Р', 0xD1: 'С', 0xD2: 'Т', 0xD3: 'У',
+                0xD4: 'Ф', 0xD5: 'Х', 0xD6: 'Ц', 0xD7: 'Ч', 0xD8: 'Ш', 0xD9: 'Щ', 0xDA: 'Ъ',
+                0xDB: 'Ы', 0xDC: 'Ь', 0xDD: 'Э', 0xDE: 'Ю', 0xDF: 'Я',
+                0xE0: 'а', 0xE1: 'б', 0xE2: 'в', 0xE3: 'г', 0xE4: 'д', 0xE5: 'е', 0xB8: 'ё',
+                0xE6: 'ж', 0xE7: 'з', 0xE8: 'и', 0xE9: 'й', 0xEA: 'к', 0xEB: 'л', 0xEC: 'м',
+                0xED: 'н', 0xEE: 'о', 0xEF: 'п', 0xF0: 'р', 0xF1: 'с', 0xF2: 'т', 0xF3: 'у',
+                0xF4: 'ф', 0xF5: 'х', 0xF6: 'ц', 0xF7: 'ч', 0xF8: 'ш', 0xF9: 'щ', 0xFA: 'ъ',
+                0xFB: 'ы', 0xFC: 'ь', 0xFD: 'э', 0xFE: 'ю', 0xFF: 'я'
+            };
+            
+            let text = '';
+            for (let i = 0; i < bytes.length; i++) {
+                const byte = bytes[i];
+                if (win1251Reverse[byte]) {
+                    text += win1251Reverse[byte];
+                } else if (byte < 128) {
+                    text += String.fromCharCode(byte);
+                } else {
+                    text += '?';
+                }
+            }
+            
+            return text;
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            
+            // Очищаем таблицу
+            document.getElementById('tableBody').innerHTML = '';
+            rowCounter = 1;
+            
+            // Пропускаем заголовок
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(';');
+                
+                if (values.length >= 8) {
+                    const data = {
+                        num: values[0] || rowCounter,
+                        name: values[1] || '',
+                        inn: values[2] || '',
+                        pointName: values[3] || '',
+                        address: values[4] || '',
+                        lat: values[5] || '',
+                        lon: values[6] || '',
+                        phone: values[7] || '',
+                        mon_start: values[8] || '',
+                        mon_end: values[9] || '',
+                        tue_start: values[10] || '',
+                        tue_end: values[11] || '',
+                        wed_start: values[12] || '',
+                        wed_end: values[13] || '',
+                        thu_start: values[14] || '',
+                        thu_end: values[15] || '',
+                        fri_start: values[16] || '',
+                        fri_end: values[17] || '',
+                        sat_start: values[18] || '',
+                        sat_end: values[19] || '',
+                        sun_start: values[20] || '',
+                        sun_end: values[21] || ''
+                    };
+                    
+                    addRow(data);
+                    rowCounter++;
+                }
+            }
+            
+            showNotification(`Загружено ${lines.length - 1} строк`, 'success');
+        }
+
+        function clearAll() {
+            if (confirm('Вы уверены, что хотите удалить все строки?')) {
+                document.getElementById('tableBody').innerHTML = '';
+                rowCounter = 1;
+                showNotification('Все данные удалены', 'success');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Добавляем первую пустую строку при загрузке
+        window.onload = function() {
+            addRow();
+        };
+    </script>
+</body>
+</html>
