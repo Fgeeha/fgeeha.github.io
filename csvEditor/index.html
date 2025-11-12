@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактор CSV файлов</title>
     <link rel="shortcut icon" href="favicon.webp" type="image/webp">
+    <!-- Подключаем библиотеку SheetJS для работы с Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -255,6 +257,12 @@
                     📂 Загрузить CSV
                 </label>
                 <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(event)">
+            </div>
+            <div class="btn btn-primary file-input-wrapper">
+                <label class="btn btn-primary" for="excelFileInput">
+                    📊 Загрузить Excel
+                </label>
+                <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="loadExcel(event)">
             </div>
             <button class="btn btn-danger" onclick="clearAll()">
                 🗑️ Очистить всё
@@ -584,6 +592,83 @@
                 parseCSV(text);
             };
             reader.readAsArrayBuffer(file);
+        }
+
+        function loadExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // Берем первый лист
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // Конвертируем в JSON
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    if (jsonData.length === 0) {
+                        showNotification('Файл Excel пуст', 'error');
+                        return;
+                    }
+                    
+                    parseExcelData(jsonData);
+                    showNotification(`Загружено ${jsonData.length - 1} строк из Excel`, 'success');
+                    
+                } catch (error) {
+                    console.error('Ошибка при загрузке Excel:', error);
+                    showNotification('Ошибка при загрузке Excel файла', 'error');
+                }
+            };
+            reader.onerror = function() {
+                showNotification('Ошибка чтения файла', 'error');
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parseExcelData(jsonData) {
+            // Очищаем таблицу
+            document.getElementById('tableBody').innerHTML = '';
+            rowCounter = 1;
+            
+            // Пропускаем заголовок (первую строку)
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                
+                if (row.length >= 8) {
+                    const data = {
+                        num: row[0] || rowCounter,
+                        name: row[1] || '',
+                        inn: row[2] || '',
+                        pointName: row[3] || '',
+                        address: row[4] || '',
+                        lat: row[5] || '',
+                        lon: row[6] || '',
+                        phone: row[7] || '',
+                        mon_start: row[8] || '',
+                        mon_end: row[9] || '',
+                        tue_start: row[10] || '',
+                        tue_end: row[11] || '',
+                        wed_start: row[12] || '',
+                        wed_end: row[13] || '',
+                        thu_start: row[14] || '',
+                        thu_end: row[15] || '',
+                        fri_start: row[16] || '',
+                        fri_end: row[17] || '',
+                        sat_start: row[18] || '',
+                        sat_end: row[19] || '',
+                        sun_start: row[20] || '',
+                        sun_end: row[21] || ''
+                    };
+                    
+                    addRow(data);
+                    rowCounter++;
+                }
+            }
         }
 
         function convertFromWindows1251(bytes) {
