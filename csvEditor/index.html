@@ -343,6 +343,12 @@
             <button class="btn btn-success" onclick="downloadCSV()">
                 💾 Скачать CSV
             </button>
+            <button class="btn btn-primary" onclick="downloadTemplateCSV()">
+                📄 Скачать шаблон CSV
+            </button>
+            <button class="btn btn-success" onclick="downloadExcel()">
+                📊 Скачать Excel
+            </button>
             <div class="btn btn-primary file-input-wrapper">
                 <label class="btn btn-primary" for="fileInput">
                     📂 Загрузить CSV
@@ -409,10 +415,22 @@
     <script>
         let rowCounter = 1;
 
+        const CSV_HEADERS = [
+            '№', 'Наименование', 'ИНН', 'Название торговой точки', 'Адрес торговой точки',
+            'Широта', 'Долгота', 'Контакты торговой точки',
+            'Время начала работы в понедельник', 'Время окончания работы в понедельник',
+            'Время начала работы во вторник', 'Время окончания работы во вторник',
+            'Время начала работы в среду', 'Время окончания работы в среду',
+            'Время начала работы в четверг', 'Время окончания работы в четверг',
+            'Время начала работы в пятницу', 'Время окончания работы в пятницу',
+            'Время начала работы в субботу', 'Время окончания работы в субботу',
+            'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
+        ];
+
         function addRow(data = null) {
             const tbody = document.getElementById('tableBody');
             const row = tbody.insertRow();
-            
+
             const defaultData = data || {
                 num: rowCounter++,
                 name: '',
@@ -469,7 +487,7 @@
         function validateCoordinate(input) {
             let value = input.value.replace(',', '.');
             value = value.replace(/[^\d.-]/g, '');
-            
+
             const parts = value.split('.');
             if (parts.length === 2) {
                 if (parts[1].length > 6) {
@@ -477,9 +495,9 @@
                     value = parts.join('.');
                 }
             }
-            
+
             input.value = value;
-            
+
             if (value && parts.length === 2 && parts[1].length === 6) {
                 input.classList.remove('error');
             } else if (value && parts.length === 2) {
@@ -489,16 +507,16 @@
 
         function formatPhone(input) {
             let value = input.value.replace(/\D/g, '');
-            
+
             if (value.length > 0) {
                 if (value[0] === '7' || value[0] === '8') {
                     value = '7' + value.substring(1);
                 }
-                
+
                 if (value.length > 11) {
                     value = value.substring(0, 11);
                 }
-                
+
                 if (value.length >= 1) {
                     let formatted = '+7';
                     if (value.length > 1) formatted += value.substring(1, 4);
@@ -512,17 +530,17 @@
 
         function formatTime(input) {
             let value = input.value.replace(/\D/g, '');
-            
+
             if (value.length > 4) {
                 value = value.substring(0, 4);
             }
-            
+
             if (value.length >= 3) {
                 value = value.substring(0, 2) + ':' + value.substring(2, 4);
             }
-            
+
             input.value = value;
-            
+
             if (value.length === 5) {
                 const [hours, minutes] = value.split(':').map(Number);
                 if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
@@ -536,11 +554,11 @@
         function getRowData(row) {
             const inputs = row.querySelectorAll('input');
             const data = [row.cells[0].textContent];
-            
+
             for (let i = 0; i < inputs.length; i++) {
                 data.push(inputs[i].value);
             }
-            
+
             return data;
         }
 
@@ -555,19 +573,19 @@
 
         function isRowValid(data) {
             if (isRowEmpty(data)) return true;
-            
+
             for (let i = 1; i < 8; i++) {
                 if (!data[i] || data[i].trim() === '') {
                     return false;
                 }
             }
-            
+
             const lat = data[5];
             const lon = data[6];
-            
+
             if (lat && !lat.match(/^-?\d+\.\d{6}$/)) return false;
             if (lon && !lon.match(/^-?\d+\.\d{6}$/)) return false;
-            
+
             return true;
         }
 
@@ -576,7 +594,7 @@
         function validateCSVFile(text) {
             const errors = [];
             const warnings = [];
-            
+
             // Проверка 1: Файл не пустой
             if (!text || text.trim().length === 0) {
                 errors.push({
@@ -599,7 +617,7 @@
 
             // Проверка 3: Структура файла
             const lines = text.split('\n').filter(line => line.trim());
-            
+
             if (lines.length < 2) {
                 errors.push({
                     type: 'structure',
@@ -612,7 +630,7 @@
             // Проверка 4: Количество колонок в заголовке
             const headerColumns = lines[0].split(detectedDelimiter || ';').length;
             const expectedColumns = 22;
-            
+
             if (headerColumns < expectedColumns) {
                 errors.push({
                     type: 'columns',
@@ -660,7 +678,7 @@
             // Находим разделитель с максимальным количеством
             let maxCount = 0;
             let detectedDelimiter = ';';
-            
+
             for (let delimiter in counts) {
                 if (counts[delimiter] > maxCount) {
                     maxCount = counts[delimiter];
@@ -771,7 +789,7 @@
         function showValidationErrors(validationResult) {
             const modal = document.getElementById('errorModal');
             const content = document.getElementById('errorContent');
-            
+
             let html = '';
 
             if (validationResult.errors.length > 0) {
@@ -840,7 +858,7 @@
             }
 
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 try {
                     const arrayBuffer = e.target.result;
@@ -865,12 +883,12 @@
                     // Парсим файл
                     parseCSV(text, validationResult.delimiter);
                     showNotification('CSV файл успешно загружен', 'success');
-                    
+
                 } catch (error) {
                     console.error('Ошибка при загрузке CSV:', error);
                     showNotification('Ошибка при чтении файла: ' + error.message, 'error');
                 }
-                
+
                 event.target.value = '';
             };
 
@@ -891,7 +909,7 @@
             // Проверка расширения файла
             const validExtensions = ['.xlsx', '.xls'];
             const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-            
+
             if (!validExtensions.includes(fileExtension)) {
                 showNotification('Ошибка: файл должен иметь расширение .xlsx или .xls', 'error');
                 event.target.value = '';
@@ -907,12 +925,12 @@
             }
 
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
-                    
+
                     if (workbook.SheetNames.length === 0) {
                         showNotification('Ошибка: файл Excel не содержит листов', 'error');
                         event.target.value = '';
@@ -921,9 +939,9 @@
 
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    
+
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1, defval: ''});
-                    
+
                     if (jsonData.length === 0) {
                         showNotification('Файл Excel пуст', 'error');
                         event.target.value = '';
@@ -946,12 +964,12 @@
 
                     parseExcelData(jsonData);
                     showNotification(`Загружено ${jsonData.length - 1} строк из Excel`, 'success');
-                    
+
                 } catch (error) {
                     console.error('Ошибка при загрузке Excel:', error);
                     showNotification('Ошибка при загрузке Excel файла: ' + error.message, 'error');
                 }
-                
+
                 event.target.value = '';
             };
 
@@ -966,10 +984,10 @@
         function parseExcelData(jsonData) {
             document.getElementById('tableBody').innerHTML = '';
             rowCounter = 1;
-            
+
             for (let i = 1; i < jsonData.length; i++) {
                 const row = jsonData[i];
-                
+
                 if (row.length >= 8) {
                     const data = {
                         num: row[0] || rowCounter,
@@ -995,7 +1013,7 @@
                         sun_start: row[20] || '',
                         sun_end: row[21] || ''
                     };
-                    
+
                     addRow(data);
                     rowCounter++;
                 }
@@ -1013,9 +1031,17 @@
                 0xE6: 'ж', 0xE7: 'з', 0xE8: 'и', 0xE9: 'й', 0xEA: 'к', 0xEB: 'л', 0xEC: 'м',
                 0xED: 'н', 0xEE: 'о', 0xEF: 'п', 0xF0: 'р', 0xF1: 'с', 0xF2: 'т', 0xF3: 'у',
                 0xF4: 'ф', 0xF5: 'х', 0xF6: 'ц', 0xF7: 'ч', 0xF8: 'ш', 0xF9: 'щ', 0xFA: 'ъ',
-                0xFB: 'ы', 0xFC: 'ь', 0xFD: 'э', 0xFE: 'ю', 0xFF: 'я', 0xB9: '№'
+                0xFB: 'ы', 0xFC: 'ь', 0xFD: 'э', 0xFE: 'ю', 0xFF: 'я', 0xB9: '№',
+                // Дополнительные символы пунктуации и кавычек
+                0xAB: '«', 0xBB: '»',
+                0x96: '–', 0x97: '—',
+                0x85: '…',
+                0x91: '‘', 0x92: '’', 0x93: '“', 0x94: '”',
+                0x95: '•',
+                0x8B: '‹', 0x9B: '›',
+                0xA0: '\u00A0'
             };
-            
+
             let text = '';
             for (let i = 0; i < bytes.length; i++) {
                 const byte = bytes[i];
@@ -1027,19 +1053,19 @@
                     text += '?';
                 }
             }
-            
+
             return text;
         }
 
         function parseCSV(text, delimiter = ';') {
             const lines = text.split('\n').filter(line => line.trim());
-            
+
             document.getElementById('tableBody').innerHTML = '';
             rowCounter = 1;
-            
+
             for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(delimiter);
-                
+
                 if (values.length >= 8) {
                     const data = {
                         num: values[0] || rowCounter,
@@ -1065,45 +1091,33 @@
                         sun_start: values[20] || '',
                         sun_end: values[21] || ''
                     };
-                    
+
                     addRow(data);
                     rowCounter++;
                 }
             }
         }
 
-        // ==================== СКАЧИВАНИЕ CSV ====================
+        // ==================== СКАЧИВАНИЕ CSV/EXCEL ====================
 
         function downloadCSV() {
             const table = document.getElementById('dataTable');
             const rows = table.querySelectorAll('tbody tr');
-            
+
             if (rows.length === 0) {
                 showNotification('Нет данных для сохранения', 'error');
                 return;
             }
-            
+
             let csvContent = '';
-            
-            const headers = [
-                '№', 'Наименование', 'ИНН', 'Название торговой точки', 'Адрес торговой точки',
-                'Широта', 'Долгота', 'Контакты торговой точки',
-                'Время начала работы в понедельник', 'Время окончания работы в понедельник',
-                'Время начала работы во вторник', 'Время окончания работы во вторник',
-                'Время начала работы в среду', 'Время окончания работы в среду',
-                'Время начала работы в четверг', 'Время окончания работы в четверг',
-                'Время начала работы в пятницу', 'Время окончания работы в пятницу',
-                'Время начала работы в субботу', 'Время окончания работы в субботу',
-                'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
-            ];
-            csvContent += headers.join(';') + '\n';
-            
+            csvContent += CSV_HEADERS.join(';') + '\n';
+
             let validRowCount = 0;
             let invalidRows = [];
-            
+
             rows.forEach((row, index) => {
                 const rowData = getRowData(row);
-                
+
                 if (!isRowEmpty(rowData)) {
                     if (!isRowValid(rowData)) {
                         invalidRows.push(index + 1);
@@ -1113,21 +1127,21 @@
                     validRowCount++;
                 }
             });
-            
+
             if (invalidRows.length > 0) {
                 showNotification(`Ошибка: строки ${invalidRows.join(', ')} заполнены некорректно`, 'error');
                 return;
             }
-            
+
             if (validRowCount === 0) {
                 showNotification('Нет заполненных строк для сохранения', 'error');
                 return;
             }
-            
-            const blob = new Blob([convertToWindows1251(csvContent)], { 
-                type: 'text/csv;charset=windows-1251' 
+
+            const blob = new Blob([convertToWindows1251(csvContent)], {
+                type: 'text/csv;charset=windows-1251'
             });
-            
+
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1136,8 +1150,96 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             showNotification(`CSV файл успешно создан (${validRowCount} строк)`, 'success');
+        }
+
+        function downloadTemplateCSV() {
+            let csvContent = '';
+            csvContent += CSV_HEADERS.join(';') + '\n';
+
+            // Пример строки-шаблона (можно удалить, если нужен только заголовок)
+            const sampleRow = [
+                '1',
+                'ООО "Компания"',
+                '1234567890',
+                'Магазин Центральный',
+                'г. Город, ул. Улица, д. 1',
+                '55.751244',
+                '37.618423',
+                '+79001234567',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '10:00', '20:00',
+                '10:00', '20:00'
+            ];
+            csvContent += sampleRow.join(';') + '\n';
+
+            const blob = new Blob([convertToWindows1251(csvContent)], {
+                type: 'text/csv;charset=windows-1251'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'template_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('Шаблон CSV успешно скачан', 'success');
+        }
+
+        function downloadExcel() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tbody tr');
+
+            if (rows.length === 0) {
+                showNotification('Нет данных для сохранения', 'error');
+                return;
+            }
+
+            const data = [];
+            data.push(CSV_HEADERS);
+
+            let validRowCount = 0;
+            let invalidRows = [];
+
+            rows.forEach((row, index) => {
+                const rowData = getRowData(row);
+
+                if (!isRowEmpty(rowData)) {
+                    if (!isRowValid(rowData)) {
+                        invalidRows.push(index + 1);
+                        return;
+                    }
+                    data.push(rowData);
+                    validRowCount++;
+                }
+            });
+
+            if (invalidRows.length > 0) {
+                showNotification(`Ошибка: строки ${invalidRows.join(', ')} заполнены некорректно`, 'error');
+                return;
+            }
+
+            if (validRowCount === 0) {
+                showNotification('Нет заполненных строк для сохранения', 'error');
+                return;
+            }
+
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Данные');
+
+            const fileName = 'data_' + new Date().toISOString().split('T')[0] + '.xlsx';
+            XLSX.writeFile(workbook, fileName);
+
+            showNotification(`Excel файл успешно создан (${validRowCount} строк)`, 'success');
         }
 
         function convertToWindows1251(text) {
@@ -1152,11 +1254,18 @@
                 'н': 0xED, 'о': 0xEE, 'п': 0xEF, 'р': 0xF0, 'с': 0xF1, 'т': 0xF2, 'у': 0xF3,
                 'ф': 0xF4, 'х': 0xF5, 'ц': 0xF6, 'ч': 0xF7, 'ш': 0xF8, 'щ': 0xF9, 'ъ': 0xFA,
                 'ы': 0xFB, 'ь': 0xFC, 'э': 0xFD, 'ю': 0xFE, 'я': 0xFF,
-                '№': 0xB9
+                '№': 0xB9,
+                '«': 0xAB, '»': 0xBB,
+                '–': 0x96, '—': 0x97,
+                '…': 0x85,
+                '‘': 0x91, '’': 0x92, '“': 0x93, '”': 0x94,
+                '•': 0x95,
+                '‹': 0x8B, '›': 0x9B,
+                '\u00A0': 0xA0
             };
-            
+
             const bytes = new Uint8Array(text.length);
-            
+
             for (let i = 0; i < text.length; i++) {
                 const char = text.charAt(i);
                 if (win1251[char]) {
@@ -1164,7 +1273,7 @@
                 } else if (char.charCodeAt(0) < 128) {
                     bytes[i] = char.charCodeAt(0);
                 } else {
-                    bytes[i] = 0x3F;
+                    bytes[i] = 0x3F; // '?'
                 }
             }
             
