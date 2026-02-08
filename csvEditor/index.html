@@ -25,336 +25,16 @@
         <!-- /Yandex.Metrika counter -->
     <!-- Подключаем библиотеку SheetJS для работы с Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-        }
-
-        h1 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-            color: white;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(235, 51, 73, 0.4);
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            z-index: 1;
-        }
-
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 1;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        th {
-            padding: 15px 10px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            min-width: 150px;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #e0e0e0;
-            min-width: 150px;
-        }
-
-        tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        input[type="text"],
-        input[type="tel"] {
-            width: 100%;
-            min-width: 200px;
-            padding: 8px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="tel"]:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        input.error {
-            border-color: #eb3349;
-        }
-
-        .coord-input {
-            width: 140px;
-            min-width: 140px;
-        }
-
-        .time-input {
-            width: 90px;
-            min-width: 90px;
-        }
-
-        .narrow-input {
-            width: 130px;
-            min-width: 130px;
-        }
-
-        .wide-input {
-            width: 100%;
-            min-width: 300px;
-        }
-
-        .delete-btn {
-            background: #eb3349;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #d62839;
-            transform: scale(1.05);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-            max-width: 400px;
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        }
-
-        .notification.warning {
-            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .row-number {
-            font-weight: 600;
-            color: #667eea;
-            text-align: center;
-        }
-
-        /* Модальное окно для детальных ошибок */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 80%;
-            max-width: 600px;
-            max-height: 70vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .modal-header h2 {
-            color: #eb3349;
-            margin: 0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.3s;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        .error-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .error-item {
-            padding: 12px;
-            margin-bottom: 10px;
-            background: #fff5f5;
-            border-left: 4px solid #eb3349;
-            border-radius: 5px;
-        }
-
-        .error-item strong {
-            color: #eb3349;
-        }
-
-        .warning-item {
-            padding: 12px;
-            margin-bottom: 10px;
-            background: #fffbf0;
-            border-left: 4px solid #f2994a;
-            border-radius: 5px;
-        }
-
-        .warning-item strong {
-            color: #f2994a;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>📊 Редактор CSV файлов</h1>
+        <h1><a href="https://fgeeha.github.io/" style="text-decoration: none">📊</a> Редактор CSV файлов</h1>
         
         <div class="controls">
+
+    
+
             <button class="btn btn-primary" onclick="addRow()">
                 ➕ Добавить строку
             </button>
@@ -382,6 +62,14 @@
             <button class="btn btn-danger" onclick="clearAll()">
                 🗑️ Очистить всё
             </button>
+
+            <div class="time-sep-control" style="display:inline-flex;align-items:center;gap:8px;margin-left:10px;">
+                <span style="font-weight:600;">Разделитель времени:</span>
+                <select id="timeSeparatorSelect" class="btn btn-primary" style="padding:8px 10px;" onchange="setTimeSeparator(this.value)">
+                    <option value=":" selected>:</option>
+                    <option value=".">.</option>
+                </select>
+            </div>
         </div>
 
         <div class="table-wrapper">
@@ -445,7 +133,72 @@
             'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
         ];
 
-        function addRow(data = null) {
+        
+
+let TIME_SEPARATOR = ':'; // по умолчанию
+
+function loadTimeSeparatorFromStorage() {
+    const saved = localStorage.getItem('time_separator');
+    if (saved === ':' || saved === '.') {
+        TIME_SEPARATOR = saved;
+    }
+}
+
+function setTimeSeparator(sep) {
+    if (sep !== ':' && sep !== '.') return;
+    TIME_SEPARATOR = sep;
+    localStorage.setItem('time_separator', sep);
+
+    // обновим селект (если вызвали не из него)
+    const sel = document.getElementById('timeSeparatorSelect');
+    if (sel) sel.value = sep;
+
+    // переформатируем уже введённые времена в таблице
+    document.querySelectorAll('input.time-input').forEach((input) => {
+        normalizeTimeInput(input);
+    });
+
+    showNotification(`Разделитель времени установлен: "${sep}"`, 'success');
+}
+
+function normalizeTimeInput(input) {
+    // допускаем ввод и с ":" и с ".", но нормализуем к текущему TIME_SEPARATOR
+    let value = String(input.value || '').trim();
+
+    // вытащим только цифры
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+
+    if (digits.length === 0) {
+        input.value = '';
+        input.classList.remove('error');
+        return;
+    }
+
+    // если ввели 1-2 цифры — это часы (пока без минут)
+    if (digits.length <= 2) {
+        input.value = digits;
+        input.classList.remove('error');
+        return;
+    }
+
+    // 3-4 цифры: HH + MM
+    const hh = digits.slice(0, 2);
+    const mm = digits.slice(2, 4);
+    input.value = `${hh}${TIME_SEPARATOR}${mm}`;
+
+    // валидация
+    if (input.value.length === 5) {
+        const hours = Number(hh);
+        const minutes = Number(mm);
+        if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+            input.classList.remove('error');
+        } else {
+            input.classList.add('error');
+        }
+    }
+}
+
+function addRow(data = null) {
             const tbody = document.getElementById('tableBody');
             const row = tbody.insertRow();
 
@@ -547,27 +300,12 @@
         }
 
         function formatTime(input) {
-            let value = input.value.replace(/\D/g, '');
+    // Разрешаем пользователю вводить с ":" или ".", но приводим к выбранному разделителю
+    normalizeTimeInput(input);
+}
+            
 
-            if (value.length > 4) {
-                value = value.substring(0, 4);
-            }
-
-            if (value.length >= 3) {
-                value = value.substring(0, 2) + ':' + value.substring(2, 4);
-            }
-
-            input.value = value;
-
-            if (value.length === 5) {
-                const [hours, minutes] = value.split(':').map(Number);
-                if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
-                    input.classList.remove('error');
-                } else {
-                    input.classList.add('error');
-                }
-            }
-        }
+        
 
         function getRowData(row) {
             const inputs = row.querySelectorAll('input');
@@ -1318,8 +1056,16 @@
         }
 
         window.onload = function() {
-            addRow();
-        };
-    </script>
+    loadTimeSeparatorFromStorage();
+
+    const sel = document.getElementById('timeSeparatorSelect');
+    if (sel) sel.value = TIME_SEPARATOR;
+
+    addRow();
+
+    // на всякий случай нормализуем времена в первой строке (если будут дефолты)
+    document.querySelectorAll('input.time-input').forEach(normalizeTimeInput);
+};
+</script>
 </body>
 </html>
