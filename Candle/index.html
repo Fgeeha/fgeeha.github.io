@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Свечка на удачу</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="scene" id="scene">
+
+    <!-- Заголовок -->
+    <h1 class="title">Свечка на удачу</h1>
+
+    <!-- Контейнер свечи -->
+    <div class="candle-wrapper" id="candleWrapper">
+
+      <!-- Пламя (видно только в зажжённом состоянии) -->
+      <div class="flame-group">
+        <div class="glow"></div>
+        <div class="flame"></div>
+        <div class="flame flame--inner"></div>
+      </div>
+
+      <!-- Фитиль -->
+      <div class="wick"></div>
+
+      <!-- Тело свечи -->
+      <div class="candle-body">
+        <div class="candle-drip candle-drip--1"></div>
+        <div class="candle-drip candle-drip--2"></div>
+      </div>
+
+      <!-- Подсвечник -->
+      <div class="holder"></div>
+    </div>
+
+    <!-- Кнопка -->
+    <button class="btn" id="lightBtn">Поставить свечку</button>
+
+    <!-- Сообщение после зажигания -->
+    <p class="message" id="message">Свечка поставлена. Пусть сегодня тебе повезёт 🍀</p>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
