@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b1a">
+    <meta name="description" content="Furry Roulette — крути рулетку и узнай, какой фурри-персонаж и цвет тебе выпадет!">
+    <meta property="og:title" content="Furry Roulette">
+    <meta property="og:description" content="Интерактивная рулетка фурри-персонажей. Крути и узнай свой результат!">
+    <title>Furry Roulette</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <!-- Заголовок -->
+        <header class="header">
+            <h1 class="title">Furry Roulette</h1>
+            <p class="subtitle">Крути рулетку — узнай своего фурри-персонажа!</p>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main">
+            <!-- Рулетка -->
+            <section class="wheel-section" aria-label="Рулетка">
+                <div class="wheel-wrapper">
+                    <div class="pointer" aria-hidden="true"></div>
+                    <div class="wheel-outer-ring" aria-hidden="true"></div>
+                    <div class="wheel-inner" id="wheel-inner">
+                        <svg id="wheel-svg"
+                             viewBox="0 0 400 400"
+                             width="100%"
+                             height="100%"
+                             aria-label="Колесо рулетки">
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Кнопка -->
+            <button id="spin-btn" class="spin-button" type="button" aria-label="Крутить рулетку">
+                <span class="spin-button__text">Крутить!</span>
+            </button>
+
+            <!-- Результат -->
+            <section id="result" class="result" aria-live="polite" aria-atomic="true">
+                <div class="result-card" id="result-card">
+                    <div class="result-icon" aria-hidden="true">&#x1F43E;</div>
+                    <h2 class="result-label">Твой персонаж:</h2>
+                    <p class="result-name" id="result-name"></p>
+                    <div class="result-divider"></div>
+                    <h3 class="result-label">Цвет:</h3>
+                    <div class="result-color" id="result-color">
+                        <span class="color-swatch" id="color-swatch"></span>
+                        <span class="color-name" id="color-name"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Подвал -->
+        <footer class="footer">
+            <p>Furry Roulette &copy; <script>document.write(new Date().getFullYear())</script></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
