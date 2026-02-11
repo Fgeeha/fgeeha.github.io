@@ -139,7 +139,7 @@
 
   // ===== Building charset =====
   const similar = new Set('oO0iIl1B8S5Z2'.split('')); // can tweak
-  const ambiguous = new Set('{}[]()/\\\'"`~,;:.<>|'.split(''));
+  const ambiguous = new Set('{}[]()/\\\'"`~,;:.<>|^'.split(''));
   function buildSets(){
     const sets = [];
     const useL = $('#chk-l').checked;
