@@ -249,8 +249,21 @@ main{
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
-p, h1, h2, h3{
+p, h1, h2, h3, h4{
 	opacity: 1;
+}
+
+.greeting {
+	font-size: 1.2rem;
+	margin-bottom: 0;
+	color: #666;
+}
+
+.section-desc {
+	color: #777;
+	font-size: 0.95rem;
+	margin-top: -0.3rem;
+	margin-bottom: 0.8rem;
 }
 
 footer {
@@ -276,7 +289,7 @@ li {
 
 .project-card .card-title {
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
 }
 
 .project-card .card-text {

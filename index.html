@@ -29,6 +29,7 @@
       <meta name="twitter:description" content="Backend, AI/ML, DevOps. Django, FastAPI, RAG, LangChain, Docker, Prometheus. 48+ open-source projects.">
       <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/33605615">
 
+      <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
       <link rel="shortcut icon" href="images/favicon.webp" type="image/webp">
 
       <!-- JSON-LD Structured Data -->
@@ -115,6 +116,10 @@
                           <li><a class="dropdown-item" href="mailto:kolesnikov.nikitavlg@gmail.com">Gmail</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="https://github.com/Fgeeha" rel="noopener noreferrer" target="_blank">GitHub</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="https://gitverse.ru/nkolesnikov" rel="noopener noreferrer" target="_blank">GitVerse</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="https://www.linkedin.com/in/nikita-kolesnikov-337b78323/" rel="noopener noreferrer" target="_blank">LinkedIn</a></li>
                         </ul>
                       </li>
                     </ul>
@@ -130,10 +135,12 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-8 col-md-10 col-12">
                         <article class="main">
-                            <h1 id="heading">Привет!</h1>
-                            <p id="informationAboutMe">Я <b>Колесников Никита</b>, разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. 48+ открытых проектов на GitHub.</p>
+                            <p id="heading" class="greeting">Привет!</p>
+                            <h1 id="myName">Колесников Никита <span class="text-muted">(FgeeHa)</span></h1>
+                            <p id="informationAboutMe">Разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. 48+ открытых проектов на GitHub.</p>
 
                             <h2 id="skillsAndTechnologies">Навыки и технологии</h2>
+                            <p class="section-desc" id="skillsDesc">Основные технологии и инструменты, с которыми я работаю</p>
                             <ul>
                                 <li><hr class="list-group-item"></li>
                                 <li class="list-group-item"><p id="skillone">&#9989;Языки программирования: <b>Python, Go, PHP</b></p></li>
@@ -152,11 +159,12 @@
                             </ul>
 
                             <h2 id="projectsTitle">Избранные проекты</h2>
+                            <p class="section-desc" id="projectsDesc">Open-source проекты на GitHub и GitVerse</p>
                             <div class="row g-3 mt-1 mb-4" id="projectsContainer">
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">ROoP</h3>
+                                            <h4 class="card-title">ROoP</h4>
                                             <p class="card-text" id="proj_roop">RAG-Ollama-On-Premises -- локальный AI-ассистент с RAG на базе Ollama</p>
                                             <span class="badge bg-primary">Python</span>
                                             <span class="badge bg-success">Django</span>
@@ -171,7 +179,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">XML2HTML Converter</h3>
+                                            <h4 class="card-title">XML2HTML Converter</h4>
                                             <p class="card-text" id="proj_xml2html">Конвертер XML-файлов университетской системы в HTML для сайта</p>
                                             <span class="badge bg-primary">Python</span>
                                         </div>
@@ -183,7 +191,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">rocm-smi-exporter</h3>
+                                            <h4 class="card-title">rocm-smi-exporter</h4>
                                             <p class="card-text" id="proj_rocm">Prometheus-экспортер метрик AMD GPU через rocm-smi (температура, мощность, VRAM)</p>
                                             <span class="badge bg-primary">Python</span>
                                             <span class="badge bg-secondary">Prometheus</span>
@@ -197,7 +205,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">Fast-Chat-Auth</h3>
+                                            <h4 class="card-title">Fast-Chat-Auth</h4>
                                             <p class="card-text" id="proj_fastchat">Чат-приложение на FastAPI с регистрацией и JWT-аутентификацией</p>
                                             <span class="badge bg-success">FastAPI</span>
                                             <span class="badge bg-secondary">JWT</span>
@@ -210,7 +218,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">Green Sentry</h3>
+                                            <h4 class="card-title">Green Sentry</h4>
                                             <p class="card-text" id="proj_greensentry">Мониторинг растений с использованием Python</p>
                                             <span class="badge bg-primary">Python</span>
                                             <span class="badge bg-success">FastAPI</span>
@@ -223,7 +231,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">PHPNewsHub</h3>
+                                            <h4 class="card-title">PHPNewsHub</h4>
                                             <p class="card-text" id="proj_phpnews">Система управления новостями на PHP с PostgreSQL</p>
                                             <span class="badge bg-warning text-dark">PHP</span>
                                             <span class="badge bg-secondary">PostgreSQL</span>
@@ -236,7 +244,7 @@
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
-                                            <h3 class="card-title">monitor-dir</h3>
+                                            <h4 class="card-title">monitor-dir</h4>
                                             <p class="card-text" id="proj_monitordir">Мониторинг целостности файлов с Prometheus-метриками, Docker и CI/CD</p>
                                             <span class="badge bg-primary">Python</span>
                                             <span class="badge bg-secondary">Docker</span>
@@ -279,8 +287,10 @@
                     head_nav_lang: 'ru',
                     head_nav_link: 'Ссылки',
                     heading: 'Привет!',
-                    informationAboutMe: 'Я <b>Колесников Никита</b>, разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. 48+ открытых проектов на GitHub.',
+                    myName: 'Колесников Никита <span class="text-muted">(FgeeHa)</span>',
+                    informationAboutMe: 'Разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. 48+ открытых проектов на GitHub.',
                     skillsAndTechnologies: 'Навыки и технологии',
+                    skillsDesc: 'Основные технологии и инструменты, с которыми я работаю',
                     skillone: '&#9989;Языки программирования: <b>Python, Go, PHP</b>',
                     skilltwo: '&#9989;Backend-фреймворки: <b>Django, FastAPI, Flask, aiogram</b>',
                     skillthree: '&#9989;AI / ML: <b>RAG, LangChain, Ollama, Keras, pandas, numpy</b>',
@@ -289,6 +299,7 @@
                     skillsix: '&#9989;Мониторинг: <b>Prometheus, Grafana</b>',
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter</b>',
                     projectsTitle: 'Избранные проекты',
+                    projectsDesc: 'Open-source проекты на GitHub и GitVerse',
                     proj_roop: 'RAG-Ollama-On-Premises -- локальный AI-ассистент с RAG на базе Ollama',
                     proj_xml2html: 'Конвертер XML-файлов университетской системы в HTML для сайта',
                     proj_rocm: 'Prometheus-экспортер метрик AMD GPU через rocm-smi (температура, мощность, VRAM)',
@@ -307,8 +318,10 @@
                     head_nav_lang: 'en',
                     head_nav_link: 'Links',
                     heading: 'Hi there!',
-                    informationAboutMe: "I'm <b>Nikita Kolesnikov</b>, a developer experienced in <b>backend development</b>, <b>AI/ML</b> and <b>DevOps</b>. I work with <b>Python</b>, <b>Go</b> and <b>PHP</b>. 48+ open-source projects on GitHub.",
+                    myName: 'Nikita Kolesnikov <span class="text-muted">(FgeeHa)</span>',
+                    informationAboutMe: "A developer experienced in <b>backend development</b>, <b>AI/ML</b> and <b>DevOps</b>. I work with <b>Python</b>, <b>Go</b> and <b>PHP</b>. 48+ open-source projects on GitHub.",
                     skillsAndTechnologies: 'Skills & Technologies',
+                    skillsDesc: 'Core technologies and tools I work with',
                     skillone: '&#9989;Programming Languages: <b>Python, Go, PHP</b>',
                     skilltwo: '&#9989;Backend Frameworks: <b>Django, FastAPI, Flask, aiogram</b>',
                     skillthree: '&#9989;AI / ML: <b>RAG, LangChain, Ollama, Keras, pandas, numpy</b>',
@@ -317,6 +330,7 @@
                     skillsix: '&#9989;Monitoring: <b>Prometheus, Grafana</b>',
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter</b>',
                     projectsTitle: 'Featured Projects',
+                    projectsDesc: 'Open-source projects on GitHub and GitVerse',
                     proj_roop: 'RAG-Ollama-On-Premises -- local AI assistant with RAG powered by Ollama',
                     proj_xml2html: 'Converts XML files from university systems into HTML for websites',
                     proj_rocm: 'Prometheus exporter for AMD GPU metrics via rocm-smi (temperature, power, VRAM)',
@@ -342,10 +356,11 @@
                 const lang = languages[currentLanguage];
                 const ids = [
                     'head_nav_home', 'head_nav_lang', 'head_nav_link',
-                    'heading', 'informationAboutMe', 'skillsAndTechnologies',
+                    'heading', 'myName', 'informationAboutMe',
+                    'skillsAndTechnologies', 'skillsDesc',
                     'skillone', 'skilltwo', 'skillthree', 'skillfour',
                     'skillfive', 'skillsix', 'skillseven',
-                    'projectsTitle', 'proj_roop', 'proj_xml2html',
+                    'projectsTitle', 'projectsDesc', 'proj_roop', 'proj_xml2html',
                     'proj_rocm', 'proj_fastchat', 'proj_greensentry', 'proj_phpnews', 'proj_monitordir',
                     'allProjectsBtn', 'allProjectsGitverseBtn',
                     'contact', 'content', 'thank'
