@@ -1,0 +1,301 @@
+/* ===== Сброс и базовые стили ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: #0d0d0d;
+  color: #e0d5c1;
+  overflow: hidden;
+}
+
+/* ===== Сцена ===== */
+.scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+
+/* ===== Заголовок ===== */
+.title {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* ===== Обёртка свечи ===== */
+.candle-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== Тело свечи ===== */
+.candle-body {
+  width: 56px;
+  height: 180px;
+  background: linear-gradient(
+    to right,
+    #d4a34a 0%,
+    #f5dfa0 30%,
+    #f7e8b5 50%,
+    #f5dfa0 70%,
+    #c99530 100%
+  );
+  border-radius: 4px 4px 2px 2px;
+  position: relative;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Подтёки воска */
+.candle-drip {
+  position: absolute;
+  top: -4px;
+  width: 14px;
+  height: 22px;
+  background: #f5dfa0;
+  border-radius: 0 0 50% 50%;
+}
+
+.candle-drip--1 {
+  left: 8px;
+  height: 18px;
+  width: 12px;
+}
+
+.candle-drip--2 {
+  right: 6px;
+  height: 26px;
+  width: 10px;
+}
+
+/* ===== Фитиль ===== */
+.wick {
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(to top, #3a3a3a, #1a1a1a);
+  border-radius: 1px 1px 0 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Подсвечник ===== */
+.holder {
+  width: 80px;
+  height: 18px;
+  background: linear-gradient(to bottom, #8b7355, #5c4a32);
+  border-radius: 0 0 8px 8px;
+  margin-top: -2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Группа пламени ===== */
+.flame-group {
+  position: relative;
+  width: 40px;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Скрыто по умолчанию */
+  opacity: 0;
+  transform: scale(0);
+  transition: none;
+  pointer-events: none;
+}
+
+/* ===== Пламя (основное) ===== */
+.flame {
+  width: 20px;
+  height: 46px;
+  background: linear-gradient(
+    to top,
+    #ff6a00 0%,
+    #ffaa00 30%,
+    #ffcc33 60%,
+    #ffe680 80%,
+    #ffffffcc 100%
+  );
+  border-radius: 50% 50% 30% 30%;
+  position: absolute;
+  bottom: 0;
+  filter: blur(1px);
+  animation: flicker 0.8s ease-in-out infinite alternate;
+}
+
+/* Внутреннее ядро пламени */
+.flame--inner {
+  width: 10px;
+  height: 30px;
+  background: linear-gradient(
+    to top,
+    #ffc864 0%,
+    #fff5cc 50%,
+    #ffffffee 100%
+  );
+  border-radius: 50% 50% 30% 30%;
+  filter: blur(0.5px);
+  animation: flicker-inner 0.6s ease-in-out infinite alternate;
+}
+
+/* ===== Свечение вокруг пламени ===== */
+.glow {
+  position: absolute;
+  bottom: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 170, 50, 0.35) 0%,
+    rgba(255, 120, 20, 0.1) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+/* ===== Анимации пламени ===== */
+@keyframes flicker {
+  0%   { transform: scaleX(1) scaleY(1) rotate(-1deg); opacity: 1; }
+  25%  { transform: scaleX(0.95) scaleY(1.04) rotate(1deg); }
+  50%  { transform: scaleX(1.02) scaleY(0.96) rotate(-0.5deg); opacity: 0.95; }
+  75%  { transform: scaleX(0.98) scaleY(1.02) rotate(1.5deg); }
+  100% { transform: scaleX(1.01) scaleY(0.98) rotate(-1deg); opacity: 1; }
+}
+
+@keyframes flicker-inner {
+  0%   { transform: scaleX(1) scaleY(1) translateY(0); opacity: 0.9; }
+  50%  { transform: scaleX(0.9) scaleY(1.06) translateY(-2px); opacity: 1; }
+  100% { transform: scaleX(1.05) scaleY(0.95) translateY(1px); opacity: 0.85; }
+}
+
+@keyframes glow-pulse {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+/* ===== Состояние «зажжено» ===== */
+.scene--lit .flame-group {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 1.2s ease-out, transform 0.8s ease-out;
+}
+
+/* Фон комнаты при зажжённой свече */
+.scene--lit {
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(80, 50, 15, 0.3) 0%,
+    rgba(13, 13, 13, 1) 60%
+  );
+  transition: background 2s ease;
+}
+
+/* Заголовок чуть ярче */
+.scene--lit .title {
+  opacity: 1;
+  transition: opacity 1.5s ease;
+}
+
+/* ===== Кнопка ===== */
+.btn {
+  margin-top: 40px;
+  padding: 14px 36px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: #f5dfa0;
+  background: transparent;
+  border: 1px solid rgba(245, 223, 160, 0.4);
+  border-radius: 30px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: border-color 0.4s, color 0.4s, box-shadow 0.4s, opacity 0.6s;
+}
+
+.btn:hover {
+  border-color: rgba(255, 200, 80, 0.7);
+  color: #ffe8a0;
+  box-shadow: 0 0 20px rgba(255, 180, 50, 0.15);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Скрытие кнопки после зажигания */
+.scene--lit .btn {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease 0.5s;
+}
+
+/* ===== Сообщение ===== */
+.message {
+  margin-top: 32px;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  text-align: center;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: none;
+  pointer-events: none;
+}
+
+/* Появление сообщения */
+.scene--lit .message {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.5s ease 1.2s, transform 1s ease 1.2s;
+}
+
+/* ===== Адаптивность ===== */
+@media (max-height: 600px) {
+  .candle-body {
+    height: 120px;
+  }
+
+  .flame {
+    height: 34px;
+    width: 16px;
+  }
+
+  .flame--inner {
+    height: 22px;
+    width: 8px;
+  }
+
+  .title {
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .btn {
+    padding: 12px 28px;
+  }
+}

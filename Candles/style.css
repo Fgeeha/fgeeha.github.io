@@ -1,0 +1,504 @@
+/* ===== RESET & BASE ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-family: Georgia, 'Times New Roman', serif;
+  background: #1a1008;
+  color: #d4a44a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  padding: 2rem 1rem 0.8rem;
+  user-select: none;
+}
+
+.header__verse {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #8a7a4a;
+  line-height: 1.5;
+  max-width: 360px;
+  margin: 0 auto 0.25rem;
+}
+
+.header__verse-source {
+  font-size: 0.75rem;
+  color: #6a5a3a;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.header__title {
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: #e2b94e;
+  text-shadow: 0 0 20px rgba(226, 185, 78, 0.3);
+}
+
+.header__subtitle {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: #9a7a3a;
+  font-style: italic;
+}
+
+/* ===== MAIN ===== */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* ===== TABLE SCENE ===== */
+.table-scene {
+  position: relative;
+  width: 100%;
+}
+
+/* ===== CANDLE TABLE GRID ===== */
+.candle-table {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(180deg, #2a1a0a 0%, #3a2510 50%, #2a1a0a 100%);
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #4a3018;
+  border-bottom: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== TABLE BASE ===== */
+.table-base {
+  height: 18px;
+  background: linear-gradient(180deg, #4a3018, #2a1a0a);
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #4a3018;
+  border-top: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* ===== CANDLE SPOT ===== */
+.spot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* Подставка */
+.spot::after {
+  content: '';
+  width: 22px;
+  height: 6px;
+  background: radial-gradient(ellipse, #5a4020 0%, #3a2810 100%);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover на свободном месте */
+.spot--free:hover::after {
+  background: radial-gradient(ellipse, #7a5a30 0%, #5a4020 100%);
+  box-shadow: 0 0 8px rgba(200, 160, 60, 0.3);
+}
+
+.spot--free:hover {
+  transform: scale(1.05);
+}
+
+.spot--free {
+  cursor: pointer;
+}
+
+.spot:not(.spot--free) {
+  cursor: default;
+}
+
+/* ===== CANDLE BODY ===== */
+.candle {
+  position: absolute;
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease;
+}
+
+.candle--visible {
+  animation: candleAppear 0.8s ease forwards;
+}
+
+@keyframes candleAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Воск */
+.candle__body {
+  width: 10px;
+  height: 40px;
+  background: linear-gradient(90deg, #f5e6c8 0%, #fffdf5 40%, #f0d9a0 100%);
+  border-radius: 2px 2px 0 0;
+  position: relative;
+  transition: height 0.5s linear;
+}
+
+/* Фитиль */
+.candle__wick {
+  width: 2px;
+  height: 7px;
+  background: #3a3a3a;
+  border-radius: 1px 1px 0 0;
+}
+
+/* ===== FLAME ===== */
+.flame-group {
+  position: relative;
+  width: 20px;
+  height: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+.flame-group--active {
+  animation: flameFadeIn 1s 0.5s ease forwards;
+}
+
+@keyframes flameFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Затухание пламени */
+.flame-group--dying {
+  animation: none;
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+.flame {
+  position: absolute;
+  bottom: 0;
+  width: 10px;
+  height: 18px;
+  background: radial-gradient(ellipse at 50% 90%, #ffcc33 0%, #ff9900 40%, #ff6600 70%, transparent 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: flicker 2s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+.flame--inner {
+  width: 5px;
+  height: 12px;
+  background: radial-gradient(ellipse at 50% 85%, #ffffee 0%, #ffee88 50%, transparent 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: flickerInner 1.8s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scaleX(1) scaleY(1) rotate(-1deg);
+  }
+  25% {
+    transform: scaleX(0.95) scaleY(1.04) rotate(1deg);
+  }
+  50% {
+    transform: scaleX(1.03) scaleY(0.97) rotate(-0.5deg);
+  }
+  75% {
+    transform: scaleX(0.97) scaleY(1.02) rotate(1.5deg);
+  }
+  100% {
+    transform: scaleX(1.01) scaleY(0.98) rotate(-1deg);
+  }
+}
+
+@keyframes flickerInner {
+  0% {
+    transform: scaleX(1) scaleY(1) rotate(0.5deg);
+  }
+  33% {
+    transform: scaleX(1.05) scaleY(0.96) rotate(-1deg);
+  }
+  66% {
+    transform: scaleX(0.95) scaleY(1.03) rotate(0.5deg);
+  }
+  100% {
+    transform: scaleX(1.02) scaleY(0.99) rotate(-0.5deg);
+  }
+}
+
+/* ===== GLOW ===== */
+.glow {
+  position: absolute;
+  bottom: -8px;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(255, 180, 50, 0.25) 0%, rgba(255, 150, 30, 0.08) 40%, transparent 70%);
+  border-radius: 50%;
+  animation: glowPulse 3s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* ===== PRE-LIT CANDLES (already burning) ===== */
+.spot--lit .candle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.spot--lit .flame-group {
+  opacity: 1;
+}
+
+/* ===== EXTINGUISHED CANDLE ===== */
+.spot--extinguished .candle {
+  opacity: 0.5;
+}
+
+.spot--extinguished .candle__body {
+  height: 8px !important;
+  background: linear-gradient(90deg, #c8b898 0%, #d8ccaa 40%, #b8a888 100%);
+}
+
+.spot--extinguished .candle__wick {
+  background: #555;
+}
+
+.spot--extinguished .glow {
+  display: none;
+}
+
+/* ===== SMOKE (after extinguishing) ===== */
+.smoke {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  height: 14px;
+  background: linear-gradient(to top, rgba(160, 150, 140, 0.4), transparent);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: smokeRise 2s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes smokeRise {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) translateY(0) scaleX(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(-12px) scaleX(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-24px) scaleX(2);
+  }
+}
+
+/* ===== MESSAGE ===== */
+.message-area {
+  min-height: 3rem;
+  margin-top: 2rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.message-text {
+  font-size: 1rem;
+  font-style: italic;
+  color: #c9a84c;
+  opacity: 0;
+  animation: messageFadeIn 1.5s 0.8s ease forwards;
+  text-shadow: 0 0 12px rgba(200, 160, 60, 0.3);
+}
+
+@keyframes messageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-text--warn {
+  color: #8a6a3a;
+  animation-delay: 0s;
+}
+
+/* Цитата из Писания под сообщением */
+.message-verse {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: #8a7a4a;
+  line-height: 1.6;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  animation: messageFadeIn 1.8s 2s ease forwards;
+  text-shadow: 0 0 8px rgba(160, 130, 50, 0.15);
+}
+
+.message-verse__ref {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  font-style: normal;
+  color: #6a5a3a;
+  letter-spacing: 0.05em;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 2.5rem;
+  padding-bottom: 1.5rem;
+  text-align: center;
+}
+
+.footer__text {
+  font-size: 0.8rem;
+  color: #5a4a2a;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .candle-table {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .spot {
+    height: 85px;
+  }
+
+  .candle__body {
+    width: 8px;
+    height: 32px;
+  }
+
+  .flame {
+    width: 8px;
+    height: 14px;
+  }
+
+  .flame--inner {
+    width: 4px;
+    height: 9px;
+  }
+
+  .candle__wick {
+    height: 5px;
+  }
+
+  .glow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header__title {
+    font-size: 1.4rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.85rem;
+  }
+
+  .header__verse {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .candle-table {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+/* ===== AMBIENT LIGHT ON TABLE ===== */
+.candle-table::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 60px;
+  background: radial-gradient(ellipse, rgba(255, 180, 50, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}

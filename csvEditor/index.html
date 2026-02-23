@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор CSV файлов</title>
+    <link rel="shortcut icon" href="favicon.webp" type="image/webp">
+    <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+    <!-- Подключаем библиотеку SheetJS для работы с Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><a href="https://fgeeha.github.io/" style="text-decoration: none">📊</a> Редактор CSV файлов</h1>
+        
+        <div class="controls">
+
+    
+
+            <button class="btn btn-primary" onclick="addRow()">
+                ➕ Добавить строку
+            </button>
+            <button class="btn btn-success" onclick="downloadCSV()">
+                💾 Скачать CSV
+            </button>
+            <button class="btn btn-primary" onclick="downloadTemplateCSV()">
+                📄 Скачать шаблон CSV
+            </button>
+            <button class="btn btn-success" onclick="downloadExcel()">
+                📊 Скачать Excel
+            </button>
+            <div class="btn btn-primary file-input-wrapper">
+                <label class="btn btn-primary" for="fileInput">
+                    📂 Загрузить CSV
+                </label>
+                <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(event)">
+            </div>
+            <div class="btn btn-primary file-input-wrapper">
+                <label class="btn btn-primary" for="excelFileInput">
+                    📊 Загрузить Excel
+                </label>
+                <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="loadExcel(event)">
+            </div>
+            <button class="btn btn-danger" onclick="clearAll()">
+                🗑️ Очистить всё
+            </button>
+
+            <div class="time-sep-control" style="display:inline-flex;align-items:center;gap:8px;margin-left:10px;">
+                <span style="font-weight:600;">Разделитель времени:</span>
+                <select id="timeSeparatorSelect" class="btn btn-primary" style="padding:8px 10px;" onchange="setTimeSeparator(this.value)">
+                    <option value=":" selected>:</option>
+                    <option value=".">.</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Наименование</th>
+                        <th>ИНН</th>
+                        <th>Название точки</th>
+                        <th>Адрес точки</th>
+                        <th>Широта</th>
+                        <th>Долгота</th>
+                        <th>Телефон</th>
+                        <th>Пн начало</th>
+                        <th>Пн конец</th>
+                        <th>Вт начало</th>
+                        <th>Вт конец</th>
+                        <th>Ср начало</th>
+                        <th>Ср конец</th>
+                        <th>Чт начало</th>
+                        <th>Чт конец</th>
+                        <th>Пт начало</th>
+                        <th>Пт конец</th>
+                        <th>Сб начало</th>
+                        <th>Сб конец</th>
+                        <th>Вс начало</th>
+                        <th>Вс конец</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Модальное окно для отображения ошибок -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚠️ Детали ошибок</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="errorContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 1;
+
+        const CSV_HEADERS = [
+            '№', 'Наименование', 'ИНН', 'Название торговой точки', 'Адрес торговой точки',
+            'Широта', 'Долгота', 'Контакты торговой точки',
+            'Время начала работы в понедельник', 'Время окончания работы в понедельник',
+            'Время начала работы во вторник', 'Время окончания работы во вторник',
+            'Время начала работы в среду', 'Время окончания работы в среду',
+            'Время начала работы в четверг', 'Время окончания работы в четверг',
+            'Время начала работы в пятницу', 'Время окончания работы в пятницу',
+            'Время начала работы в субботу', 'Время окончания работы в субботу',
+            'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
+        ];
+
+        
+
+let TIME_SEPARATOR = ':'; // по умолчанию
+
+function loadTimeSeparatorFromStorage() {
+    const saved = localStorage.getItem('time_separator');
+    if (saved === ':' || saved === '.') {
+        TIME_SEPARATOR = saved;
+    }
+}
+
+function setTimeSeparator(sep) {
+    if (sep !== ':' && sep !== '.') return;
+    TIME_SEPARATOR = sep;
+    localStorage.setItem('time_separator', sep);
+
+    // обновим селект (если вызвали не из него)
+    const sel = document.getElementById('timeSeparatorSelect');
+    if (sel) sel.value = sep;
+
+    // переформатируем уже введённые времена в таблице
+    document.querySelectorAll('input.time-input').forEach((input) => {
+        normalizeTimeInput(input);
+    });
+
+    showNotification(`Разделитель времени установлен: "${sep}"`, 'success');
+}
+
+function normalizeTimeInput(input) {
+    // допускаем ввод и с ":" и с ".", но нормализуем к текущему TIME_SEPARATOR
+    let value = String(input.value || '').trim();
+
+    // вытащим только цифры
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+
+    if (digits.length === 0) {
+        input.value = '';
+        input.classList.remove('error');
+        return;
+    }
+
+    // если ввели 1-2 цифры — это часы (пока без минут)
+    if (digits.length <= 2) {
+        input.value = digits;
+        input.classList.remove('error');
+        return;
+    }
+
+    // 3-4 цифры: HH + MM
+    const hh = digits.slice(0, 2);
+    const mm = digits.slice(2, 4);
+    input.value = `${hh}${TIME_SEPARATOR}${mm}`;
+
+    // валидация
+    if (input.value.length === 5) {
+        const hours = Number(hh);
+        const minutes = Number(mm);
+        if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+            input.classList.remove('error');
+        } else {
+            input.classList.add('error');
+        }
+    }
+}
+
+function addRow(data = null) {
+            const tbody = document.getElementById('tableBody');
+            const row = tbody.insertRow();
+
+            const defaultData = data || {
+                num: rowCounter++,
+                name: '',
+                inn: '',
+                pointName: '',
+                address: '',
+                lat: '',
+                lon: '',
+                phone: '',
+                mon_start: '', mon_end: '',
+                tue_start: '', tue_end: '',
+                wed_start: '', wed_end: '',
+                thu_start: '', thu_end: '',
+                fri_start: '', fri_end: '',
+                sat_start: '', sat_end: '',
+                sun_start: '', sun_end: ''
+            };
+
+            const escapeHtml = (str) => String(str).replace(/"/g, '&quot;');
+
+            row.innerHTML = `
+                <td class="row-number">${defaultData.num}</td>
+                <td><input type="text" class="wide-input" value="${escapeHtml(defaultData.name)}" placeholder="ООО Компания"></td>
+                <td><input type="text" class="narrow-input" value="${escapeHtml(defaultData.inn)}" placeholder="1234567890" maxlength="12"></td>
+                <td><input type="text" class="wide-input" value="${escapeHtml(defaultData.pointName)}" placeholder="Магазин Центральный"></td>
+                <td><input type="text" class="wide-input" value="${escapeHtml(defaultData.address)}" placeholder="г. Город, ул. Улица, д. 1"></td>
+                <td><input type="text" class="coord-input" value="${escapeHtml(defaultData.lat)}" placeholder="55.751244" oninput="validateCoordinate(this)"></td>
+                <td><input type="text" class="coord-input" value="${escapeHtml(defaultData.lon)}" placeholder="37.618423" oninput="validateCoordinate(this)"></td>
+                <td><input type="tel" value="${defaultData.phone}" placeholder="+79091234567" oninput="formatPhone(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.mon_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.mon_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.tue_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.tue_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.wed_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.wed_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.thu_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.thu_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.fri_start}" placeholder="09:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.fri_end}" placeholder="21:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sat_start}" placeholder="10:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sat_end}" placeholder="20:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sun_start}" placeholder="10:00" oninput="formatTime(this)"></td>
+                <td><input type="text" class="time-input" value="${defaultData.sun_end}" placeholder="20:00" oninput="formatTime(this)"></td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">❌</button></td>
+            `;
+        }
+
+        function deleteRow(btn) {
+            const row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            showNotification('Строка удалена', 'success');
+        }
+
+        function validateCoordinate(input) {
+            let value = input.value.replace(',', '.');
+            value = value.replace(/[^\d.-]/g, '');
+
+            const parts = value.split('.');
+            if (parts.length === 2) {
+                if (parts[1].length > 6) {
+                    parts[1] = parts[1].substring(0, 6);
+                    value = parts.join('.');
+                }
+            }
+
+            input.value = value;
+
+            if (value && parts.length === 2 && parts[1].length === 6) {
+                input.classList.remove('error');
+            } else if (value && parts.length === 2) {
+                input.classList.add('error');
+            }
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+
+            if (value.length > 0) {
+                if (value[0] === '7' || value[0] === '8') {
+                    value = '7' + value.substring(1);
+                }
+
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+
+                if (value.length >= 1) {
+                    let formatted = '+7';
+                    if (value.length > 1) formatted += value.substring(1, 4);
+                    if (value.length > 4) formatted += value.substring(4, 7);
+                    if (value.length > 7) formatted += value.substring(7, 9);
+                    if (value.length > 9) formatted += value.substring(9, 11);
+                    input.value = formatted;
+                }
+            }
+        }
+
+        function formatTime(input) {
+    // Разрешаем пользователю вводить с ":" или ".", но приводим к выбранному разделителю
+    normalizeTimeInput(input);
+}
+            
+
+        
+
+        function getRowData(row) {
+            const inputs = row.querySelectorAll('input');
+            const data = [row.cells[0].textContent];
+
+            for (let i = 0; i < inputs.length; i++) {
+                data.push(inputs[i].value);
+            }
+
+            return data;
+        }
+
+        function isRowEmpty(data) {
+            for (let i = 1; i < 8; i++) {
+                if (data[i] && data[i].trim() !== '') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function isRowValid(data) {
+            if (isRowEmpty(data)) return true;
+
+            for (let i = 1; i < 8; i++) {
+                if (!data[i] || data[i].trim() === '') {
+                    return false;
+                }
+            }
+
+            const lat = data[5];
+            const lon = data[6];
+
+            if (lat && !lat.match(/^-?\d+\.\d{6}$/)) return false;
+            if (lon && !lon.match(/^-?\d+\.\d{6}$/)) return false;
+
+            return true;
+        }
+
+        // ==================== ВАЛИДАЦИЯ CSV ФАЙЛОВ ====================
+
+        function validateCSVFile(text) {
+            const errors = [];
+            const warnings = [];
+
+            // Проверка 1: Файл не пустой
+            if (!text || text.trim().length === 0) {
+                errors.push({
+                    type: 'critical',
+                    message: 'Файл пустой',
+                    solution: 'Убедитесь, что файл содержит данные'
+                });
+                return { valid: false, errors, warnings };
+            }
+
+            // Проверка 2: Определение разделителя
+            const detectedDelimiter = detectDelimiter(text);
+            if (detectedDelimiter !== ';') {
+                errors.push({
+                    type: 'delimiter',
+                    message: `Неверный разделитель: найден "${detectedDelimiter}"`,
+                    solution: 'Файл должен использовать точку с запятой (;) как разделитель. Откройте файл в Excel и сохраните как CSV с разделителем ";"'
+                });
+            }
+
+            // Проверка 3: Структура файла
+            const lines = text.split('\n').filter(line => line.trim());
+
+            if (lines.length < 2) {
+                errors.push({
+                    type: 'structure',
+                    message: 'Недостаточно строк в файле',
+                    solution: 'Файл должен содержать минимум заголовок и одну строку данных'
+                });
+                return { valid: false, errors, warnings };
+            }
+
+            // Проверка 4: Количество колонок в заголовке
+            const headerColumns = lines[0].split(detectedDelimiter || ';').length;
+            const expectedColumns = 22;
+
+            if (headerColumns < expectedColumns) {
+                errors.push({
+                    type: 'columns',
+                    message: `Недостаточно колонок: найдено ${headerColumns}, ожидается ${expectedColumns}`,
+                    solution: 'Проверьте, что файл содержит все необходимые колонки: Наименование, ИНН, Название точки, Адрес, Широта, Долгота, Телефон и время работы для всех дней недели'
+                });
+            } else if (headerColumns > expectedColumns) {
+                warnings.push({
+                    message: `Найдено больше колонок (${headerColumns}), чем ожидается (${expectedColumns})`,
+                    solution: 'Лишние колонки будут проигнорированы'
+                });
+            }
+
+            // Проверка 5: Проверка кодировки (косвенная)
+            if (hasEncodingIssues(text)) {
+                errors.push({
+                    type: 'encoding',
+                    message: 'Обнаружены проблемы с кодировкой',
+                    solution: 'Файл должен быть в кодировке Windows-1251. Попробуйте пересохранить файл в Excel с правильной кодировкой'
+                });
+            }
+
+            // Проверка 6: Валидация строк данных
+            const dataValidation = validateDataRows(lines.slice(1), detectedDelimiter || ';');
+            errors.push(...dataValidation.errors);
+            warnings.push(...dataValidation.warnings);
+
+            return {
+                valid: errors.length === 0,
+                errors,
+                warnings,
+                delimiter: detectedDelimiter
+            };
+        }
+
+        function detectDelimiter(text) {
+            const firstLine = text.split('\n')[0];
+            const delimiters = [';', ',', '\t', '|'];
+            const counts = {};
+
+            delimiters.forEach(delimiter => {
+                counts[delimiter] = (firstLine.match(new RegExp('\\' + delimiter, 'g')) || []).length;
+            });
+
+            // Находим разделитель с максимальным количеством
+            let maxCount = 0;
+            let detectedDelimiter = ';';
+
+            for (let delimiter in counts) {
+                if (counts[delimiter] > maxCount) {
+                    maxCount = counts[delimiter];
+                    detectedDelimiter = delimiter;
+                }
+            }
+
+            return detectedDelimiter;
+        }
+
+        function hasEncodingIssues(text) {
+            // Проверяем наличие типичных символов-маркеров проблем с кодировкой
+            const encodingMarkers = ['�', 'Ð', 'Ñ', 'Ò'];
+            return encodingMarkers.some(marker => text.includes(marker));
+        }
+
+        function validateDataRows(dataLines, delimiter) {
+            const errors = [];
+            const warnings = [];
+            const emptyRows = [];
+            const invalidRows = [];
+
+            dataLines.forEach((line, index) => {
+                const rowNum = index + 2; // +2 потому что: +1 для человеческого счета, +1 для пропуска заголовка
+                const columns = line.split(delimiter);
+
+                if (columns.length < 8) {
+                    invalidRows.push({
+                        row: rowNum,
+                        reason: `Недостаточно данных: найдено ${columns.length} колонок`
+                    });
+                    return;
+                }
+
+                // Проверка обязательных полей
+                const requiredFields = {
+                    1: 'Наименование',
+                    2: 'ИНН',
+                    3: 'Название точки',
+                    4: 'Адрес',
+                    5: 'Широта',
+                    6: 'Долгота',
+                    7: 'Телефон'
+                };
+
+                let hasData = false;
+                const missingFields = [];
+
+                for (let fieldIndex in requiredFields) {
+                    const value = columns[fieldIndex] ? columns[fieldIndex].trim() : '';
+                    if (value) {
+                        hasData = true;
+                    } else {
+                        missingFields.push(requiredFields[fieldIndex]);
+                    }
+                }
+
+                if (hasData && missingFields.length > 0) {
+                    invalidRows.push({
+                        row: rowNum,
+                        reason: `Пропущены обязательные поля: ${missingFields.join(', ')}`
+                    });
+                }
+
+                if (!hasData) {
+                    emptyRows.push(rowNum);
+                }
+
+                // Валидация координат
+                const lat = columns[5] ? columns[5].trim() : '';
+                const lon = columns[6] ? columns[6].trim() : '';
+
+                if (lat && !lat.match(/^-?\d+\.?\d*$/)) {
+                    invalidRows.push({
+                        row: rowNum,
+                        reason: 'Неверный формат широты (должно быть число)'
+                    });
+                }
+
+                if (lon && !lon.match(/^-?\d+\.?\d*$/)) {
+                    invalidRows.push({
+                        row: rowNum,
+                        reason: 'Неверный формат долготы (должно быть число)'
+                    });
+                }
+            });
+
+            if (emptyRows.length > 0) {
+                warnings.push({
+                    message: `Обнаружены пустые строки: ${emptyRows.join(', ')}`,
+                    solution: 'Пустые строки будут пропущены при импорте'
+                });
+            }
+
+            if (invalidRows.length > 0) {
+                invalidRows.forEach(invalid => {
+                    errors.push({
+                        type: 'data',
+                        message: `Строка ${invalid.row}: ${invalid.reason}`,
+                        solution: 'Проверьте и исправьте данные в указанной строке'
+                    });
+                });
+            }
+
+            return { errors, warnings };
+        }
+
+        function showValidationErrors(validationResult) {
+            const modal = document.getElementById('errorModal');
+            const content = document.getElementById('errorContent');
+
+            let html = '';
+
+            if (validationResult.errors.length > 0) {
+                html += '<h3 style="color: #eb3349; margin-bottom: 15px;">❌ Критические ошибки:</h3>';
+                html += '<ul class="error-list">';
+                validationResult.errors.forEach(error => {
+                    html += `
+                        <li class="error-item">
+                            <strong>${error.message}</strong><br>
+                            <small>💡 Решение: ${error.solution}</small>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+            }
+
+            if (validationResult.warnings.length > 0) {
+                html += '<h3 style="color: #f2994a; margin: 20px 0 15px 0;">⚠️ Предупреждения:</h3>';
+                html += '<ul class="error-list">';
+                validationResult.warnings.forEach(warning => {
+                    html += `
+                        <li class="warning-item">
+                            <strong>${warning.message}</strong><br>
+                            <small>💡 ${warning.solution}</small>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+            }
+
+            content.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('errorModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // ==================== ЗАГРУЗКА CSV ====================
+
+        function loadCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Проверка расширения файла
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                showNotification('Ошибка: файл должен иметь расширение .csv', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            // Проверка размера файла (макс 10 МБ)
+            const maxSize = 10 * 1024 * 1024; // 10 MB
+            if (file.size > maxSize) {
+                showNotification('Ошибка: файл слишком большой (макс. 10 МБ)', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const arrayBuffer = e.target.result;
+                    const bytes = new Uint8Array(arrayBuffer);
+                    const text = convertFromWindows1251(bytes);
+
+                    // Валидация файла
+                    const validationResult = validateCSVFile(text);
+
+                    if (!validationResult.valid) {
+                        showValidationErrors(validationResult);
+                        showNotification('Файл содержит ошибки. Смотрите детали.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    // Если есть предупреждения, показываем их
+                    if (validationResult.warnings.length > 0) {
+                        showValidationErrors(validationResult);
+                    }
+
+                    // Парсим файл
+                    parseCSV(text, validationResult.delimiter);
+                    showNotification('CSV файл успешно загружен', 'success');
+
+                } catch (error) {
+                    console.error('Ошибка при загрузке CSV:', error);
+                    showNotification('Ошибка при чтении файла: ' + error.message, 'error');
+                }
+
+                event.target.value = '';
+            };
+
+            reader.onerror = function() {
+                showNotification('Ошибка при чтении файла', 'error');
+                event.target.value = '';
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // ==================== ЗАГРУЗКА EXCEL ====================
+
+        function loadExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Проверка расширения файла
+            const validExtensions = ['.xlsx', '.xls'];
+            const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+            if (!validExtensions.includes(fileExtension)) {
+                showNotification('Ошибка: файл должен иметь расширение .xlsx или .xls', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            // Проверка размера файла (макс 20 МБ для Excel)
+            const maxSize = 20 * 1024 * 1024; // 20 MB
+            if (file.size > maxSize) {
+                showNotification('Ошибка: файл слишком большой (макс. 20 МБ)', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+
+                    if (workbook.SheetNames.length === 0) {
+                        showNotification('Ошибка: файл Excel не содержит листов', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1, defval: ''});
+
+                    if (jsonData.length === 0) {
+                        showNotification('Файл Excel пуст', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    if (jsonData.length === 1) {
+                        showNotification('Файл содержит только заголовок, нет данных', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    // Проверка количества колонок
+                    const headerColumns = jsonData[0].length;
+                    if (headerColumns < 22) {
+                        showNotification(`Недостаточно колонок в файле: найдено ${headerColumns}, ожидается 22`, 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    parseExcelData(jsonData);
+                    showNotification(`Загружено ${jsonData.length - 1} строк из Excel`, 'success');
+
+                } catch (error) {
+                    console.error('Ошибка при загрузке Excel:', error);
+                    showNotification('Ошибка при загрузке Excel файла: ' + error.message, 'error');
+                }
+
+                event.target.value = '';
+            };
+
+            reader.onerror = function() {
+                showNotification('Ошибка при чтении файла', 'error');
+                event.target.value = '';
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parseExcelData(jsonData) {
+            document.getElementById('tableBody').innerHTML = '';
+            rowCounter = 1;
+
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+
+                if (row.length >= 8) {
+                    const data = {
+                        num: row[0] || rowCounter,
+                        name: row[1] || '',
+                        inn: row[2] || '',
+                        pointName: row[3] || '',
+                        address: row[4] || '',
+                        lat: row[5] || '',
+                        lon: row[6] || '',
+                        phone: row[7] || '',
+                        mon_start: row[8] || '',
+                        mon_end: row[9] || '',
+                        tue_start: row[10] || '',
+                        tue_end: row[11] || '',
+                        wed_start: row[12] || '',
+                        wed_end: row[13] || '',
+                        thu_start: row[14] || '',
+                        thu_end: row[15] || '',
+                        fri_start: row[16] || '',
+                        fri_end: row[17] || '',
+                        sat_start: row[18] || '',
+                        sat_end: row[19] || '',
+                        sun_start: row[20] || '',
+                        sun_end: row[21] || ''
+                    };
+
+                    addRow(data);
+                    rowCounter++;
+                }
+            }
+        }
+
+        function convertFromWindows1251(bytes) {
+            const win1251Reverse = {
+                0xC0: 'А', 0xC1: 'Б', 0xC2: 'В', 0xC3: 'Г', 0xC4: 'Д', 0xC5: 'Е', 0xA8: 'Ё',
+                0xC6: 'Ж', 0xC7: 'З', 0xC8: 'И', 0xC9: 'Й', 0xCA: 'К', 0xCB: 'Л', 0xCC: 'М',
+                0xCD: 'Н', 0xCE: 'О', 0xCF: 'П', 0xD0: 'Р', 0xD1: 'С', 0xD2: 'Т', 0xD3: 'У',
+                0xD4: 'Ф', 0xD5: 'Х', 0xD6: 'Ц', 0xD7: 'Ч', 0xD8: 'Ш', 0xD9: 'Щ', 0xDA: 'Ъ',
+                0xDB: 'Ы', 0xDC: 'Ь', 0xDD: 'Э', 0xDE: 'Ю', 0xDF: 'Я',
+                0xE0: 'а', 0xE1: 'б', 0xE2: 'в', 0xE3: 'г', 0xE4: 'д', 0xE5: 'е', 0xB8: 'ё',
+                0xE6: 'ж', 0xE7: 'з', 0xE8: 'и', 0xE9: 'й', 0xEA: 'к', 0xEB: 'л', 0xEC: 'м',
+                0xED: 'н', 0xEE: 'о', 0xEF: 'п', 0xF0: 'р', 0xF1: 'с', 0xF2: 'т', 0xF3: 'у',
+                0xF4: 'ф', 0xF5: 'х', 0xF6: 'ц', 0xF7: 'ч', 0xF8: 'ш', 0xF9: 'щ', 0xFA: 'ъ',
+                0xFB: 'ы', 0xFC: 'ь', 0xFD: 'э', 0xFE: 'ю', 0xFF: 'я', 0xB9: '№',
+                // Дополнительные символы пунктуации и кавычек
+                0xAB: '«', 0xBB: '»',
+                0x96: '–', 0x97: '—',
+                0x85: '…',
+                0x91: '‘', 0x92: '’', 0x93: '“', 0x94: '”',
+                0x95: '•',
+                0x8B: '‹', 0x9B: '›',
+                0xA0: '\u00A0'
+            };
+
+            let text = '';
+            for (let i = 0; i < bytes.length; i++) {
+                const byte = bytes[i];
+                if (win1251Reverse[byte]) {
+                    text += win1251Reverse[byte];
+                } else if (byte < 128) {
+                    text += String.fromCharCode(byte);
+                } else {
+                    text += '?';
+                }
+            }
+
+            return text;
+        }
+
+        function parseCSV(text, delimiter = ';') {
+            const lines = text.split('\n').filter(line => line.trim());
+
+            document.getElementById('tableBody').innerHTML = '';
+            rowCounter = 1;
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(delimiter);
+
+                if (values.length >= 8) {
+                    const data = {
+                        num: values[0] || rowCounter,
+                        name: values[1] || '',
+                        inn: values[2] || '',
+                        pointName: values[3] || '',
+                        address: values[4] || '',
+                        lat: values[5] || '',
+                        lon: values[6] || '',
+                        phone: values[7] || '',
+                        mon_start: values[8] || '',
+                        mon_end: values[9] || '',
+                        tue_start: values[10] || '',
+                        tue_end: values[11] || '',
+                        wed_start: values[12] || '',
+                        wed_end: values[13] || '',
+                        thu_start: values[14] || '',
+                        thu_end: values[15] || '',
+                        fri_start: values[16] || '',
+                        fri_end: values[17] || '',
+                        sat_start: values[18] || '',
+                        sat_end: values[19] || '',
+                        sun_start: values[20] || '',
+                        sun_end: values[21] || ''
+                    };
+
+                    addRow(data);
+                    rowCounter++;
+                }
+            }
+        }
+
+        // ==================== СКАЧИВАНИЕ CSV/EXCEL ====================
+
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tbody tr');
+
+            if (rows.length === 0) {
+                showNotification('Нет данных для сохранения', 'error');
+                return;
+            }
+
+            let csvContent = '';
+            csvContent += CSV_HEADERS.join(';') + '\n';
+
+            let validRowCount = 0;
+            let invalidRows = [];
+
+            rows.forEach((row, index) => {
+                const rowData = getRowData(row);
+
+                if (!isRowEmpty(rowData)) {
+                    if (!isRowValid(rowData)) {
+                        invalidRows.push(index + 1);
+                        return;
+                    }
+                    csvContent += rowData.join(';') + '\n';
+                    validRowCount++;
+                }
+            });
+
+            if (invalidRows.length > 0) {
+                showNotification(`Ошибка: строки ${invalidRows.join(', ')} заполнены некорректно`, 'error');
+                return;
+            }
+
+            if (validRowCount === 0) {
+                showNotification('Нет заполненных строк для сохранения', 'error');
+                return;
+            }
+
+            const blob = new Blob([convertToWindows1251(csvContent)], {
+                type: 'text/csv;charset=windows-1251'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification(`CSV файл успешно создан (${validRowCount} строк)`, 'success');
+        }
+
+        function downloadTemplateCSV() {
+            let csvContent = '';
+            csvContent += CSV_HEADERS.join(';') + '\n';
+
+            // Пример строки-шаблона (можно удалить, если нужен только заголовок)
+            const sampleRow = [
+                '1',
+                'ООО "Компания"',
+                '1234567890',
+                'Магазин Центральный',
+                'г. Город, ул. Улица, д. 1',
+                '55.751244',
+                '37.618423',
+                '+79001234567',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '09:00', '21:00',
+                '10:00', '20:00',
+                '10:00', '20:00'
+            ];
+            csvContent += sampleRow.join(';') + '\n';
+
+            const blob = new Blob([convertToWindows1251(csvContent)], {
+                type: 'text/csv;charset=windows-1251'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'template_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('Шаблон CSV успешно скачан', 'success');
+        }
+
+        function downloadExcel() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tbody tr');
+
+            if (rows.length === 0) {
+                showNotification('Нет данных для сохранения', 'error');
+                return;
+            }
+
+            const data = [];
+            data.push(CSV_HEADERS);
+
+            let validRowCount = 0;
+            let invalidRows = [];
+
+            rows.forEach((row, index) => {
+                const rowData = getRowData(row);
+
+                if (!isRowEmpty(rowData)) {
+                    if (!isRowValid(rowData)) {
+                        invalidRows.push(index + 1);
+                        return;
+                    }
+                    data.push(rowData);
+                    validRowCount++;
+                }
+            });
+
+            if (invalidRows.length > 0) {
+                showNotification(`Ошибка: строки ${invalidRows.join(', ')} заполнены некорректно`, 'error');
+                return;
+            }
+
+            if (validRowCount === 0) {
+                showNotification('Нет заполненных строк для сохранения', 'error');
+                return;
+            }
+
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Данные');
+
+            const fileName = 'data_' + new Date().toISOString().split('T')[0] + '.xlsx';
+            XLSX.writeFile(workbook, fileName);
+
+            showNotification(`Excel файл успешно создан (${validRowCount} строк)`, 'success');
+        }
+
+        function convertToWindows1251(text) {
+            const win1251 = {
+                'А': 0xC0, 'Б': 0xC1, 'В': 0xC2, 'Г': 0xC3, 'Д': 0xC4, 'Е': 0xC5, 'Ё': 0xA8,
+                'Ж': 0xC6, 'З': 0xC7, 'И': 0xC8, 'Й': 0xC9, 'К': 0xCA, 'Л': 0xCB, 'М': 0xCC,
+                'Н': 0xCD, 'О': 0xCE, 'П': 0xCF, 'Р': 0xD0, 'С': 0xD1, 'Т': 0xD2, 'У': 0xD3,
+                'Ф': 0xD4, 'Х': 0xD5, 'Ц': 0xD6, 'Ч': 0xD7, 'Ш': 0xD8, 'Щ': 0xD9, 'Ъ': 0xDA,
+                'Ы': 0xDB, 'Ь': 0xDC, 'Э': 0xDD, 'Ю': 0xDE, 'Я': 0xDF,
+                'а': 0xE0, 'б': 0xE1, 'в': 0xE2, 'г': 0xE3, 'д': 0xE4, 'е': 0xE5, 'ё': 0xB8,
+                'ж': 0xE6, 'з': 0xE7, 'и': 0xE8, 'й': 0xE9, 'к': 0xEA, 'л': 0xEB, 'м': 0xEC,
+                'н': 0xED, 'о': 0xEE, 'п': 0xEF, 'р': 0xF0, 'с': 0xF1, 'т': 0xF2, 'у': 0xF3,
+                'ф': 0xF4, 'х': 0xF5, 'ц': 0xF6, 'ч': 0xF7, 'ш': 0xF8, 'щ': 0xF9, 'ъ': 0xFA,
+                'ы': 0xFB, 'ь': 0xFC, 'э': 0xFD, 'ю': 0xFE, 'я': 0xFF,
+                '№': 0xB9,
+                '«': 0xAB, '»': 0xBB,
+                '–': 0x96, '—': 0x97,
+                '…': 0x85,
+                '‘': 0x91, '’': 0x92, '“': 0x93, '”': 0x94,
+                '•': 0x95,
+                '‹': 0x8B, '›': 0x9B,
+                '\u00A0': 0xA0
+            };
+
+            const bytes = new Uint8Array(text.length);
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charAt(i);
+                if (win1251[char]) {
+                    bytes[i] = win1251[char];
+                } else if (char.charCodeAt(0) < 128) {
+                    bytes[i] = char.charCodeAt(0);
+                } else {
+                    bytes[i] = 0x3F; // '?'
+                }
+            }
+            
+            return bytes;
+        }
+
+        function clearAll() {
+            if (confirm('Вы уверены, что хотите удалить все строки?')) {
+                document.getElementById('tableBody').innerHTML = '';
+                rowCounter = 1;
+                showNotification('Все данные удалены', 'success');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        window.onload = function() {
+    loadTimeSeparatorFromStorage();
+
+    const sel = document.getElementById('timeSeparatorSelect');
+    if (sel) sel.value = TIME_SEPARATOR;
+
+    addRow();
+
+    // на всякий случай нормализуем времена в первой строке (если будут дефолты)
+    document.querySelectorAll('input.time-input').forEach(normalizeTimeInput);
+};
+</script>
+</body>
+</html>

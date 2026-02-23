@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Свечка на удачу</title>
+  <link rel="stylesheet" href="style.css">
+    <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+</head>
+<body>
+
+  <main class="scene" id="scene">
+
+    <!-- Заголовок -->
+    <h1 class="title">Свечка на удачу</h1>
+
+    <!-- Контейнер свечи -->
+    <div class="candle-wrapper" id="candleWrapper">
+
+      <!-- Пламя (видно только в зажжённом состоянии) -->
+      <div class="flame-group">
+        <div class="glow"></div>
+        <div class="flame"></div>
+        <div class="flame flame--inner"></div>
+      </div>
+
+      <!-- Фитиль -->
+      <div class="wick"></div>
+
+      <!-- Тело свечи -->
+      <div class="candle-body">
+        <div class="candle-drip candle-drip--1"></div>
+        <div class="candle-drip candle-drip--2"></div>
+      </div>
+
+      <!-- Подсвечник -->
+      <div class="holder"></div>
+    </div>
+
+    <!-- Кнопка -->
+    <button class="btn" id="lightBtn">Поставить свечку</button>
+
+    <!-- Сообщение после зажигания -->
+    <p class="message" id="message">Свечка поставлена. Пусть сегодня тебе повезёт 🍀</p>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
