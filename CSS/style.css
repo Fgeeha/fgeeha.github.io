@@ -242,14 +242,49 @@ main{
     height: 98%; /* Занимает всю доступную высоту по вертикали */
 }
 
-main .container .row .col{
+.main {
 	border-radius: 20px;
-	background: rgba(255, 255, 255, 0.7);
+	background: rgba(255, 255, 255, 0.92);
+	padding: 30px 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
-p, h1, h3{
+p, h1, h2, h3{
 	opacity: 1;
 }
 
+footer {
+	color: #fff;
+	padding: 10px 0;
+}
+
 li {
-    list-style-type: none; /* Убираем маркеры */
+    list-style-type: none;
    }
+
+.project-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.project-card .card-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.project-card .card-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.project-card .badge {
+    font-size: 0.75rem;
+    margin-right: 4px;
+}

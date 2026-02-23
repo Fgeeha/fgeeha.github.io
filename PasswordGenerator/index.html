@@ -46,6 +46,64 @@
       <section class="card" aria-labelledby="controls-h2">
         <h2 id="controls-h2" data-i18n="controls">Параметры генерации</h2>
 
+        <!-- Mode selector -->
+        <fieldset class="card" style="border:none; padding:0; margin:0 0 .75rem 0">
+          <legend class="sr-only">Mode</legend>
+          <div class="switches" style="grid-template-columns:1fr 1fr">
+            <label class="switch"><input type="radio" name="mode" id="mode-random" checked> <span data-i18n="mode_random">Обычный (алфавит)</span></label>
+            <label class="switch"><input type="radio" name="mode" id="mode-mnemonic"> <span data-i18n="mode_mnemonic">Фразовый (ViPNet-style)</span></label>
+          </div>
+        </fieldset>
+
+        <!-- Mnemonic panel -->
+        <div id="mnemonic-panel" class="card" style="display:none; padding:.75rem; margin:.25rem 0 1rem; border:1px dashed var(--border)">
+          <h3 style="margin:.25rem 0 .5rem" data-i18n="mn_title">Фразовый генератор</h3>
+          <div class="row" style="align-items:end">
+            <div>
+              <label for="mn-words" data-i18n="mn_words">Количество слов</label>
+              <input id="mn-words" type="number" min="3" max="7" value="4" />
+              <div class="help" data-i18n="mn_words_hint">Рекомендуется 4–5 слов.</div>
+            </div>
+            <div>
+              <label for="mn-digits" data-i18n="mn_digits">Случайных цифр</label>
+              <input id="mn-digits" type="number" min="0" max="6" value="2" />
+              <div class="help" data-i18n="mn_digits_hint">Добавляются в конец пароля.</div>
+            </div>
+          </div>
+
+          <div class="row" style="align-items:center">
+            <div>
+              <label for="mn-sep" data-i18n="mn_sep">Разделитель букв</label>
+              <select id="mn-sep">
+                <option value="" data-i18n="mn_none">Нет</option>
+                <option value="-" data-i18n="mn_dash">Тире</option>
+                <option value="_" data-i18n="mn_underscore">Нижнее подчёркивание</option>
+                <option value="." data-i18n="mn_dot">Точка</option>
+              </select>
+            </div>
+            <div>
+              <label for="mn-case" data-i18n="mn_case">Регистр</label>
+              <select id="mn-case">
+                <option value="as-is" data-i18n="mn_case_as_is">Как в словах</option>
+                <option value="upper" data-i18n="mn_case_upper">ВЕРХНИЙ</option>
+                <option value="lower" data-i18n="mn_case_lower">нижний</option>
+                <option value="title" data-i18n="mn_case_title">Первая заглавная</option>
+                <option value="alt" data-i18n="mn_case_alt">Чередовать</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="switches" style="grid-template-columns:1fr 1fr">
+            <label class="switch"><input id="mn-translit" type="checkbox" /> <span data-i18n="mn_translit">Транслитерировать в латиницу</span></label>
+            <label class="switch"><input id="mn-ensure-classes" type="checkbox" checked /> <span data-i18n="mn_ensure_classes">Сохранить правила групп</span></label>
+          </div>
+
+          <div class="stack" style="margin-top:.5rem">
+            <button id="btn-mn-preview" class="btn"><span data-i18n="mn_preview">Показать фразу</span></button>
+          </div>
+          <div id="mn-phrase" class="help" style="margin-top:.5rem"></div>
+        </div>
+
         <div class="row" style="align-items:end">
           <div>
             <label for="length" data-i18n="password_length">Длина пароля</label>
@@ -90,7 +148,7 @@
           <label for="set-s" data-i18n="symbols">Символы</label>
           <input id="set-s" type="text" value="!@#$%^&*()_+[]{}|;:,.<>?~" />
           <label for="exclude" data-i18n="exclude_ambiguous">Исключить (дополнительно)</label>
-          <input id="exclude" type="text" value="{}[]()/\'\"`~,;:.<>" />
+          <input id="exclude" type="text" value="{}[]()/\'&quot;`~,;:.<>" />
           <div class="help" data-i18n="custom_hint">Изменяйте наборы и/или исключите символы вручную.</div>
         </details>
 
@@ -111,7 +169,7 @@
             <div class="help" id="entropy-help">0 <span data-i18n="bits">бит</span></div>
           </div>
           <div id="entropy-box" class="entropy-box" aria-live="polite" data-i18n="entropy_box">
-            Двигайте мышь, крутите колесо
+            Двигайте мышь, крутите колесо, нажимайте клавиши
           </div>
         </div>
         <div class="help">
