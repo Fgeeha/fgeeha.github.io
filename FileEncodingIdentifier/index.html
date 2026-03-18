@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Определитель кодировки файла</title>
+  <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f4f7fb;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.05);
+            padding: 32px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #1a2b3e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .subtitle {
+            color: #5e6f8d;
+            margin-bottom: 28px;
+            font-size: 1rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            background: #f0f4fe;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.5;
+        }
+        .upload-area {
+            background: #f9fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: border 0.2s, background 0.2s;
+            cursor: pointer;
+            margin-bottom: 28px;
+        }
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #f1f5fe;
+        }
+        .upload-area.dragover {
+            border-color: #2563eb;
+            background: #e6edfd;
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.05));
+        }
+        .upload-label {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #1e293b;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-info {
+            background: #f1f5f9;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin: 20px 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .file-name {
+            font-weight: 600;
+            color: #0f172a;
+            background: white;
+            padding: 6px 18px;
+            border-radius: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .file-size {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+        .bom-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .encoding-card {
+            background: white;
+            border: 1px solid #e9eef2;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: all 0.1s;
+        }
+        .encoding-card:hover {
+            border-color: #b9c9fa;
+            box-shadow: 0 8px 20px rgba(59,130,246,0.08);
+        }
+        .encoding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            border-bottom: 1px dashed #dde3e9;
+            padding-bottom: 8px;
+        }
+        .encoding-name {
+            background: #e6edfd;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #1e4fd9;
+            font-size: 0.9rem;
+        }
+        .encoding-status {
+            font-size: 0.8rem;
+            color: #10b981;
+            background: #d1fae5;
+            padding: 4px 8px;
+            border-radius: 40px;
+        }
+        .encoding-status.error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        .preview-box {
+            background: #f8fafd;
+            border-radius: 14px;
+            padding: 14px;
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-height: 150px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+        .preview-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .footer-note {
+            margin-top: 28px;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e9eef2;
+            padding-top: 18px;
+        }
+        button.reset-btn {
+            background: none;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 8px 18px;
+            color: #475569;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-left: 16px;
+        }
+        button.reset-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>
+            🔍 Определитель кодировки
+            <button class="reset-btn" id="resetBtn" title="Сбросить и выбрать новый файл">↻ Сброс</button>
+        </h1>
+        <div class="subtitle">
+            Загрузите файл — мы покажем его содержимое в популярных кодировках. 
+            По фрагменту текста вы легко определите нужную (где буквы выглядят осмысленно).
+        </div>
+
+        <!-- зона загрузки -->
+        <div id="dropZone" class="upload-area">
+            <div class="upload-icon">📄</div>
+            <label for="fileInput" class="upload-label">Нажмите для выбора или перетащите файл</label>
+            <span class="upload-hint">.txt, .log, .csv, .js, .html и любые текстовые</span>
+            <input type="file" id="fileInput" accept="*/*">
+        </div>
+
+        <!-- информация о файле (скрыта до загрузки) -->
+        <div id="fileInfo" class="file-info" style="display: none;">
+            <span class="file-name" id="fileName"></span>
+            <span class="file-size" id="fileSize"></span>
+            <span class="bom-badge" id="bomIndicator">BOM не обнаружен</span>
+        </div>
+
+        <!-- контейнер с результатами (заполняется js) -->
+        <div id="resultsContainer" class="results-grid"></div>
+
+        <!-- подвал -->
+        <div class="footer-note">
+            ⚡ Для предпросмотра берутся первые 512 байт. Если нужная кодировка не отобразилась — проверьте расширенный список (поддерживаются браузером).
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // DOM элементы
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const resetBtn = document.getElementById('resetBtn');
+            const fileInfoDiv = document.getElementById('fileInfo');
+            const fileNameSpan = document.getElementById('fileName');
+            const fileSizeSpan = document.getElementById('fileSize');
+            const bomSpan = document.getElementById('bomIndicator');
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            // Список кодировок для тестирования (поддерживаются TextDecoder)
+            const ENCODINGS = [
+                'UTF-8',
+                'windows-1251',    // кириллица (Windows)
+                'KOI8-R',           // кириллица (KOI8)
+                'ISO-8859-5',       // кириллица (ISO)
+                'IBM866',           // альтернативная (DOS)
+                'UTF-16LE',
+                'UTF-16BE',
+                'windows-1252',     // западноевропейская (Latin-1)
+                'macintosh',        // Mac Cyrillic (иногда)
+                'ISO-8859-1'        // Latin-1
+            ];
+
+            // Для хранения текущего файла и буфера
+            let currentFile = null;
+            let currentBuffer = null;
+
+            // --- События drag & drop ---
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            // --- Обработка выбора файла через input ---
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            // --- Сброс ---
+            resetBtn.addEventListener('click', () => {
+                // очищаем input, скрываем блоки, сбрасываем данные
+                fileInput.value = '';
+                fileInfoDiv.style.display = 'none';
+                resultsContainer.innerHTML = '';
+                currentFile = null;
+                currentBuffer = null;
+                // дополнительно скрываем info
+            });
+
+            // --- Основная функция обработки файла ---
+            async function handleFile(file) {
+                // Показываем информацию о файле
+                fileNameSpan.textContent = file.name;
+                fileSizeSpan.textContent = formatFileSize(file.size);
+                fileInfoDiv.style.display = 'flex';
+                bomSpan.textContent = '⏳ проверка BOM...';
+
+                // Очищаем предыдущие результаты и показываем загрузку
+                resultsContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px;">⏳ Анализ файла... <span class="loader"></span></div>';
+
+                try {
+                    // Читаем файл как ArrayBuffer (первые 2048 байт для скорости, но можно весь)
+                    // Для определения кодировки достаточно первых 512 байт (или чуть больше)
+                    const buffer = await readFileSlice(file, 0, 2048); // читаем до 2048 байт
+                    currentBuffer = buffer;
+
+                    // Определяем BOM
+                    const bomInfo = detectBOM(buffer);
+                    bomSpan.textContent = bomInfo.text;
+
+                    // Декодируем во всех кодировках
+                    const decodings = testEncodings(buffer, ENCODINGS);
+
+                    // Рендерим карточки
+                    renderResults(decodings, bomInfo);
+
+                } catch (err) {
+                    resultsContainer.innerHTML = `<div style="grid-column:1/-1; color:#b91c1c; padding:20px; background:#fee2e2; border-radius:16px;">❌ Ошибка чтения файла: ${err.message}</div>`;
+                    bomSpan.textContent = '⚠️ ошибка';
+                }
+            }
+
+            // --- Чтение фрагмента файла (первые bytesCount байт) ---
+            function readFileSlice(file, start, length) {
+                return new Promise((resolve, reject) => {
+                    const blob = file.slice(start, start + length);
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(new Error('Не удалось прочитать файл'));
+                    reader.readAsArrayBuffer(blob);
+                });
+            }
+
+            // --- Форматирование размера ---
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' Б';
+                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' КБ';
+                return (bytes / (1024 * 1024)).toFixed(2) + ' МБ';
+            }
+
+            // --- Определение BOM по первым байтам ---
+            function detectBOM(buffer) {
+                const view = new Uint8Array(buffer);
+                if (view.length >= 3 && view[0] === 0xEF && view[1] === 0xBB && view[2] === 0xBF) {
+                    return { text: 'UTF-8 BOM', encoding: 'UTF-8' };
+                } else if (view.length >= 2 && view[0] === 0xFE && view[1] === 0xFF) {
+                    return { text: 'UTF-16 BE BOM', encoding: 'UTF-16BE' };
+                } else if (view.length >= 2 && view[0] === 0xFF && view[1] === 0xFE) {
+                    return { text: 'UTF-16 LE BOM', encoding: 'UTF-16LE' };
+                } else if (view.length >= 4 && view[0] === 0x00 && view[1] === 0x00 && view[2] === 0xFE && view[3] === 0xFF) {
+                    return { text: 'UTF-32 BE BOM', encoding: null };
+                } else if (view.length >= 4 && view[0] === 0xFF && view[1] === 0xFE && view[2] === 0x00 && view[3] === 0x00) {
+                    return { text: 'UTF-32 LE BOM', encoding: null };
+                }
+                return { text: 'BOM не обнаружен', encoding: null };
+            }
+
+            // --- Декодирование буфера во всех кодировках ---
+            function testEncodings(buffer, encodingList) {
+                const results = [];
+                const uint8 = new Uint8Array(buffer);
+
+                for (let enc of encodingList) {
+                    try {
+                        // Пытаемся декодировать, передаём параметр {fatal: false}, чтобы не падать на недопустимых последовательностях (подставит replacement)
+                        const decoder = new TextDecoder(enc, { fatal: false });
+                        const text = decoder.decode(uint8);
+
+                        // Проверяем, получилось ли что-то осмысленное (простая эвристика: не слишком много � или управляющих символов)
+                        const replacementCount = (text.match(/\uFFFD/g) || []).length;
+                        const totalChars = text.length;
+                        const garbageRatio = totalChars > 0 ? replacementCount / totalChars : 0;
+
+                        let status = 'OK';
+                        if (garbageRatio > 0.3) status = '⚠️ много замен';
+                        if (garbageRatio > 0.8) status = '❗ возможно не та';
+
+                        results.push({
+                            encoding: enc,
+                            preview: text.length > 0 ? text.slice(0, 400) : '[пусто]',
+                            status: status,
+                            error: false,
+                            replacementCount,
+                        });
+                    } catch (e) {
+                        // Неподдерживаемая кодировка или ошибка
+                        results.push({
+                            encoding: enc,
+                            preview: '',
+                            status: `❌ ошибка: ${e.message}`,
+                            error: true,
+                        });
+                    }
+                }
+                return results;
+            }
+
+            // --- Отрисовка карточек ---
+            function renderResults(decodings, bomInfo) {
+                if (!decodings.length) {
+                    resultsContainer.innerHTML = '<div style="grid-column:1/-1; padding:20px; text-align:center;">Нет данных для отображения</div>';
+                    return;
+                }
+
+                let html = '';
+                for (let d of decodings) {
+                    const statusClass = d.error ? 'error' : '';
+                    const statusText = d.error ? d.status : (d.status || 'OK');
+                    // Подсветим карточку, если BOM совпадает с кодировкой (предположительно)
+                    const bomMatch = (bomInfo.encoding && d.encoding.toLowerCase() === bomInfo.encoding.toLowerCase()) ? 'style="border-left: 4px solid #3b82f6;"' : '';
+
+                    html += `
+                        <div class="encoding-card" ${bomMatch}>
+                            <div class="encoding-header">
+                                <span class="encoding-name">${d.encoding}</span>
+                                <span class="encoding-status ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="preview-box">${escapeHTML(d.preview) || '<span class="preview-placeholder">‹пусто›</span>'}</div>
+                        </div>
+                    `;
+                }
+
+                // Если есть BOM, добавим примечание
+                if (bomInfo.encoding) {
+                    html += `
+                        <div style="grid-column:1/-1; background:#e6f0ff; border-radius:16px; padding:16px; font-size:0.9rem; border:1px solid #b9d0fd;">
+                            ⚡ Обнаружен ${bomInfo.text}. Скорее всего, файл в кодировке <strong>${bomInfo.encoding}</strong> (выделена синей полоской).
+                        </div>
+                    `;
+                }
+
+                resultsContainer.innerHTML = html;
+            }
+
+            // --- Простое экранирование HTML (чтобы не сломать верстку) ---
+            function escapeHTML(str) {
+                if (!str) return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;')
+                    .replace(/\n/g, '<br>')
+                    .replace(/ /g, '&nbsp;');
+            }
+
+        })();
+    </script>
+</body>
+</html>
