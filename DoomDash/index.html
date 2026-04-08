@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DoomDash</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#000;overflow:hidden;font-family:'Courier New',monospace}
+        canvas{display:block}
+        #hud{position:fixed;bottom:0;left:0;right:0;height:54px;background:rgba(0,0,0,.85);
+            display:flex;align-items:center;gap:28px;padding:0 24px;z-index:10;pointer-events:none}
+        .hi{display:flex;align-items:center;gap:10px}
+        .hl{font-size:10px;color:#553;letter-spacing:.1em;text-transform:uppercase}
+        .hv{font-size:22px;font-weight:700}
+        #hp-v{color:#ff3333}#am-v{color:#ffaa00}#sc-v{color:#44ff44}#kl-v{color:#ff6666}
+        .hpbar{width:100px;height:6px;background:#330000;border-radius:3px;overflow:hidden}
+        .hpfill{height:100%;background:linear-gradient(90deg,#cc0000,#ff6600);border-radius:3px;transition:width .2s}
+        #lvlbadge{margin-left:auto;font-size:12px;color:#554;letter-spacing:.12em}
+        #xhair{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10;width:18px;height:18px}
+        #xhair::before,#xhair::after{content:'';position:absolute;background:rgba(255,255,255,.75);border-radius:1px}
+        #xhair::before{width:18px;height:2px;top:8px;left:0}
+        #xhair::after{width:2px;height:18px;top:0;left:8px}
+        #df{position:fixed;inset:0;pointer-events:none;z-index:15;background:rgba(255,0,0,0);transition:background .15s}
+        #sf{position:fixed;inset:0;pointer-events:none;z-index:15;background:rgba(0,200,255,0);transition:background .15s}
+        #scr{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);z-index:20}
+        .box{background:#080005;border:2px solid #440000;border-radius:4px;padding:2.2rem 2.8rem;max-width:420px;width:90%;text-align:center;color:#f0e0e0}
+        .box h1{font-size:38px;color:#ff3333;text-shadow:0 0 24px #f00;margin-bottom:4px;letter-spacing:.08em}
+        .box h2{font-size:24px;color:#ff4444;margin-bottom:1rem;letter-spacing:.06em}
+        .sub{font-size:11px;color:#443;letter-spacing:.1em;margin-bottom:1.4rem}
+        .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.4rem}
+        .sb{background:#110005;border:1px solid #330000;border-radius:4px;padding:8px 12px;text-align:left}
+        .sl{font-size:9px;color:#553;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+        .sv{font-size:18px;font-weight:700;color:#ff8888}
+        .bignum{font-size:52px;font-weight:700;color:#ff3333;text-shadow:0 0 20px #f00;margin:.4rem 0 1.2rem}
+        .badge{font-size:12px;color:#44ff44;height:16px;margin-bottom:.8rem;display:block;letter-spacing:.12em}
+        .btn{width:100%;padding:11px;border:2px solid #ff4444;border-radius:3px;font-size:13px;font-weight:700;cursor:pointer;margin-top:7px;letter-spacing:.12em;font-family:'Courier New',monospace;transition:all .15s;text-transform:uppercase}
+        .btn.prim{background:#440000;color:#ff8888}.btn.prim:hover{background:#660000;color:#ffaaaa}
+        .btn.sec{background:transparent;color:#554;border-color:#332}.btn.sec:hover{color:#887;border-color:#554}
+        .ctl{font-size:11px;color:#443;margin-top:1.2rem;line-height:2;letter-spacing:.05em}
+        #locktip{position:fixed;top:60px;left:50%;transform:translateX(-50%);font-size:11px;color:#443;letter-spacing:.08em;z-index:10;pointer-events:none}
+        #msg{position:fixed;top:30%;left:50%;transform:translateX(-50%);font-size:clamp(14px,3vw,22px);font-weight:700;color:#44ff44;letter-spacing:.12em;text-shadow:0 0 12px #0f0;z-index:10;pointer-events:none;opacity:0;transition:opacity .3s}
+    </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="df"></div><div id="sf"></div>
+<div id="xhair"></div>
+<div id="locktip">КЛИКНИ НА ЭКРАН ДЛЯ ЗАХВАТА МЫШИ · ESC — ОТПУСТИТЬ</div>
+<div id="msg"></div>
+
+<div id="hud">
+    <div class="hi">
+        <div>
+            <div class="hl">Здоровье</div>
+            <div class="hpbar"><div class="hpfill" id="hpfill" style="width:100%"></div></div>
+        </div>
+        <div class="hv" id="hp-v">100</div>
+    </div>
+    <div class="hi"><div class="hl">Патроны</div><div class="hv" id="am-v">30</div></div>
+    <div class="hi"><div class="hl">Убито</div><div class="hv" id="kl-v">0</div></div>
+    <div class="hi" style="margin-left:auto"><div class="hl">Счёт</div><div class="hv" id="sc-v">0</div></div>
+    <div id="lvlbadge">УРОВЕНЬ 1</div>
+</div>
+
+<div id="scr">
+    <div class="box" id="mb">
+        <h1>DOOM DASH</h1>
+        <p class="sub">СРАЖАЙСЯ · ВЫЖИВАЙ · ПОБЕЖДАЙ</p>
+        <div class="sgrid" id="gs"></div>
+        <button class="btn prim" onclick="startGame()">НАЧАТЬ ИГРУ</button>
+        <div class="ctl">
+            W A S D — движение &nbsp;·&nbsp; ←→ / МЫШЬ — поворот<br>
+            ЛКМ / ПРОБЕЛ — выстрел<br>
+            КЛИКНИ НА ЭКРАН ДЛЯ ЗАХВАТА МЫШИ
+        </div>
+    </div>
+    <div class="box" id="gb" style="display:none">
+        <h2 id="gt"></h2>
+        <div class="bignum" id="gsc">0</div>
+        <span class="badge" id="gbst"></span>
+        <div class="sgrid" id="gst"></div>
+        <button class="btn prim" id="gnx" onclick="nextLevel()" style="display:none">СЛЕДУЮЩИЙ УРОВЕНЬ</button>
+        <button class="btn prim" id="grst" onclick="startGame()">ЕЩЁ РАЗ</button>
+        <button class="btn sec" onclick="showMenu()">ГЛАВНОЕ МЕНЮ</button>
+    </div>
+</div>
+
+<script>
+    'use strict';
+    // ── Canvas
+    const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+    function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+    window.addEventListener('resize',resize);resize();
+
+    // ── Off-screen render buffer (640×360)
+    const RW=640,RH=360;
+    const rc=document.createElement('canvas');rc.width=RW;rc.height=RH;
+    const rx=rc.getContext('2d');
+    const zBuf=new Float32Array(RW);
+
+    // ── Maps (0=floor, 1..4=wall types)
+    const MAPS=[
+        [ // Level 1
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,0,0,0,0,0,0,1,0,0,0,2,2,0,0,0,1,1,0,1],
+            [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
+            [1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+            [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+            [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        ],
+        [ // Level 2
+            [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+            [3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,4,4,0,0,0,0,0,0,0,3,0,0,0,0,0,4,4,4,0,0,0,3],
+            [3,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,3],
+            [3,0,0,0,0,0,0,3,3,3,3,0,0,3,3,3,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,3,0,0,3,0,0,3,0,3,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,3],
+            [3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,3],
+            [3,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,3,3,0,0,0,3,3,3,3,0,0,3,3,3,3,0,0,0,3,3,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        ],
+    ];
+
+    // Wall colors [R,G,B] per wall type (index 1..4)
+    const WC=[[0,0,0],[95,85,75],[115,45,45],[55,80,55],[55,70,105]];
+
+    // ── Level configs
+    const LVL=[
+        {px:1.5,py:1.5,pa:0,
+            enemies:[{t:'imp',x:5.5,y:5.5},{t:'imp',x:15.5,y:5.5},{t:'imp',x:5.5,y:18.5},
+                {t:'soldier',x:10.5,y:10.5},{t:'soldier',x:18.5,y:12.5},
+                {t:'imp',x:20.5,y:18.5},{t:'demon',x:12.5,y:20.5}],
+            items:[{t:'health',x:8.5,y:3.5},{t:'ammo',x:15.5,y:15.5},
+                {t:'health',x:3.5,y:20.5},{t:'ammo',x:20.5,y:3.5}],
+            exit:{x:22.5,y:22.5}},
+        {px:1.5,py:1.5,pa:0,
+            enemies:[{t:'soldier',x:5.5,y:5.5},{t:'soldier',x:18.5,y:5.5},{t:'demon',x:11.5,y:11.5},
+                {t:'imp',x:3.5,y:15.5},{t:'imp',x:20.5,y:15.5},{t:'demon',x:10.5,y:18.5},
+                {t:'soldier',x:15.5,y:20.5},{t:'soldier',x:5.5,y:20.5},{t:'demon',x:22.5,y:10.5}],
+            items:[{t:'health',x:7.5,y:3.5},{t:'ammo',x:14.5,y:3.5},{t:'health',x:3.5,y:10.5},
+                {t:'ammo',x:20.5,y:20.5},{t:'health',x:11.5,y:7.5}],
+            exit:{x:22.5,y:22.5}},
+    ];
+
+    // Enemy defs
+    const ED={
+        imp:    {col:'#c0392b',eye:'#ff0',hp:2,spd:1.3,dmg:10,sc:100,det:8, atk:.7},
+        soldier:{col:'#2980b9',eye:'#eee',hp:3,spd:1.1,dmg:15,sc:150,det:12,atk:.8},
+        demon:  {col:'#8e44ad',eye:'#f0f',hp:5,spd:1.6,dmg:25,sc:250,det:10,atk:.9},
+    };
+    // Item defs
+    const ID={
+        health:{col:'#e74c3c',sc:20,heal:30},
+        ammo:  {col:'#f39c12',sc:10,ammo:15},
+    };
+
+    // ── State
+    let GS='menu',score=0,lvl=0,kills=0;
+    let cmap=null,enemies=[],items=[],portal=null;
+    let mFlash=0,gRecoil=0,bobPh=0,shake=0;
+    let prevT=0;
+
+    // Player
+    const P={x:1.5,y:1.5,dx:1,dy:0,px:0,py:.66,hp:100,maxHp:100,ammo:30,iT:0};
+
+    // Input
+    const keys={};let mDx=0,locked=false;
+    window.addEventListener('keydown',e=>{
+        keys[e.code]=true;
+        if(e.code==='Space'){e.preventDefault();if(GS==='playing')shoot();}
+    });
+    window.addEventListener('keyup',e=>{keys[e.code]=false;});
+    canvas.addEventListener('click',()=>{if(GS==='playing'){canvas.requestPointerLock();shoot();}});
+    canvas.addEventListener('mousedown',e=>{if(e.button===0&&GS==='playing')shoot();});
+    document.addEventListener('mousemove',e=>{if(locked)mDx+=e.movementX;});
+    document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;});
+
+    // Storage
+    const SK='doomdash3';
+    function ld(){try{return JSON.parse(localStorage.getItem(SK))||{};}catch{return{};}}
+    function sv(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch{}}
+    function addSt(s){
+        const d=ld();d.games=(d.games||0)+1;d.kills=(d.kills||0)+s.kills;
+        d.deaths=(d.deaths||0)+(s.died?1:0);d.best=Math.max(d.best||0,s.score);
+        d.bestL=Math.max(d.bestL||0,s.lvl);sv(d);return d;
+    }
+
+    // ── DDA Raycaster
+    function dda(px,py,rdx,rdy,m){
+        let mx=Math.floor(px),my=Math.floor(py);
+        const ddx=Math.abs(1/rdx),ddy=Math.abs(1/rdy);
+        let sx,sy,sdx,sdy;
+        if(rdx<0){sx=-1;sdx=(px-mx)*ddx;}else{sx=1;sdx=(mx+1-px)*ddx;}
+        if(rdy<0){sy=-1;sdy=(py-my)*ddy;}else{sy=1;sdy=(my+1-py)*ddy;}
+        let side=0,steps=64;
+        while(steps--){
+            if(sdx<sdy){sdx+=ddx;mx+=sx;side=0;}else{sdy+=ddy;my+=sy;side=1;}
+            if(m[my]&&m[my][mx]>0)break;
+        }
+        const dist=side===0?sdx-ddx:sdy-ddy;
+        return{dist,mx,my,side,wt:m[my]?m[my][mx]:1};
+    }
+
+    // ── Shoot
+    function shoot(){
+        if(P.ammo<=0){showMsg('НЕТ ПАТРОНОВ');return;}
+        P.ammo--;mFlash=.14;gRecoil=.18;
+        // Find closest enemy in view using sprite projection
+        let bestEn=null,bestD=999;
+        enemies.forEach(en=>{
+            if(en.dead)return;
+            const spx=en.x-P.x,spy=en.y-P.y;
+            const inv=1/(P.px*P.dy-P.dx*P.py);
+            const tx=inv*(P.dy*spx-P.dx*spy);
+            const ty=inv*(-P.py*spx+P.px*spy);
+            if(ty<=0.3)return;
+            const sx=(RW/2)*(1+tx/ty);
+            if(Math.abs(sx-RW/2)>RW*.12)return; // aim check
+            const wallR=dda(P.x,P.y,P.dx,P.dy,cmap);
+            if(ty>wallR.dist+.3)return; // behind wall
+            if(ty<bestD){bestD=ty;bestEn=en;}
+        });
+        if(bestEn){
+            bestEn.hp--;bestEn.hit=.2;
+            if(bestEn.hp<=0){
+                bestEn.dead=true;kills++;score+=bestEn.sc;updHUD();
+            }
+        }
+        updHUD();
+    }
+
+    // ── Init level
+    function initLvl(l){
+        cmap=MAPS[Math.min(l,MAPS.length-1)];
+        const cfg=LVL[Math.min(l,LVL.length-1)];
+        P.x=cfg.px;P.y=cfg.py;
+        P.dx=Math.cos(cfg.pa);P.dy=Math.sin(cfg.pa);
+        P.px=-Math.sin(cfg.pa)*.66;P.py=Math.cos(cfg.pa)*.66;
+        enemies=cfg.enemies.map(e=>{const d=ED[e.t];return{...d,type:e.t,x:e.x,y:e.y,hp:d.hp,maxHp:d.hp,atkT:0,hit:0,dead:false};});
+        items=cfg.items.map(i=>{const d=ID[i.t];return{...d,type:i.t,x:i.x,y:i.y,bob:Math.random()*Math.PI*2};});
+        portal={x:cfg.exit.x,y:cfg.exit.y,bob:0};
+        mFlash=0;gRecoil=0;bobPh=0;shake=0;
+    }
+
+    // ── Rotate player
+    function rotP(a){
+        const c=Math.cos(a),s=Math.sin(a);
+        const ox=P.dx;P.dx=P.dx*c-P.dy*s;P.dy=ox*s+P.dy*c;
+        const opx=P.px;P.px=P.px*c-P.py*s;P.py=opx*s+P.py*c;
+    }
+
+    // ── Update
+    function update(dt){
+        if(GS!=='playing')return;
+        // Turn
+        if(mDx){rotP(mDx*.003);mDx=0;}
+        if(keys['ArrowLeft']||keys['KeyQ'])rotP(-2.2*dt);
+        if(keys['ArrowRight']||keys['KeyE'])rotP(2.2*dt);
+        // Move
+        let mvx=0,mvy=0;
+        if(keys['KeyW']||keys['ArrowUp']){mvx+=P.dx;mvy+=P.dy;}
+        if(keys['KeyS']||keys['ArrowDown']){mvx-=P.dx;mvy-=P.dy;}
+        if(keys['KeyA']){mvx+=P.dy;mvy-=P.dx;}
+        if(keys['KeyD']){mvx-=P.dy;mvy+=P.dx;}
+        const spd=3*dt;
+        const nx=P.x+mvx*spd,ny=P.y+mvy*spd;
+        const m=cmap;
+        if(m[Math.floor(ny)]&&!m[Math.floor(ny)][Math.floor(P.x)])P.y=ny;
+        if(m[Math.floor(P.y)]&&!m[Math.floor(P.y)][Math.floor(nx)])P.x=nx;
+        if(mvx||mvy)bobPh+=dt*6;
+        // Timers
+        if(mFlash>0)mFlash=Math.max(0,mFlash-dt);
+        if(gRecoil>0)gRecoil=Math.max(0,gRecoil-dt*5);
+        if(shake>0)shake=Math.max(0,shake-dt*4);
+        if(P.iT>0)P.iT-=dt;
+        // Enemies
+        enemies.forEach(en=>{
+            if(en.dead)return;
+            en.hit=Math.max(0,en.hit-dt);
+            en.atkT=Math.max(0,en.atkT-dt);
+            const dx=P.x-en.x,dy=P.y-en.y,dist=Math.hypot(dx,dy);
+            if(dist<en.det){
+                const s=en.spd*dt;
+                const enx=en.x+(dx/dist)*s,eny=en.y+(dy/dist)*s;
+                if(m[Math.floor(en.y)]&&!m[Math.floor(en.y)][Math.floor(enx)])en.x=enx;
+                if(m[Math.floor(eny)]&&!m[Math.floor(eny)][Math.floor(en.x)])en.y=eny;
+            }
+            if(dist<en.atk&&en.atkT<=0){dmgP(en.dmg);en.atkT=1;}
+        });
+        // Items
+        items=items.filter(it=>{
+            it.bob+=dt*2.5;
+            if(Math.hypot(it.x-P.x,it.y-P.y)<.8){
+                score+=it.sc;
+                if(it.heal)P.hp=Math.min(P.maxHp,P.hp+it.heal);
+                if(it.ammo)P.ammo=Math.min(99,P.ammo+it.ammo);
+                updHUD();showMsg(it.heal?'+ЗДОРОВЬЕ':'+ПАТРОНЫ');return false;
+            }
+            return true;
+        });
+        // Portal
+        if(portal){
+            portal.bob+=dt*2;
+            if(Math.hypot(portal.x-P.x,portal.y-P.y)<1)endGame(true);
+        }
+        updHUD();
+    }
+
+    function dmgP(d){
+        if(P.iT>0)return;
+        P.hp-=d;P.iT=.5;shake=.35;
+        const df=document.getElementById('df');
+        df.style.background='rgba(255,0,0,.48)';
+        setTimeout(()=>df.style.background='rgba(255,0,0,0)',180);
+        updHUD();
+        if(P.hp<=0){P.hp=0;endGame(false);}
+    }
+
+    let msgTimer=null;
+    function showMsg(t){
+        const el=document.getElementById('msg');
+        el.textContent=t;el.style.opacity=1;
+        clearTimeout(msgTimer);msgTimer=setTimeout(()=>el.style.opacity=0,1200);
+    }
+
+    // ── Render
+    function renderFrame(){
+        const m=cmap;
+        const bobY=Math.sin(bobPh)*5;
+        const bobX=Math.cos(bobPh*.5)*3;
+
+        // Ceiling
+        const cg=rx.createLinearGradient(0,0,0,RH/2);
+        cg.addColorStop(0,'#080008');cg.addColorStop(1,'#150510');
+        rx.fillStyle=cg;rx.fillRect(0,0,RW,RH/2);
+        // Floor
+        const fg=rx.createLinearGradient(0,RH/2,0,RH);
+        fg.addColorStop(0,'#0c0c0c');fg.addColorStop(1,'#050505');
+        rx.fillStyle=fg;rx.fillRect(0,RH/2,RW,RH/2);
+
+        // Walls
+        for(let x=0;x<RW;x++){
+            const cx=2*x/RW-1;
+            const rdx=P.dx+P.px*cx,rdy=P.dy+P.py*cx;
+            const ray=dda(P.x,P.y,rdx,rdy,m);
+            zBuf[x]=ray.dist;
+            const lh=Math.floor(RH/ray.dist);
+            const ds=Math.max(0,Math.floor((RH-lh)/2+bobY));
+            const de=Math.min(RH-1,Math.floor((RH+lh)/2+bobY));
+            const wt=Math.min(ray.wt,WC.length-1);
+            let [r,g,b]=WC[wt];
+            if(ray.side===1){r=Math.floor(r*.6);g=Math.floor(g*.6);b=Math.floor(b*.6);}
+            const fog=Math.max(0,Math.min(1,1-ray.dist/20));
+            r=Math.floor(r*fog);g=Math.floor(g*fog);b=Math.floor(b*fog);
+            rx.fillStyle=`rgb(${r},${g},${b})`;
+            rx.fillRect(x,ds,1,Math.max(1,de-ds));
+        }
+
+        // Collect sprites: enemies + items + portal
+        const sprites=[];
+        enemies.forEach(en=>{if(!en.dead)sprites.push({...en,_e:true});});
+        items.forEach(it=>sprites.push({...it,_i:true}));
+        if(portal)sprites.push({x:portal.x,y:portal.y,bob:portal.bob,_p:true});
+        // Sort by dist (far→near)
+        sprites.sort((a,b)=>Math.hypot(b.x-P.x,b.y-P.y)-Math.hypot(a.x-P.x,a.y-P.y));
+
+        sprites.forEach(sp=>{
+            const spx=sp.x-P.x,spy=sp.y-P.y;
+            const inv=1/(P.px*P.dy-P.dx*P.py);
+            const tx=inv*(P.dy*spx-P.dx*spy);
+            const ty=inv*(-P.py*spx+P.px*spy);
+            if(ty<=.15)return;
+            const ssx=Math.floor((RW/2)*(1+tx/ty));
+            const sh=Math.abs(Math.floor(RH/ty));
+            const sw=Math.floor(sh*.7);
+            const dsx=Math.max(0,Math.floor(ssx-sw/2));
+            const dex=Math.min(RW-1,Math.floor(ssx+sw/2));
+            const dsy=Math.max(0,Math.floor((RH-sh)/2+bobY));
+            const dey=Math.min(RH-1,Math.floor((RH+sh)/2+bobY));
+            const fog=Math.max(0,Math.min(1,1-ty/18));
+            if(fog<.02)return;
+
+            for(let s=dsx;s<=dex;s++){
+                if(zBuf[s]<=ty)continue;
+                const tx2=(s-dsx)/(dex-dsx+.001);
+                rx.globalAlpha=fog;
+
+                if(sp._e){
+                    // Enemy body
+                    rx.fillStyle=sp.hit>0?'#ffffff':sp.col;
+                    rx.fillRect(s,dsy,1,dey-dsy);
+                    // Eyes
+                    const eyeY=dsy+Math.floor((dey-dsy)*.28);
+                    const eyeH=Math.max(2,Math.floor((dey-dsy)*.14));
+                    if((tx2>.2&&tx2<.38)||(tx2>.62&&tx2<.8)){
+                        rx.fillStyle=sp.eye;rx.fillRect(s,eyeY,1,eyeH);
+                    }
+                    // Darker feet
+                    const feetH=Math.floor((dey-dsy)*.25);
+                    rx.fillStyle='rgba(0,0,0,.4)';
+                    rx.fillRect(s,dey-feetH,1,feetH);
+                } else if(sp._i){
+                    // Item — centered floating cube
+                    const ib=Math.floor(Math.sin(sp.bob)*4);
+                    const iTop=dsy+Math.floor((dey-dsy)*.25)+ib;
+                    const iH=Math.floor((dey-dsy)*.5);
+                    rx.fillStyle=sp.col;rx.fillRect(s,iTop,1,iH);
+                    // Shine
+                    if(tx2>.3&&tx2<.45){rx.fillStyle='rgba(255,255,255,.5)';rx.fillRect(s,iTop,1,Math.floor(iH*.4));}
+                } else if(sp._p){
+                    // Exit portal — glowing pillar
+                    const pb=.6+Math.sin(sp.bob)*.35;
+                    rx.fillStyle=`rgba(0,255,100,${pb*fog})`;
+                    rx.fillRect(s,dsy,1,dey-dsy);
+                    if(tx2>.35&&tx2<.65){rx.fillStyle=`rgba(200,255,200,${pb*.6*fog})`;rx.fillRect(s,dsy,1,Math.floor((dey-dsy)*.5));}
+                }
+                rx.globalAlpha=1;
+            }
+        });
+
+        // Muzzle flash
+        if(mFlash>0){
+            rx.globalAlpha=mFlash/.14*.35;rx.fillStyle='#ffaa00';rx.fillRect(0,0,RW,RH);rx.globalAlpha=1;
+        }
+
+        // Blit to main canvas
+        const sx=shake>0?(Math.random()-.5)*shake*12:0;
+        const sy=shake>0?(Math.random()-.5)*shake*12:0;
+        ctx.drawImage(rc,sx,sy,canvas.width,canvas.height);
+
+        // Draw gun on top
+        drawGun();
+
+        // Portal proximity hint
+        if(portal){
+            const pd=Math.hypot(portal.x-P.x,portal.y-P.y);
+            if(pd<3){
+                ctx.save();
+                ctx.font=`bold ${Math.floor(canvas.height*.055)}px Courier New`;
+                ctx.textAlign='center';ctx.fillStyle='#44ff44';
+                ctx.fillText('[ ВЫХОД — ПОДОЙДИ БЛИЖЕ ]',canvas.width/2,canvas.height*.28);
+                ctx.restore();
+            }
+        }
+    }
+
+    function drawGun(){
+        const gx=canvas.width/2,gy=canvas.height-16;
+        const sc=canvas.height/400;
+        const rbY=gRecoil*130;
+        const bx=Math.sin(bobPh)*7*sc,by2=Math.cos(bobPh*2)*3*sc;
+        ctx.save();
+        ctx.translate(gx+bx,gy+rbY*sc+by2);
+        ctx.scale(sc,sc);
+        if(mFlash>0){
+            ctx.globalAlpha=mFlash/.14;
+            ctx.fillStyle='#ffcc00';
+            ctx.beginPath();ctx.arc(-18,-125,20,0,Math.PI*2);ctx.fill();
+            ctx.globalAlpha=1;
+        }
+        ctx.fillStyle='#4a4a4a';ctx.fillRect(-35,-112,18,12);// barrel
+        ctx.fillStyle='#3d3d3d';ctx.fillRect(-50,-100,52,42);// body
+        ctx.fillStyle='#333';ctx.fillRect(-40,-58,28,52);// grip
+        ctx.fillStyle='#555';ctx.fillRect(-30,-98,12,22);// detail
+        ctx.fillStyle='#222';ctx.fillRect(-44,-88,9,28);
+        ctx.fillStyle='#5a5a5a';ctx.fillRect(-50,-100,52,6);// top highlight
+        ctx.restore();
+    }
+
+    // ── HUD
+    function updHUD(){
+        document.getElementById('hp-v').textContent=Math.max(0,Math.floor(P.hp));
+        document.getElementById('hpfill').style.width=Math.max(0,P.hp/P.maxHp*100)+'%';
+        document.getElementById('am-v').textContent=P.ammo;
+        document.getElementById('kl-v').textContent=kills;
+        document.getElementById('sc-v').textContent=score.toLocaleString();
+        document.getElementById('lvlbadge').textContent='УРОВЕНЬ '+(lvl+1);
+    }
+
+    // ── Screens
+    function sgrid(el,rows){
+        el.innerHTML=rows.map(([l,v])=>`<div class="sb"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
+    }
+    function showMenu(){
+        GS='menu';
+        document.getElementById('scr').style.display='flex';
+        document.getElementById('mb').style.display='';
+        document.getElementById('gb').style.display='none';
+        const s=ld();
+        sgrid(document.getElementById('gs'),[
+            ['Лучший счёт',(s.best||0).toLocaleString()],
+            ['Игр сыграно',s.games||0],
+            ['Убийств всего',s.kills||0],
+            ['Смертей',s.deaths||0],
+            ['Макс. уровень',s.bestL||0],
+            ['',''],
+        ]);
+    }
+    function startGame(){
+        GS='playing';score=0;kills=0;lvl=0;
+        P.hp=100;P.ammo=30;
+        initLvl(0);
+        document.getElementById('scr').style.display='none';
+        updHUD();
+    }
+    function nextLevel(){
+        lvl++;GS='playing';initLvl(lvl);
+        document.getElementById('scr').style.display='none';
+        updHUD();
+    }
+    function endGame(won){
+        GS=won?'win':'dead';
+        const s=addSt({score,kills,lvl:lvl+1,died:!won});
+        document.getElementById('scr').style.display='flex';
+        document.getElementById('mb').style.display='none';
+        document.getElementById('gb').style.display='';
+        document.getElementById('gt').textContent=won?'УРОВЕНЬ ПРОЙДЕН':'ВЫ МЕРТВЫ';
+        document.getElementById('gsc').textContent=score.toLocaleString();
+        document.getElementById('gbst').textContent=score>0&&score>=s.best?'>>> НОВЫЙ РЕКОРД <<<':'';
+        const last=lvl>=MAPS.length-1;
+        document.getElementById('gnx').style.display=(won&&!last)?'':'none';
+        document.getElementById('grst').textContent=won?'ИГРАТЬ ЗАНОВО':'ЕЩЁ РАЗ';
+        sgrid(document.getElementById('gst'),[
+            ['Счёт',score.toLocaleString()],['Убийств',kills],
+            ['Уровень',lvl+1],['Патронов осталось',P.ammo],
+        ]);
+        if(locked)document.exitPointerLock();
+    }
+
+    // ── Game loop
+    function loop(ts){
+        const dt=Math.min((ts-prevT)/1000,.05);prevT=ts;
+        if(GS==='playing')update(dt);
+        if(cmap)renderFrame();
+        requestAnimationFrame(loop);
+    }
+    showMenu();
+    requestAnimationFrame(ts=>{prevT=ts;loop(ts);});
+</script>
+</body>
+</html>
