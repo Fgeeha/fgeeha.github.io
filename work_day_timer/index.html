@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Work day timer Nikita Kolesnikov (FgeeHa)</title>
+  <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:2rem 2.5rem;width:100%;max-width:480px}
+.day-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;letter-spacing:0.04em;text-transform:uppercase}
+.status{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:1.5rem}
+.big-time{font-size:56px;font-weight:500;color:var(--color-text-primary);letter-spacing:-1px;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.sub{font-size:14px;color:var(--color-text-secondary);margin-bottom:2rem}
+.bar-wrap{background:var(--color-background-secondary);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem}
+.bar{height:8px;border-radius:6px;transition:width 1s linear}
+.bar-info{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-tertiary);margin-bottom:1.5rem}
+.segments{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.seg{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.seg-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px;letter-spacing:0.03em}
+.seg-val{font-size:15px;font-weight:500;color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.schedule-btn{font-size:13px;color:var(--color-text-secondary);background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:6px 14px;cursor:pointer;width:100%;margin-bottom:1rem}
+.schedule-btn:hover{background:var(--color-background-secondary)}
+.schedule-panel{display:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:1rem;margin-bottom:1rem}
+.schedule-panel.open{display:block}
+.schedule-panel label{font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:3px;margin-top:10px}
+.schedule-panel label:first-of-type{margin-top:0}
+.schedule-panel input[type=time]{font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.save-btn{margin-top:12px;font-size:13px;padding:6px 0;width:100%}
+</style>
+
+<div class="card">
+  <h2 class="sr-only">Таймер рабочего дня — сколько осталось до конца смены</h2>
+  <div class="day-label" id="day-label">понедельник</div>
+  <div class="status" id="status">—</div>
+  <div class="big-time" id="big-time">00:00:00</div>
+  <div class="sub" id="sub"></div>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+  <div class="bar-info"><span id="bar-start">—</span><span id="bar-end">—</span></div>
+  <div class="segments">
+    <div class="seg"><div class="seg-label">До обеда</div><div class="seg-val" id="seg-lunch">—</div></div>
+    <div class="seg"><div class="seg-label">Обед</div><div class="seg-val" id="seg-break">—</div></div>
+    <div class="seg"><div class="seg-label">После обеда</div><div class="seg-val" id="seg-after">—</div></div>
+  </div>
+  <button class="schedule-btn" onclick="toggleSchedule()">Настроить расписание</button>
+  <div class="schedule-panel" id="sched-panel">
+    <div class="row2">
+      <div>
+        <label>Начало (пн–пт)</label>
+        <input type="time" id="s-start" value="08:30">
+      </div>
+      <div>
+        <label>Конец (пн–чт)</label>
+        <input type="time" id="s-end-wk" value="17:30">
+      </div>
+      <div>
+        <label>Конец в пятницу</label>
+        <input type="time" id="s-end-fri" value="16:30">
+      </div>
+      <div></div>
+      <div>
+        <label>Обед: начало</label>
+        <input type="time" id="s-lunch-s" value="12:00">
+      </div>
+      <div>
+        <label>Обед: конец</label>
+        <input type="time" id="s-lunch-e" value="12:48">
+      </div>
+    </div>
+    <button class="schedule-btn save-btn" onclick="saveSchedule()">Сохранить</button>
+  </div>
+</div>
+
+<script>
+let sched={start:"08:30",endWk:"17:30",endFri:"16:30",lunchS:"12:00",lunchE:"12:48"};
+function toMin(t){const[h,m]=t.split(":").map(Number);return h*60+m;}
+function fmt(sec){const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return[h,m,s].map(v=>String(v).padStart(2,'0')).join(':');}
+function fmtHM(min){if(min<=0)return"0 мин";const h=Math.floor(min/60),m=min%60;if(h&&m)return h+"ч "+m+"м";if(h)return h+"ч";return m+"м";}
+const DAYS=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+const BAR_COLORS=["#1D9E75","#378ADD","#E24B4A","#378ADD"];
+
+function tick(){
+  const now=new Date(),dow=now.getDay(),cur=now.getHours()*60+now.getMinutes(),sec=now.getSeconds();
+  document.getElementById("day-label").textContent=DAYS[dow];
+  const isWeekend=(dow===0||dow===6);
+  const isFri=(dow===5);
+  const isWorkday=!isWeekend&&dow>=1&&dow<=5;
+  const startMin=toMin(sched.start),endMin=isWorkday?(isFri?toMin(sched.endFri):toMin(sched.endWk)):0;
+  const lunchS=toMin(sched.lunchS),lunchE=toMin(sched.lunchE);
+
+  let status,bigTime,sub,pct=0,color="#378ADD",segLunch="—",segBreak="—",segAfter="—",barStart="",barEnd="";
+
+  if(isWeekend){
+    status="Сегодня выходной";bigTime="🎉";sub="Отдыхайте!";
+  } else if(cur<startMin){
+    const rem=(startMin-cur)*60-sec;status="До начала рабочего дня";bigTime=fmt(rem);
+    sub="Начало в "+sched.start;pct=0;color="#378ADD";
+    const total=(endMin-startMin)*60;const worked=0;pct=0;
+    barStart=sched.start;barEnd=isFri?sched.endFri:sched.endWk;
+  } else if(cur>=startMin&&cur<lunchS){
+    const rem=(lunchS-cur)*60-sec;status="До обеда";bigTime=fmt(rem);
+    const totalPre=(lunchS-startMin)*60;const done=(cur-startMin)*60+sec;
+    pct=Math.min(100,done/totalPre*100);color="#1D9E75";
+    sub="Первая половина дня";
+    segLunch=fmtHM(lunchS-cur);
+    segBreak=fmtHM(lunchE-lunchS);
+    const afterMin=endMin-lunchE;segAfter=fmtHM(afterMin>0?afterMin:0);
+    barStart=sched.start;barEnd=sched.lunchS;
+  } else if(cur>=lunchS&&cur<lunchE){
+    const rem=(lunchE-cur)*60-sec;status="Обед";bigTime=fmt(rem);
+    const total=(lunchE-lunchS)*60;const done=(cur-lunchS)*60+sec;
+    pct=Math.min(100,done/total*100);color="#BA7517";
+    sub="Возвращение в "+sched.lunchE;
+    segLunch="0 мин";segBreak=fmtHM(lunchE-cur);
+    segAfter=fmtHM(endMin-lunchE);
+    barStart=sched.lunchS;barEnd=sched.lunchE;
+  } else if(cur>=lunchE&&cur<endMin){
+    const rem=(endMin-cur)*60-sec;status="До конца рабочего дня";bigTime=fmt(rem);
+    const total=(endMin-lunchE)*60;const done=(cur-lunchE)*60+sec;
+    pct=Math.min(100,done/total*100);color="#1D9E75";
+    sub="Вторая половина дня";
+    segLunch="0 мин";segBreak="0 мин";segAfter=fmt(rem);
+    barStart=sched.lunchE;barEnd=isFri?sched.endFri:sched.endWk;
+  } else {
+    status="Рабочий день окончен";bigTime="✓";sub="Хорошего вечера!";pct=100;color="#1D9E75";
+    barStart=sched.start;barEnd=isFri?sched.endFri:sched.endWk;
+  }
+
+  document.getElementById("status").textContent=status;
+  document.getElementById("big-time").textContent=bigTime;
+  document.getElementById("sub").textContent=sub;
+  const bar=document.getElementById("bar");
+  bar.style.width=pct+"%";bar.style.background=color;
+  document.getElementById("bar-start").textContent=barStart;
+  document.getElementById("bar-end").textContent=barEnd;
+  document.getElementById("seg-lunch").textContent=segLunch;
+  document.getElementById("seg-break").textContent=segBreak;
+  document.getElementById("seg-after").textContent=segAfter;
+}
+
+function toggleSchedule(){
+  const p=document.getElementById("sched-panel");
+  p.classList.toggle("open");
+}
+function saveSchedule(){
+  sched.start=document.getElementById("s-start").value;
+  sched.endWk=document.getElementById("s-end-wk").value;
+  sched.endFri=document.getElementById("s-end-fri").value;
+  sched.lunchS=document.getElementById("s-lunch-s").value;
+  sched.lunchE=document.getElementById("s-lunch-e").value;
+  document.getElementById("sched-panel").classList.remove("open");
+  tick();
+}
+
+tick();setInterval(tick,1000);
+</script>
+</body>
