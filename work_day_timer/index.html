@@ -1,413 +1,315 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Work day timer Nikita Kolesnikov (FgeeHa)</title>
-
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
     m[i].l=1*new Date();
-    for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
-    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
-    ym(95333846,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      ym(95333846, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+      });
   </script>
   <meta name="yandex-verification" content="005c79e96def42bf" />
-  <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+  <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
-
-  <style>
-    :root {
-      --bg:         #f1efe8;
-      --card:       #ffffff;
-      --surface:    #f1efe8;
-      --border:     rgba(0,0,0,0.12);
-      --border2:    rgba(0,0,0,0.22);
-      --t1:         #1a1a18;
-      --t2:         #6b6b67;
-      --t3:         #a0a09b;
-      --r-md:       8px;
-      --r-lg:       12px;
-    }
-    @media(prefers-color-scheme:dark){
-      :root{
-        --bg:#1c1c1a; --card:#242422; --surface:#2e2e2b;
-        --border:rgba(255,255,255,0.11); --border2:rgba(255,255,255,0.22);
-        --t1:#f0ede6; --t2:#9e9e9a; --t3:#5f5f5b;
-      }
-    }
-
-    *{box-sizing:border-box;margin:0;padding:0}
-
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-      background:var(--bg);
-      min-height:100vh;
-      display:flex;align-items:center;justify-content:center;
-      padding:2rem;
-    }
-
-    .card{
-      background:var(--card);
-      border:0.5px solid var(--border);
-      border-radius:var(--r-lg);
-      padding:2rem 2.5rem;
-      width:100%;max-width:480px;
-      position:relative;
-    }
-
-    .day-label{font-size:12px;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-    .status{font-size:21px;font-weight:500;color:var(--t1);margin-bottom:1.25rem}
-    .big-time{font-size:56px;font-weight:500;color:var(--t1);letter-spacing:-2px;line-height:1;margin-bottom:5px;font-variant-numeric:tabular-nums}
-    .sub{font-size:14px;color:var(--t2);margin-bottom:1.75rem;min-height:20px}
-
-    /* ── 3 bars ── */
-    .bars-block{margin-bottom:1.5rem;display:flex;flex-direction:column;gap:10px}
-
-    .bar-row{}
-    .bar-row-label{
-      display:flex;justify-content:space-between;
-      font-size:11px;color:var(--t3);
-      letter-spacing:.03em;margin-bottom:4px;
-    }
-    .bar-row-label .bl{color:var(--t2);font-weight:500}
-
-    .bar-track{
-      height:8px;border-radius:6px;
-      background:var(--surface);
-      overflow:visible;
-      position:relative;
-    }
-    .bar-fill{
-      height:8px;border-radius:6px;
-      transition:width .9s linear;
-      position:relative;
-    }
-
-    /* morning — green */
-    .bar-fill.morning{background:#1D9E75}
-    /* lunch — amber */
-    .bar-fill.lunch{background:#BA7517}
-    /* fuse — orange→red gradient */
-    .bar-fill.fuse{
-      background:linear-gradient(90deg,#e07b20,#d63030);
-      border-radius:6px;
-      overflow:visible;
-    }
-    /* flame tip on fuse */
-    .fuse-flame{
-      position:absolute;
-      right:-8px;top:50%;
-      transform:translateY(-50%);
-      font-size:14px;
-      line-height:1;
-      pointer-events:none;
-      animation:flicker .35s ease-in-out infinite alternate;
-    }
-    @keyframes flicker{from{opacity:.8;transform:translateY(-50%) scale(1)}to{opacity:1;transform:translateY(-52%) scale(1.15)}}
-
-    /* segments */
-    .segments{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
-    .seg{background:var(--surface);border-radius:var(--r-md);padding:10px 12px}
-    .seg-label{font-size:11px;color:var(--t2);margin-bottom:3px;letter-spacing:.02em}
-    .seg-val{font-size:15px;font-weight:500;color:var(--t1);font-variant-numeric:tabular-nums}
-
-    /* settings */
-    .schedule-btn{
-      font-size:13px;color:var(--t2);background:none;
-      border:0.5px solid var(--border2);border-radius:var(--r-md);
-      padding:7px 14px;cursor:pointer;width:100%;margin-bottom:1rem;
-      transition:background .15s;
-    }
-    .schedule-btn:hover{background:var(--surface)}
-    .schedule-panel{display:none;border:0.5px solid var(--border);border-radius:var(--r-md);padding:1rem;margin-bottom:1rem}
-    .schedule-panel.open{display:block}
-    .schedule-panel label{font-size:12px;color:var(--t2);display:block;margin-bottom:4px;margin-top:12px}
-    .schedule-panel label:first-of-type{margin-top:0}
-    .schedule-panel input[type=time]{
-      font-size:14px;padding:6px 10px;
-      border:0.5px solid var(--border2);border-radius:var(--r-md);
-      background:var(--card);color:var(--t1);width:100%;outline:none;
-    }
-    .schedule-panel input[type=time]:focus{border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,.18)}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .save-btn{margin-top:14px;font-size:13px;padding:7px 0;width:100%}
-
-    /* fireworks canvas */
-    #fw-canvas{
-      position:fixed;inset:0;
-      width:100%;height:100%;
-      pointer-events:none;
-      z-index:100;
-      display:none;
-    }
-
-    /* done screen */
-    .done-badge{
-      text-align:center;padding:1rem 0 .5rem;
-    }
-    .done-badge .emoji{font-size:48px;display:block;margin-bottom:.5rem}
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --card-bg: #ffffff;
+    --border: rgba(0,0,0,0.12);
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6b67;
+    --text-tertiary: #9e9e9a;
+    --surface: #eeece6;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --card-bg: #242422;
+      --border: rgba(255,255,255,0.12);
+      --text-primary: #f0ede6;
+      --text-secondary: #9e9e9a;
+      --text-tertiary: #6b6b67;
+      --surface: #2c2c2a;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem 2.5rem;
+    width: 100%;
+    max-width: 480px;
+  }
+  .day-label { font-size: 12px; color: var(--text-tertiary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .status { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 1rem; }
+  .big-time { font-size: 56px; font-weight: 500; color: var(--text-primary); letter-spacing: -2px; line-height: 1; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.75rem; min-height: 20px; }
+
+  .bars-block { margin-bottom: 1.5rem; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+  .bar-row-label { font-size: 11px; color: var(--text-secondary); width: 82px; flex-shrink: 0; letter-spacing: 0.02em; }
+  .bar-track { flex: 1; height: 8px; background: var(--surface); border-radius: 6px; overflow: visible; position: relative; }
+  .bar-track.fuse-track {
+    background: repeating-linear-gradient(90deg, var(--surface) 0px, var(--surface) 5px, rgba(186,117,23,0.22) 5px, rgba(186,117,23,0.22) 9px);
+  }
+  .bar-fill { height: 8px; border-radius: 6px; width: 0%; transition: width 1s linear; position: relative; overflow: visible; }
+  .bar-fill.fuse-fill { background: linear-gradient(90deg, #BA7517, #E24B4A); overflow: visible; }
+  .flame {
+    position: absolute; right: -13px; top: 50%; transform: translateY(-54%);
+    font-size: 17px; line-height: 1; display: none;
+    animation: flicker 0.35s ease-in-out infinite alternate; pointer-events: none;
+  }
+  @keyframes flicker {
+    from { transform: translateY(-54%) scale(1);    filter: brightness(1); }
+    to   { transform: translateY(-58%) scale(1.2);  filter: brightness(1.4); }
+  }
+  .bar-row-val { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; width: 52px; text-align: right; flex-shrink: 0; }
+
+  .segments { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .seg { background: var(--surface); border-radius: var(--radius-md); padding: 10px 12px; }
+  .seg-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; letter-spacing: 0.02em; }
+  .seg-val { font-size: 15px; font-weight: 500; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  .schedule-btn { font-size: 13px; color: var(--text-secondary); background: none; border: 0.5px solid rgba(0,0,0,0.22); border-radius: var(--radius-md); padding: 7px 14px; cursor: pointer; width: 100%; margin-bottom: 1rem; transition: background 0.15s; }
+  @media (prefers-color-scheme: dark) {
+    .schedule-btn { border-color: rgba(255,255,255,0.22); }
+    .schedule-panel input[type=time] { border-color: rgba(255,255,255,0.22); }
+  }
+  .schedule-btn:hover { background: var(--surface); }
+  .schedule-panel { display: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem; }
+  .schedule-panel.open { display: block; }
+  .schedule-panel label { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; margin-top: 12px; }
+  .schedule-panel label:first-of-type { margin-top: 0; }
+  .schedule-panel input[type=time] { font-size: 13px; padding: 5px 8px; border: 0.5px solid rgba(0,0,0,0.22); border-radius: var(--radius-md); background: var(--card-bg); color: var(--text-primary); width: 100%; outline: none; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .save-btn { margin-top: 12px; padding: 6px 0; width: 100%; }
+
+  #fw-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; z-index: 9999; }
+</style>
 
 <canvas id="fw-canvas"></canvas>
 
 <div class="card">
   <div class="day-label" id="day-label">—</div>
-  <div class="status" id="status">—</div>
-  <div id="main-content">
-    <div class="big-time" id="big-time">--:--:--</div>
-    <div class="sub" id="sub"></div>
+  <div class="status"    id="status">—</div>
+  <div class="big-time"  id="big-time">--:--:--</div>
+  <div class="sub"       id="sub"></div>
 
-    <div class="bars-block">
-
-      <div class="bar-row" id="row-morning">
-        <div class="bar-row-label">
-          <span class="bl">До обеда</span>
-          <span id="b1-times"></span>
-        </div>
-        <div class="bar-track">
-          <div class="bar-fill morning" id="bar1" style="width:0%"></div>
-        </div>
+  <div class="bars-block">
+    <div class="bar-row">
+      <div class="bar-row-label">До обеда</div>
+      <div class="bar-track">
+        <div class="bar-fill" id="fill1" style="background:#1D9E75"></div>
       </div>
-
-      <div class="bar-row" id="row-lunch">
-        <div class="bar-row-label">
-          <span class="bl">Обед</span>
-          <span id="b2-times"></span>
-        </div>
-        <div class="bar-track">
-          <div class="bar-fill lunch" id="bar2" style="width:0%"></div>
-        </div>
-      </div>
-
-      <div class="bar-row" id="row-after">
-        <div class="bar-row-label">
-          <span class="bl">После обеда</span>
-          <span id="b3-times"></span>
-        </div>
-        <div class="bar-track" style="overflow:visible">
-          <div class="bar-fill fuse" id="bar3" style="width:0%">
-            <span class="fuse-flame" id="fuse-flame">🔥</span>
-          </div>
-        </div>
-      </div>
-
+      <div class="bar-row-val" id="val1">—</div>
     </div>
-
-    <div class="segments">
-      <div class="seg"><div class="seg-label">До обеда</div><div class="seg-val" id="seg-lunch">—</div></div>
-      <div class="seg"><div class="seg-label">Обед</div><div class="seg-val" id="seg-break">—</div></div>
-      <div class="seg"><div class="seg-label">После обеда</div><div class="seg-val" id="seg-after">—</div></div>
+    <div class="bar-row">
+      <div class="bar-row-label">Обед</div>
+      <div class="bar-track">
+        <div class="bar-fill" id="fill2" style="background:#BA7517"></div>
+      </div>
+      <div class="bar-row-val" id="val2">—</div>
     </div>
+    <div class="bar-row">
+      <div class="bar-row-label">После обеда</div>
+      <div class="bar-track fuse-track">
+        <div class="bar-fill fuse-fill" id="fill3">
+          <span class="flame" id="flame">🔥</span>
+        </div>
+      </div>
+      <div class="bar-row-val" id="val3">—</div>
+    </div>
+  </div>
+
+  <div class="segments">
+    <div class="seg"><div class="seg-label">До обеда</div><div class="seg-val" id="seg-lunch">—</div></div>
+    <div class="seg"><div class="seg-label">Обед</div><div class="seg-val" id="seg-break">—</div></div>
+    <div class="seg"><div class="seg-label">После обеда</div><div class="seg-val" id="seg-after">—</div></div>
   </div>
 
   <button class="schedule-btn" onclick="toggleSchedule()">Настроить расписание</button>
   <div class="schedule-panel" id="sched-panel">
-    <div class="grid2">
-      <div>
-        <label>Начало (пн–пт)</label>
-        <input type="time" id="s-start" value="08:30">
-      </div>
-      <div>
-        <label>Конец (пн–чт)</label>
-        <input type="time" id="s-end-wk" value="17:30">
-      </div>
-      <div>
-        <label>Конец в пятницу</label>
-        <input type="time" id="s-end-fri" value="16:30">
-      </div>
+    <div class="row2">
+      <div><label>Начало (пн–пт)</label><input type="time" id="s-start" value="08:30"></div>
+      <div><label>Конец (пн–чт)</label><input type="time" id="s-end-wk" value="17:30"></div>
+      <div><label>Конец в пятницу</label><input type="time" id="s-end-fri" value="16:30"></div>
       <div></div>
-      <div>
-        <label>Обед: начало</label>
-        <input type="time" id="s-lunch-s" value="12:00">
-      </div>
-      <div>
-        <label>Обед: конец</label>
-        <input type="time" id="s-lunch-e" value="12:48">
-      </div>
+      <div><label>Обед: начало</label><input type="time" id="s-lunch-s" value="12:00"></div>
+      <div><label>Обед: конец</label><input type="time" id="s-lunch-e" value="12:48"></div>
     </div>
     <button class="schedule-btn save-btn" onclick="saveSchedule()">Сохранить</button>
   </div>
 </div>
 
 <script>
-/* ── schedule ── */
-let sched={start:"08:30",endWk:"17:30",endFri:"16:30",lunchS:"12:00",lunchE:"12:48"};
+const SCHED_KEY="wdt_v1";
+const SCHED_DEF={start:"08:30",endWk:"17:30",endFri:"16:30",lunchS:"12:00",lunchE:"12:48"};
+let sched=(()=>{try{const s=localStorage.getItem(SCHED_KEY);return s?{...SCHED_DEF,...JSON.parse(s)}:{...SCHED_DEF};}catch{return{...SCHED_DEF};}})();
+function schedLoad(){
+  document.getElementById("s-start").value=sched.start;
+  document.getElementById("s-end-wk").value=sched.endWk;
+  document.getElementById("s-end-fri").value=sched.endFri;
+  document.getElementById("s-lunch-s").value=sched.lunchS;
+  document.getElementById("s-lunch-e").value=sched.lunchE;
+}
 function toMin(t){const[h,m]=t.split(":").map(Number);return h*60+m;}
 function fmt(sec){const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return[h,m,s].map(v=>String(v).padStart(2,'0')).join(':');}
 function fmtHM(min){if(min<=0)return"0 мин";const h=Math.floor(min/60),m=min%60;if(h&&m)return h+"ч "+m+"м";if(h)return h+"ч";return m+"м";}
 const DAYS=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
 
-/* ── fireworks ── */
-const canvas=document.getElementById("fw-canvas");
-const ctx=canvas.getContext("2d");
-let particles=[];
-let fwRunning=false;
-let fwRaf=null;
-
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
-window.addEventListener("resize",resize);resize();
-
-function spawnBurst(x,y){
-  const colors=["#FF6B6B","#FFD93D","#6BCB77","#4D96FF","#FF922B","#CC5DE8","#F06595","#74C0FC"];
-  for(let i=0;i<80;i++){
-    const angle=Math.random()*Math.PI*2;
-    const speed=2+Math.random()*5;
-    particles.push({
-      x,y,
-      vx:Math.cos(angle)*speed,
-      vy:Math.sin(angle)*speed-2,
-      alpha:1,
-      color:colors[Math.floor(Math.random()*colors.length)],
-      r:2+Math.random()*3,
-      gravity:.12
-    });
+/* fireworks */
+const canvas=document.getElementById('fw-canvas');
+const ctx=canvas.getContext('2d');
+let particles=[],fwActive=false,fwTimer=null;
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+window.addEventListener('resize',resize); resize();
+const COLORS=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#F4A261','#E9FF70','#FF9FF3','#54A0FF','#FFC8DD','#BDE0FE'];
+function burst(){
+  const x=80+Math.random()*(canvas.width-160);
+  const y=60+Math.random()*canvas.height*0.55;
+  const col=COLORS[Math.floor(Math.random()*COLORS.length)];
+  const n=50+Math.floor(Math.random()*30);
+  for(let i=0;i<n;i++){
+    const a=(Math.PI*2/n)*i,sp=1.5+Math.random()*5;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-0.8,alpha:1,color:col,r:1.8+Math.random()*2.2});
   }
 }
-
-function fwFrame(){
+function animateFW(){
+  if(!fwActive)return;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy; p.vy+=p.gravity; p.alpha-=.018;
-    ctx.globalAlpha=Math.max(0,p.alpha);
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+  particles=particles.filter(p=>p.alpha>0.01);
+  for(const p of particles){
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.07; p.alpha-=0.011;
+    ctx.globalAlpha=p.alpha;
     ctx.fillStyle=p.color;
-    ctx.fill();
-  });
-  ctx.globalAlpha=1;
-  particles=particles.filter(p=>p.alpha>0);
-  if(fwRunning){
-    if(Math.random()<.06)spawnBurst(Math.random()*canvas.width,Math.random()*canvas.height*.6+50);
-    fwRaf=requestAnimationFrame(fwFrame);
-  } else if(particles.length>0){
-    fwRaf=requestAnimationFrame(fwFrame);
-  } else {
-    canvas.style.display="none";
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
   }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(animateFW);
+}
+function startFW(){
+  if(fwActive)return;
+  fwActive=true; canvas.style.display='block';
+  burst(); burst(); burst(); animateFW();
+  let n=0;
+  fwTimer=setInterval(()=>{n++;if(particles.length<600)burst();if(n>12){clearInterval(fwTimer);setTimeout(stopFW,2500);}},650);
+}
+function stopFW(){
+  fwActive=false; clearInterval(fwTimer);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  canvas.style.display='none'; particles=[];
 }
 
-function startFireworks(){
-  if(fwRunning)return;
-  fwRunning=true;
-  canvas.style.display="block";
-  for(let i=0;i<5;i++)spawnBurst(Math.random()*canvas.width,Math.random()*canvas.height*.5+80);
-  fwFrame();
-  setTimeout(()=>{fwRunning=false;},6000);
-}
+let dayEndedFired=false;
 
-/* ── state tracking ── */
-let prevPhase="";
-
-/* ── tick ── */
 function tick(){
   const now=new Date(),dow=now.getDay(),cur=now.getHours()*60+now.getMinutes(),sec=now.getSeconds();
   document.getElementById("day-label").textContent=DAYS[dow];
-
-  const isWeekend=(dow===0||dow===6);
-  const isFri=(dow===5);
-  const isWorkday=dow>=1&&dow<=5;
-  const startMin=toMin(sched.start);
-  const endMin=isWorkday?(isFri?toMin(sched.endFri):toMin(sched.endWk)):0;
+  const isWeekend=(dow===0||dow===6),isFri=(dow===5),isWorkday=!isWeekend&&dow>=1&&dow<=5;
+  const startMin=toMin(sched.start),endMin=isWorkday?(isFri?toMin(sched.endFri):toMin(sched.endWk)):0;
   const lunchS=toMin(sched.lunchS),lunchE=toMin(sched.lunchE);
-
-  let status,bigTime,sub,phase;
-  let p1=0,p2=0,p3=0;
+  let status,bigTime,sub,p1=0,p2=0,p3=0,v1="—",v2="—",v3="—";
   let segLunch="—",segBreak="—",segAfter="—";
-  let showFlame=false;
-
-  const b1times=sched.start+" – "+sched.lunchS;
-  const b2times=sched.lunchS+" – "+sched.lunchE;
-  const b3times=sched.lunchE+" – "+(isFri?sched.endFri:sched.endWk);
-
-  document.getElementById("b1-times").textContent=b1times;
-  document.getElementById("b2-times").textContent=b2times;
-  document.getElementById("b3-times").textContent=b3times;
+  const flame=document.getElementById('flame');
 
   if(isWeekend){
-    phase="weekend";
     status="Сегодня выходной"; bigTime="—"; sub="Отдыхайте!";
-
+    flame.style.display='none'; dayEndedFired=false;
   } else if(cur<startMin){
-    phase="before";
     const rem=(startMin-cur)*60-sec;
     status="До начала рабочего дня"; bigTime=fmt(rem); sub="Начало в "+sched.start;
-
+    v1=sched.start; v2=fmtHM(lunchE-lunchS); v3=isFri?sched.endFri:sched.endWk;
+    segLunch=fmtHM(lunchS-startMin); segBreak=fmtHM(lunchE-lunchS); segAfter=fmtHM(endMin-lunchE);
+    flame.style.display='none'; dayEndedFired=false;
   } else if(cur>=startMin&&cur<lunchS){
-    phase="morning";
     const rem=(lunchS-cur)*60-sec;
     status="До обеда"; bigTime=fmt(rem); sub="Первая половина дня";
-    p1=Math.min(100,(((cur-startMin)*60+sec)/((lunchS-startMin)*60))*100);
-    segLunch=fmtHM(lunchS-cur);
-    segBreak=fmtHM(lunchE-lunchS);
-    segAfter=fmtHM(Math.max(0,endMin-lunchE));
-
+    const done=(cur-startMin)*60+sec,total=(lunchS-startMin)*60;
+    p1=Math.min(100,done/total*100);
+    v1=fmtHM(lunchS-cur); v2=fmtHM(lunchE-lunchS); v3=fmtHM(endMin-lunchE);
+    segLunch=fmtHM(lunchS-cur); segBreak=fmtHM(lunchE-lunchS); segAfter=fmtHM(endMin-lunchE);
+    flame.style.display='none'; dayEndedFired=false;
   } else if(cur>=lunchS&&cur<lunchE){
-    phase="lunch";
     const rem=(lunchE-cur)*60-sec;
     status="Обед"; bigTime=fmt(rem); sub="Возвращение в "+sched.lunchE;
-    p1=100;
-    p2=Math.min(100,(((cur-lunchS)*60+sec)/((lunchE-lunchS)*60))*100);
-    segLunch="0 мин";
-    segBreak=fmtHM(lunchE-cur);
-    segAfter=fmtHM(Math.max(0,endMin-lunchE));
-
+    const done=(cur-lunchS)*60+sec,total=(lunchE-lunchS)*60;
+    p1=100; p2=Math.min(100,done/total*100);
+    v1="готово"; v2=fmtHM(lunchE-cur); v3=fmtHM(endMin-lunchE);
+    segLunch="0 мин"; segBreak=fmtHM(lunchE-cur); segAfter=fmtHM(endMin-lunchE);
+    flame.style.display='none'; dayEndedFired=false;
   } else if(cur>=lunchE&&cur<endMin){
-    phase="after";
     const rem=(endMin-cur)*60-sec;
     status="До конца рабочего дня"; bigTime=fmt(rem); sub="Вторая половина дня";
-    p1=100; p2=100;
-    p3=Math.min(100,(((cur-lunchE)*60+sec)/((endMin-lunchE)*60))*100);
-    showFlame=true;
+    const done=(cur-lunchE)*60+sec,total=(endMin-lunchE)*60;
+    p1=100; p2=100; p3=Math.min(100,done/total*100);
+    v1="готово"; v2="готово"; v3=fmt(rem);
     segLunch="0 мин"; segBreak="0 мин"; segAfter=fmt(rem);
-
+    flame.style.display=(p3<99)?'inline':'none';
+    dayEndedFired=false;
   } else {
-    phase="done";
     status="Рабочий день окончен"; bigTime="—"; sub="Хорошего вечера!";
     p1=100; p2=100; p3=100;
+    v1="готово"; v2="готово"; v3="готово";
+    segLunch="0 мин"; segBreak="0 мин"; segAfter="0 мин";
+    flame.style.display='none';
+    if(!dayEndedFired){dayEndedFired=true; startFW();}
   }
 
-  /* fireworks on transition to done */
-  if(phase==="done"&&prevPhase!=="done"&&prevPhase!==""){
-    startFireworks();
-  }
-  prevPhase=phase;
-
-  /* update DOM */
   document.getElementById("status").textContent=status;
   document.getElementById("big-time").textContent=bigTime;
   document.getElementById("sub").textContent=sub;
-
-  document.getElementById("bar1").style.width=p1+"%";
-  document.getElementById("bar2").style.width=p2+"%";
-  document.getElementById("bar3").style.width=p3+"%";
-
-  /* flame: hide when 0% or 100% */
-  const flame=document.getElementById("fuse-flame");
-  flame.style.display=(showFlame&&p3>0&&p3<100)?"block":"none";
-
+  document.getElementById("fill1").style.width=p1+'%';
+  document.getElementById("fill2").style.width=p2+'%';
+  document.getElementById("fill3").style.width=p3+'%';
+  document.getElementById("val1").textContent=v1;
+  document.getElementById("val2").textContent=v2;
+  document.getElementById("val3").textContent=v3;
   document.getElementById("seg-lunch").textContent=segLunch;
   document.getElementById("seg-break").textContent=segBreak;
   document.getElementById("seg-after").textContent=segAfter;
 }
 
-function toggleSchedule(){document.getElementById("sched-panel").classList.toggle("open");}
+function toggleSchedule(){
+  const p=document.getElementById("sched-panel");
+  if(!p.classList.contains("open"))schedLoad();
+  p.classList.toggle("open");
+}
 function saveSchedule(){
   sched.start=document.getElementById("s-start").value;
   sched.endWk=document.getElementById("s-end-wk").value;
   sched.endFri=document.getElementById("s-end-fri").value;
   sched.lunchS=document.getElementById("s-lunch-s").value;
   sched.lunchE=document.getElementById("s-lunch-e").value;
+  try{localStorage.setItem(SCHED_KEY,JSON.stringify(sched));}catch{}
   document.getElementById("sched-panel").classList.remove("open");
-  tick();
+  dayEndedFired=false; tick();
 }
 
-tick();
-setInterval(tick,1000);
+schedLoad(); tick(); setInterval(tick,1000);
 </script>
 </body>
 </html>
