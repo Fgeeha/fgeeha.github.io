@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contrast Checker | FgeeHa Tools</title>
+  <meta name="description" content="Check color contrast ratio per WCAG 2.1 with live preview."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --yellow: #ffd43b;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 20px; border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .pickers-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+    .picker-group { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 180px; }
+    .picker-group label { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text); }
+    .color-input-row { display: flex; gap: 10px; align-items: center; }
+    input[type=color] {
+      width: 50px; height: 42px; padding: 2px; border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; background: var(--bg);
+    }
+    input[type=text] {
+      flex: 1; padding: 9px 12px; background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: .9rem; font-family: 'Fira Code', monospace; outline: none;
+      transition: border-color .2s;
+    }
+    input[type=text]:focus { border-color: var(--accent); }
+    .preview-box {
+      border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+      min-height: 100px; display: flex; flex-direction: column;
+      gap: 8px; border: 1px solid var(--border);
+    }
+    .preview-normal { font-size: 1rem; }
+    .preview-large { font-size: 1.5rem; font-weight: 700; }
+    .preview-small { font-size: .75rem; }
+    .ratio-display {
+      font-size: 2.5rem; font-weight: 800; color: var(--text-bright);
+      text-align: center; padding: 10px 0;
+    }
+    .ratio-label { font-size: .85rem; text-align: center; color: var(--text); margin-bottom: 16px; }
+    .badges { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .badge {
+      padding: 12px 16px; border-radius: var(--radius);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .badge .name { font-size: .85rem; font-weight: 600; }
+    .badge .req { font-size: .75rem; opacity: .7; }
+    .badge .status {
+      font-size: .8rem; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .pass { background: rgba(81,207,102,.15); border: 1px solid rgba(81,207,102,.3); }
+    .pass .status { background: var(--green); color: #1a1b1e; }
+    .fail { background: rgba(255,107,107,.15); border: 1px solid rgba(255,107,107,.3); }
+    .fail .status { background: var(--red); color: #fff; }
+    .swap-btn {
+      padding: 8px 16px; background: var(--surface2); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      cursor: pointer; font-size: .85rem; font-weight: 600;
+    }
+    .swap-btn:hover { border-color: var(--accent); color: var(--accent); }
+    @media(max-width:500px){ .badges { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="container">
+  <h1>🎨 Contrast Checker</h1>
+  <p class="subtitle">WCAG 2.1 contrast ratio calculator with live preview</p>
+
+  <div class="card">
+    <div class="pickers-row">
+      <div class="picker-group">
+        <label>Foreground color</label>
+        <div class="color-input-row">
+          <input type="color" id="fg-picker" value="#ffffff" oninput="onPickerChange('fg')"/>
+          <input type="text" id="fg-hex" value="#ffffff" maxlength="7" oninput="onHexChange('fg')"/>
+        </div>
+      </div>
+      <div class="picker-group">
+        <label>Background color</label>
+        <div class="color-input-row">
+          <input type="color" id="bg-picker" value="#1a1b1e" oninput="onPickerChange('bg')"/>
+          <input type="text" id="bg-hex" value="#1a1b1e" maxlength="7" oninput="onHexChange('bg')"/>
+        </div>
+      </div>
+    </div>
+    <button class="swap-btn" onclick="swapColors()">⇄ Swap Colors</button>
+  </div>
+
+  <div class="card">
+    <div class="preview-box" id="preview-box">
+      <span class="preview-large">Large text sample Aa</span>
+      <span class="preview-normal">Normal text — The quick brown fox jumps over the lazy dog.</span>
+      <span class="preview-small">Small text sample — contrast matters at every size.</span>
+    </div>
+
+    <div class="ratio-display" id="ratio-display">—</div>
+    <div class="ratio-label">Contrast Ratio</div>
+
+    <div class="badges" id="badges">
+      <div class="badge fail"><div><div class="name">AA Normal</div><div class="req">≥ 4.5:1</div></div><span class="status">—</span></div>
+      <div class="badge fail"><div><div class="name">AA Large</div><div class="req">≥ 3:1</div></div><span class="status">—</span></div>
+      <div class="badge fail"><div><div class="name">AAA Normal</div><div class="req">≥ 7:1</div></div><span class="status">—</span></div>
+      <div class="badge fail"><div><div class="name">AAA Large</div><div class="req">≥ 4.5:1</div></div><span class="status">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+    if (hex.length !== 6) return null;
+    const r = parseInt(hex.slice(0,2),16);
+    const g = parseInt(hex.slice(2,4),16);
+    const b = parseInt(hex.slice(4,6),16);
+    if (isNaN(r)||isNaN(g)||isNaN(b)) return null;
+    return {r, g, b};
+  }
+
+  function linearize(c) {
+    c /= 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  }
+
+  function luminance({r, g, b}) {
+    return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b);
+  }
+
+  function contrastRatio(c1, c2) {
+    const l1 = luminance(c1), l2 = luminance(c2);
+    const lighter = Math.max(l1, l2), darker = Math.min(l1, l2);
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  function update() {
+    const fgHex = document.getElementById('fg-hex').value.trim();
+    const bgHex = document.getElementById('bg-hex').value.trim();
+    const fg = hexToRgb(fgHex);
+    const bg = hexToRgb(bgHex);
+
+    if (!fg || !bg) return;
+
+    const preview = document.getElementById('preview-box');
+    preview.style.backgroundColor = bgHex;
+    preview.style.color = fgHex;
+
+    const ratio = contrastRatio(fg, bg);
+    document.getElementById('ratio-display').textContent = ratio.toFixed(2) + ':1';
+
+    const checks = [
+      {name: 'AA Normal', req: 4.5},
+      {name: 'AA Large', req: 3.0},
+      {name: 'AAA Normal', req: 7.0},
+      {name: 'AAA Large', req: 4.5},
+    ];
+    const badgesEl = document.getElementById('badges');
+    badgesEl.innerHTML = checks.map(c => {
+      const pass = ratio >= c.req;
+      return `<div class="badge ${pass?'pass':'fail'}">
+        <div><div class="name">${c.name}</div><div class="req">≥ ${c.req}:1</div></div>
+        <span class="status">${pass?'PASS':'FAIL'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function onPickerChange(which) {
+    const val = document.getElementById(which + '-picker').value;
+    document.getElementById(which + '-hex').value = val;
+    update();
+  }
+
+  function onHexChange(which) {
+    let val = document.getElementById(which + '-hex').value.trim();
+    if (!val.startsWith('#')) val = '#' + val;
+    if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+      document.getElementById(which + '-picker').value = val;
+      update();
+    }
+  }
+
+  function swapColors() {
+    const fg = document.getElementById('fg-hex').value;
+    const bg = document.getElementById('bg-hex').value;
+    document.getElementById('fg-hex').value = bg;
+    document.getElementById('bg-hex').value = fg;
+    document.getElementById('fg-picker').value = bg;
+    document.getElementById('bg-picker').value = fg;
+    update();
+  }
+
+  update();
+</script>
+</body>
+</html>

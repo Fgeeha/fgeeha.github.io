@@ -84,45 +84,48 @@
 	<!-- /stat.sputnik.ru counter -->
     </head>
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="Main navigation">
-                <div class="container-fluid">
-                  <a class="navbar-brand" href="/">Nikita "FgeeHa" Kolesnikov</a>
+        <header class="site-header">
+            <nav class="navbar navbar-expand-lg portfolio-navbar sticky-top shadow-sm" aria-label="Main navigation">
+                <div class="container-fluid px-3 px-lg-4">
+                  <a class="navbar-brand fw-semibold" href="/">Nikita &quot;FgeeHa&quot; Kolesnikov</a>
                   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                   </button>
                   <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav ms-lg-3 me-auto mb-2 mb-lg-0 gap-lg-1">
                       <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/" id="head_nav_home">Home</a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/infinity">infinity</a>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="head_nav_mini_projects">Мои мини HTML-проекты</a>
+                        <ul class="dropdown-menu dropdown-menu-mini-projects shadow">
+                          <li><a class="dropdown-item" href="/infinity">♾️ infinity</a></li>
+                          <li><a class="dropdown-item" href="/PasswordGenerator">🔐 Password Generator</a></li>
+                          <li><a class="dropdown-item" href="/GreenSentry">🌿 Green Sentry</a></li>
+                          <li><a class="dropdown-item" href="/csvEditor">📊 CSV Editor</a></li>
+                          <li><a class="dropdown-item" href="/FileEncodingIdentifier">🔤 File Encoding Identifier</a></li>
+                          <li><a class="dropdown-item" href="/DungeonDash">⚔️ Dungeon</a></li>
+                          <li><a class="dropdown-item" href="/DoomDash">👹 Doom</a></li>
+                          <li><a class="dropdown-item" href="/WorkDayTimer">⏱️ Work Day Timer</a></li>
+                          <li><a class="dropdown-item" href="/Roulette">🎰 Roulette</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/JsonFormatter">🔧 JSON Formatter</a></li>
+                          <li><a class="dropdown-item" href="/Base64Tool">🔒 Base64 Tool</a></li>
+                          <li><a class="dropdown-item" href="/UuidGenerator">🆔 UUID Generator</a></li>
+                          <li><a class="dropdown-item" href="/ContrastChecker">🎨 Contrast Checker</a></li>
+                          <li><a class="dropdown-item" href="/OgPreview">🔗 OG Preview</a></li>
+                          <li><a class="dropdown-item" href="/QrGenerator">📷 QR Generator</a></li>
+                          <li><a class="dropdown-item" href="/TextDiff">📝 Text Diff</a></li>
+                          <li><a class="dropdown-item" href="/GameOfLife">🧬 Game of Life</a></li>
+                          <li><a class="dropdown-item" href="/TypingTest">⌨️ Typing Test</a></li>
+                          <li><a class="dropdown-item" href="/SortVisualizer">📊 Sort Visualizer</a></li>
+                          <li><a class="dropdown-item" href="/WorldClock">🕐 World Clock</a></li>
+                          <li><a class="dropdown-item" href="/ImageCompressor">🖼️ Image Compressor</a></li>
+                        </ul>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/PasswordGenerator">Password Generator</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/GreenSentry">Green Sentry</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/csvEditor">CSV Editor</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/FileEncodingIdentifier">File Encoding Identifier</a>
-                      </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/DungeonDash">Dungeon</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/DoomDash">Doom</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/WorkDayTimer">Work Day Timer</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="head_nav_link">Links</a>
-                        <ul class="dropdown-menu">
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="head_nav_link">Ссылки</a>
+                        <ul class="dropdown-menu shadow">
                           <li><a class="dropdown-item" href="https://t.me/fgeeha" rel="noopener noreferrer" target="_blank">Telegram</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="mailto:kolesnikov.nikitavlg@gmail.com">Gmail</a></li>
@@ -135,9 +138,9 @@
                         </ul>
                       </li>
                     </ul>
-                    <span class="navbar-text">
-                        <button onclick="switchLanguage()" type="button" class="btn btn-outline-primary" id="head_nav_lang" aria-label="Switch language">ru</button>
-                    </span>
+                    <div class="navbar-text ms-lg-2">
+                        <button onclick="switchLanguage()" type="button" class="btn btn-outline-primary btn-sm" id="head_nav_lang" aria-label="Switch language">ru</button>
+                    </div>
                   </div>
                 </div>
               </nav>
@@ -273,6 +276,200 @@
                                 <a href="https://gitverse.ru/nkolesnikov?tab=repos" class="btn btn-outline-dark ms-2" target="_blank" rel="noopener noreferrer" id="allProjectsGitverseBtn">Проекты на GitVerse</a>
                             </p>
 
+                            <h2 id="miniProjectsTitle">Мини HTML-проекты</h2>
+                            <p class="section-desc" id="miniProjectsDesc">Интерактивные инструменты и игры, работающие прямо в браузере</p>
+                            <div class="row g-3 mt-1 mb-4">
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/PasswordGenerator" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🔐</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Password Generator</div>
+                                    <div class="text-muted" style="font-size:.78rem">Secure passwords</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/GreenSentry" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🌿</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Green Sentry</div>
+                                    <div class="text-muted" style="font-size:.78rem">Plant monitor</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/csvEditor" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">📊</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">CSV Editor</div>
+                                    <div class="text-muted" style="font-size:.78rem">Edit CSV files</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/FileEncodingIdentifier" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🔤</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Encoding Identifier</div>
+                                    <div class="text-muted" style="font-size:.78rem">Detect file encoding</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/DungeonDash" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">⚔️</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Dungeon Dash</div>
+                                    <div class="text-muted" style="font-size:.78rem">Roguelike game</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/DoomDash" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">👹</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Doom Dash</div>
+                                    <div class="text-muted" style="font-size:.78rem">FPS-style game</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/WorkDayTimer" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">⏱️</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Work Day Timer</div>
+                                    <div class="text-muted" style="font-size:.78rem">Track work hours</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/Roulette" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🎰</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Roulette</div>
+                                    <div class="text-muted" style="font-size:.78rem">Spin the wheel</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/infinity" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">♾️</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Infinity</div>
+                                    <div class="text-muted" style="font-size:.78rem">Animation</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/JsonFormatter" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🔧</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">JSON Formatter</div>
+                                    <div class="text-muted" style="font-size:.78rem">Prettify &amp; validate</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/Base64Tool" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🔒</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Base64 Tool</div>
+                                    <div class="text-muted" style="font-size:.78rem">Encode / decode</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/UuidGenerator" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🆔</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">UUID Generator</div>
+                                    <div class="text-muted" style="font-size:.78rem">v4 UUIDs &amp; nanoids</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/ContrastChecker" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🎨</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Contrast Checker</div>
+                                    <div class="text-muted" style="font-size:.78rem">WCAG compliance</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/OgPreview" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🔗</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">OG Preview</div>
+                                    <div class="text-muted" style="font-size:.78rem">Social meta tags</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/QrGenerator" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">📷</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">QR Generator</div>
+                                    <div class="text-muted" style="font-size:.78rem">Create QR codes</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/TextDiff" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">📝</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Text Diff</div>
+                                    <div class="text-muted" style="font-size:.78rem">Compare text</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/GameOfLife" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🧬</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Game of Life</div>
+                                    <div class="text-muted" style="font-size:.78rem">Conway's automaton</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/TypingTest" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">⌨️</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Typing Test</div>
+                                    <div class="text-muted" style="font-size:.78rem">WPM &amp; accuracy</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/SortVisualizer" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">📈</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Sort Visualizer</div>
+                                    <div class="text-muted" style="font-size:.78rem">Algorithm animation</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/WorldClock" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🕐</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">World Clock</div>
+                                    <div class="text-muted" style="font-size:.78rem">Global timezones</div>
+                                  </div>
+                                </a>
+                              </div>
+                              <div class="col-6 col-md-4 col-lg-3">
+                                <a href="/ImageCompressor" class="text-decoration-none">
+                                  <div class="card h-100 project-card text-center p-3">
+                                    <div style="font-size:2rem">🖼️</div>
+                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Image Compressor</div>
+                                    <div class="text-muted" style="font-size:.78rem">Compress images</div>
+                                  </div>
+                                </a>
+                              </div>
+                            </div>
+
                             <h2 id="contact">Контакт</h2>
                             <p id="content">Я всегда <b>открыт для сотрудничества и обсуждения новых проектов.</b> Если у вас есть какие-либо вопросы или предложения, пожалуйста, не стесняйтесь обращаться ко мне:</p>
                             <p><a href="https://t.me/fgeeha" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" rel="noopener noreferrer" target="_blank">Tg: [@FgeeHa]</a></p>
@@ -297,6 +494,7 @@
                 ru: {
                     head_nav_home: 'Home',
                     head_nav_lang: 'ru',
+                    head_nav_mini_projects: 'Мои мини HTML-проекты',
                     head_nav_link: 'Ссылки',
                     heading: 'Привет!',
                     myName: 'Колесников Никита <span class="text-muted">(FgeeHa)</span>',
@@ -328,6 +526,7 @@
                 en: {
                     head_nav_home: 'Home',
                     head_nav_lang: 'en',
+                    head_nav_mini_projects: 'My mini HTML projects',
                     head_nav_link: 'Links',
                     heading: 'Hi there!',
                     myName: 'Nikita Kolesnikov <span class="text-muted">(FgeeHa)</span>',
@@ -367,7 +566,7 @@
             function updateContent() {
                 const lang = languages[currentLanguage];
                 const ids = [
-                    'head_nav_home', 'head_nav_lang', 'head_nav_link',
+                    'head_nav_home', 'head_nav_lang', 'head_nav_mini_projects', 'head_nav_link',
                     'heading', 'myName', 'informationAboutMe',
                     'skillsAndTechnologies', 'skillsDesc',
                     'skillone', 'skilltwo', 'skillthree', 'skillfour',

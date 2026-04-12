@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Game of Life | FgeeHa Tools</title>
+  <meta name="description" content="Conway's Game of Life — canvas-based cellular automaton simulator."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 16px 20px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 16px; text-align: center; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; margin-bottom: 12px;
+      background: var(--surface); border-radius: var(--radius);
+      padding: 12px 16px; border: 1px solid var(--border);
+      max-width: 900px; width: 100%;
+    }
+    button {
+      padding: 7px 14px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: .82rem; font-weight: 600;
+      transition: opacity .15s, transform .1s;
+    }
+    button:active { transform: scale(.97); }
+    .btn-green { background: var(--green); color: #1a1b1e; }
+    .btn-red { background: #ff6b6b; color: #fff; }
+    .btn-ghost { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    .btn-accent { background: var(--accent); color: #1a1b1e; }
+    button:hover { opacity: .85; }
+    .sep { width: 1px; height: 28px; background: var(--border); }
+    .label-small { font-size: .75rem; color: var(--text); }
+    select {
+      padding: 6px 10px; background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: 6px; font-size: .82rem; cursor: pointer;
+    }
+    .gen-counter {
+      font-size: .82rem; color: var(--text-bright);
+      background: var(--bg); padding: 6px 12px;
+      border-radius: 6px; border: 1px solid var(--border);
+      font-family: 'Fira Code', monospace; min-width: 120px;
+    }
+    #canvas-wrap {
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border); cursor: crosshair;
+      max-width: 100%; touch-action: none;
+    }
+    canvas { display: block; }
+    .tip { font-size: .78rem; color: var(--text); margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<h1>🧬 Game of Life</h1>
+<p class="subtitle">Conway's cellular automaton — click cells to toggle, use controls to run</p>
+
+<div class="toolbar">
+  <button class="btn-green" id="btn-start" onclick="startStop()">▶ Start</button>
+  <button class="btn-ghost" onclick="step()">⏭ Step</button>
+  <button class="btn-ghost" onclick="clearGrid()">✕ Clear</button>
+  <button class="btn-ghost" onclick="randomFill()">🎲 Random</button>
+  <div class="sep"></div>
+  <span class="label-small">Preset:</span>
+  <select id="preset" onchange="loadPreset()">
+    <option value="">— Choose —</option>
+    <option value="glider">Glider</option>
+    <option value="blinker">Blinker</option>
+    <option value="pulsar">Pulsar</option>
+    <option value="gosper">Gosper Gun</option>
+  </select>
+  <div class="sep"></div>
+  <span class="label-small">Speed:</span>
+  <input type="range" id="speed" min="1" max="30" value="10" style="width:80px"/>
+  <div class="gen-counter" id="gen-counter">Gen: 0 · Pop: 0</div>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="canvas"></canvas>
+</div>
+<p class="tip">Click or drag on the canvas to toggle cells</p>
+
+<script>
+  const CELL = 12;
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let COLS, ROWS, grid, nextGrid;
+  let running = false, animId = null, generation = 0;
+  let lastTime = 0;
+
+  function initGrid() {
+    const wrap = document.getElementById('canvas-wrap');
+    const maxW = Math.min(window.innerWidth - 40, 880);
+    COLS = Math.floor(maxW / CELL);
+    ROWS = Math.floor(Math.min(window.innerHeight * 0.6, 540) / CELL);
+    canvas.width = COLS * CELL;
+    canvas.height = ROWS * CELL;
+    grid = new Uint8Array(COLS * ROWS);
+    nextGrid = new Uint8Array(COLS * ROWS);
+    generation = 0;
+  }
+
+  function idx(c, r) { return r * COLS + c; }
+
+  function draw() {
+    ctx.fillStyle = '#0d0e10';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#4dabf7';
+    let pop = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (grid[idx(c,r)]) {
+          pop++;
+          ctx.fillRect(c * CELL + 1, r * CELL + 1, CELL - 1, CELL - 1);
+        }
+      }
+    }
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    for (let c = 0; c <= COLS; c++) { ctx.beginPath(); ctx.moveTo(c*CELL,0); ctx.lineTo(c*CELL,canvas.height); ctx.stroke(); }
+    for (let r = 0; r <= ROWS; r++) { ctx.beginPath(); ctx.moveTo(0,r*CELL); ctx.lineTo(canvas.width,r*CELL); ctx.stroke(); }
+    document.getElementById('gen-counter').textContent = `Gen: ${generation} · Pop: ${pop}`;
+  }
+
+  function countNeighbors(c, r) {
+    let n = 0;
+    for (let dc = -1; dc <= 1; dc++)
+      for (let dr = -1; dr <= 1; dr++) {
+        if (dc === 0 && dr === 0) continue;
+        const nc = (c + dc + COLS) % COLS;
+        const nr = (r + dr + ROWS) % ROWS;
+        n += grid[idx(nc, nr)];
+      }
+    return n;
+  }
+
+  function evolve() {
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++) {
+        const n = countNeighbors(c, r);
+        const alive = grid[idx(c,r)];
+        nextGrid[idx(c,r)] = alive ? (n === 2 || n === 3 ? 1 : 0) : (n === 3 ? 1 : 0);
+      }
+    [grid, nextGrid] = [nextGrid, grid];
+    generation++;
+  }
+
+  function loop(ts) {
+    if (!running) return;
+    const speed = parseInt(document.getElementById('speed').value);
+    const interval = 1000 / speed;
+    if (ts - lastTime >= interval) {
+      evolve();
+      draw();
+      lastTime = ts;
+    }
+    animId = requestAnimationFrame(loop);
+  }
+
+  function startStop() {
+    running = !running;
+    const btn = document.getElementById('btn-start');
+    if (running) {
+      btn.textContent = '⏸ Stop';
+      btn.className = 'btn-red';
+      lastTime = performance.now();
+      animId = requestAnimationFrame(loop);
+    } else {
+      btn.textContent = '▶ Start';
+      btn.className = 'btn-green';
+      if (animId) cancelAnimationFrame(animId);
+    }
+  }
+
+  function step() {
+    if (running) return;
+    evolve();
+    draw();
+  }
+
+  function clearGrid() {
+    if (running) startStop();
+    grid.fill(0);
+    generation = 0;
+    draw();
+  }
+
+  function randomFill() {
+    for (let i = 0; i < grid.length; i++)
+      grid[i] = Math.random() < 0.3 ? 1 : 0;
+    generation = 0;
+    draw();
+  }
+
+  function setCell(c, r, v) {
+    if (c >= 0 && c < COLS && r >= 0 && r < ROWS)
+      grid[idx(c, r)] = v;
+  }
+
+  function stamp(pattern, offC, offR) {
+    clearGrid();
+    pattern.forEach(([c, r]) => setCell(c + offC, r + offR, 1));
+    draw();
+  }
+
+  function loadPreset() {
+    const p = document.getElementById('preset').value;
+    const mc = Math.floor(COLS/2), mr = Math.floor(ROWS/2);
+    const presets = {
+      glider: [[0,1],[1,2],[2,0],[2,1],[2,2]],
+      blinker: [[0,1],[1,1],[2,1]],
+      pulsar: [
+        [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
+        [0,2],[5,2],[7,2],[12,2],
+        [0,3],[5,3],[7,3],[12,3],
+        [0,4],[5,4],[7,4],[12,4],
+        [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
+        [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
+        [0,8],[5,8],[7,8],[12,8],
+        [0,9],[5,9],[7,9],[12,9],
+        [0,10],[5,10],[7,10],[12,10],
+        [2,12],[3,12],[4,12],[8,12],[9,12],[10,12],
+      ],
+      gosper: [
+        [0,4],[0,5],[1,4],[1,5],
+        [10,4],[10,5],[10,6],[11,3],[11,7],[12,2],[12,8],[13,2],[13,8],
+        [14,5],[15,3],[15,7],[16,4],[16,5],[16,6],[17,5],
+        [20,2],[20,3],[20,4],[21,2],[21,3],[21,4],[22,1],[22,5],[24,0],[24,1],[24,5],[24,6],
+        [34,2],[34,3],[35,2],[35,3]
+      ]
+    };
+    if (presets[p]) stamp(presets[p], mc - 6, mr - 6);
+  }
+
+  // Mouse interaction
+  let drawing = false, drawVal = 1;
+  function getCell(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    return [Math.floor(x / CELL), Math.floor(y / CELL)];
+  }
+  canvas.addEventListener('mousedown', e => {
+    const [c, r] = getCell(e);
+    drawVal = grid[idx(c,r)] ? 0 : 1;
+    drawing = true;
+    setCell(c, r, drawVal);
+    draw();
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!drawing) return;
+    const [c, r] = getCell(e);
+    setCell(c, r, drawVal);
+    draw();
+  });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+
+  // Touch
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const [c, r] = getCell(t);
+    drawVal = grid[idx(c,r)] ? 0 : 1;
+    drawing = true;
+    setCell(c, r, drawVal);
+    draw();
+  }, {passive: false});
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!drawing) return;
+    const t = e.touches[0];
+    const [c, r] = getCell(t);
+    setCell(c, r, drawVal);
+    draw();
+  }, {passive: false});
+  canvas.addEventListener('touchend', () => drawing = false);
+
+  initGrid();
+  randomFill();
+</script>
+</body>
+</html>

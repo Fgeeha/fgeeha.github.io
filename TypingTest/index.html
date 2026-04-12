@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Typing Test | FgeeHa Tools</title>
+  <meta name="description" content="Test your typing speed with WPM, CPM and accuracy tracking."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --yellow: #ffd43b;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; text-align: center; }
+    .container { max-width: 760px; width: 100%; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 24px; border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media(max-width:500px){ .stats-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-box {
+      background: var(--bg); border-radius: var(--radius); padding: 12px;
+      border: 1px solid var(--border); text-align: center;
+    }
+    .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text); }
+    .quote-display {
+      font-size: 1.15rem; line-height: 1.9; letter-spacing: .01em;
+      font-family: 'Georgia', serif; margin-bottom: 16px;
+      padding: 16px; background: var(--bg); border-radius: var(--radius);
+      border: 1px solid var(--border); min-height: 80px;
+    }
+    .char-correct { color: var(--green); }
+    .char-wrong { color: var(--red); background: rgba(255,107,107,.15); border-radius: 2px; }
+    .char-pending { color: rgba(193,194,197,.4); }
+    .char-current {
+      color: var(--text-bright); background: rgba(77,171,247,.25);
+      border-radius: 2px; outline: 2px solid var(--accent);
+    }
+    .input-area {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg); color: var(--text-bright);
+      border: 2px solid var(--border); border-radius: var(--radius);
+      font-size: 1rem; outline: none; transition: border-color .2s;
+      font-family: inherit; margin-bottom: 12px;
+    }
+    .input-area:focus { border-color: var(--accent); }
+    .input-area:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      padding: 9px 20px; border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: .88rem; font-weight: 700;
+      transition: opacity .15s, transform .1s;
+    }
+    button:active { transform: scale(.97); }
+    .btn-restart { background: var(--accent); color: #1a1b1e; }
+    .btn-ghost { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    button:hover { opacity: .85; }
+    .timer { font-size: .9rem; color: var(--text); font-family: monospace; }
+    .result-banner {
+      padding: 16px; border-radius: var(--radius); margin-bottom: 12px;
+      background: rgba(81,207,102,.12); border: 1px solid rgba(81,207,102,.3);
+      text-align: center; display: none;
+    }
+    .result-banner h2 { color: var(--green); font-size: 1.1rem; margin-bottom: 8px; }
+    .result-banner .big { font-size: 2rem; font-weight: 800; color: var(--text-bright); }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<h1>⌨️ Typing Test</h1>
+<p class="subtitle">Measure your typing speed and accuracy in real time</p>
+
+<div class="container">
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="wpm">0</div><div class="stat-label">WPM</div></div>
+    <div class="stat-box"><div class="stat-val" id="cpm">0</div><div class="stat-label">CPM</div></div>
+    <div class="stat-box"><div class="stat-val" id="acc">100%</div><div class="stat-label">Accuracy</div></div>
+    <div class="stat-box"><div class="stat-val" id="timer">0s</div><div class="stat-label">Time</div></div>
+  </div>
+
+  <div class="card">
+    <div id="result-banner" class="result-banner">
+      <h2>Test Complete!</h2>
+      <div id="result-text"></div>
+    </div>
+
+    <div class="quote-display" id="quote-display"></div>
+
+    <input type="text" class="input-area" id="input-area"
+      placeholder="Start typing to begin the test…"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+
+    <div class="btn-row">
+      <button class="btn-restart" onclick="restart()">↺ Restart</button>
+      <button class="btn-ghost" onclick="newQuote()">New Quote</button>
+      <span class="timer" id="timer-label"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const quotes = [
+    "The quick brown fox jumps over the lazy dog.",
+    "To be or not to be, that is the question.",
+    "All that glitters is not gold.",
+    "The only way to do great work is to love what you do.",
+    "In the middle of every difficulty lies opportunity.",
+    "It does not matter how slowly you go as long as you do not stop.",
+    "Life is what happens when you're busy making other plans.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "The best time to plant a tree was 20 years ago. The second best time is now.",
+    "Программирование — это искусство создания сложных систем из простых операций.",
+    "Хороший код — это код, который легко читать и понимать.",
+    "Лучший способ предсказать будущее — это создать его самому.",
+    "Без труда не вытащишь рыбку из пруда.",
+    "Знание — сила, но применение знаний — истинная мудрость.",
+    "Practice makes perfect, but nobody is perfect, so why practice?",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "First, solve the problem. Then, write the code.",
+    "Code is like humor. When you have to explain it, it's bad.",
+    "Simplicity is the soul of efficiency.",
+    "Talk is cheap. Show me the code.",
+    "Удача улыбается смелым и настойчивым.",
+    "Каждая проблема — это возможность для роста.",
+  ];
+
+  let currentQuote = '', typed = '', startTime = null, timerInterval = null, finished = false;
+
+  function pickQuote() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }
+
+  function renderQuote() {
+    const chars = currentQuote.split('');
+    const html = chars.map((ch, i) => {
+      let cls;
+      if (i < typed.length) {
+        cls = typed[i] === ch ? 'char-correct' : 'char-wrong';
+      } else if (i === typed.length) {
+        cls = 'char-current';
+      } else {
+        cls = 'char-pending';
+      }
+      return `<span class="${cls}">${ch === ' ' ? '&nbsp;' : ch.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`;
+    }).join('');
+    document.getElementById('quote-display').innerHTML = html;
+  }
+
+  function updateStats() {
+    if (!startTime) return;
+    const elapsed = (Date.now() - startTime) / 1000;
+    const words = typed.trim().split(/\s+/).filter(Boolean).length;
+    const wpm = elapsed > 0 ? Math.round((words / elapsed) * 60) : 0;
+    const cpm = elapsed > 0 ? Math.round((typed.length / elapsed) * 60) : 0;
+
+    let correct = 0;
+    for (let i = 0; i < typed.length; i++)
+      if (typed[i] === currentQuote[i]) correct++;
+    const acc = typed.length > 0 ? Math.round((correct / typed.length) * 100) : 100;
+
+    document.getElementById('wpm').textContent = wpm;
+    document.getElementById('cpm').textContent = cpm;
+    document.getElementById('acc').textContent = acc + '%';
+    document.getElementById('timer').textContent = Math.round(elapsed) + 's';
+  }
+
+  function finish() {
+    finished = true;
+    clearInterval(timerInterval);
+    document.getElementById('input-area').disabled = true;
+    updateStats();
+
+    const wpm = document.getElementById('wpm').textContent;
+    const acc = document.getElementById('acc').textContent;
+    const t = document.getElementById('timer').textContent;
+    const banner = document.getElementById('result-banner');
+    document.getElementById('result-text').innerHTML =
+      `<span class="big">${wpm} WPM</span> · ${acc} accuracy · ${t}`;
+    banner.style.display = 'block';
+  }
+
+  document.getElementById('input-area').addEventListener('input', e => {
+    if (finished) return;
+    typed = e.target.value;
+
+    if (!startTime && typed.length > 0) {
+      startTime = Date.now();
+      timerInterval = setInterval(updateStats, 200);
+    }
+
+    renderQuote();
+    updateStats();
+
+    if (typed === currentQuote) finish();
+    else if (typed.length > currentQuote.length) {
+      // Trim excess
+      typed = typed.slice(0, currentQuote.length);
+      e.target.value = typed;
+    }
+  });
+
+  function restart() {
+    typed = '';
+    startTime = null;
+    finished = false;
+    clearInterval(timerInterval);
+    document.getElementById('input-area').value = '';
+    document.getElementById('input-area').disabled = false;
+    document.getElementById('result-banner').style.display = 'none';
+    document.getElementById('wpm').textContent = '0';
+    document.getElementById('cpm').textContent = '0';
+    document.getElementById('acc').textContent = '100%';
+    document.getElementById('timer').textContent = '0s';
+    renderQuote();
+    document.getElementById('input-area').focus();
+  }
+
+  function newQuote() {
+    currentQuote = pickQuote();
+    restart();
+  }
+
+  newQuote();
+</script>
+</body>
+</html>

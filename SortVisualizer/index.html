@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Sort Visualizer | FgeeHa Tools</title>
+  <meta name="description" content="Visualize Bubble, Quick and Merge sort algorithms with animated bars."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --yellow: #ffd43b;
+      --default-bar: #5c6bc0;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 16px 20px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 16px; text-align: center; }
+    .container { max-width: 900px; width: 100%; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      background: var(--surface); border-radius: var(--radius);
+      padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 14px;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text); }
+    select {
+      padding: 7px 10px; background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: 6px; font-size: .83rem; cursor: pointer;
+    }
+    input[type=range] { width: 90px; accent-color: var(--accent); cursor: pointer; }
+    .range-val { font-size: .8rem; color: var(--text-bright); font-family: monospace; min-width: 28px; }
+    button {
+      padding: 8px 16px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: .83rem; font-weight: 700;
+      transition: opacity .15s, transform .1s; align-self: flex-end;
+    }
+    button:active { transform: scale(.97); }
+    .btn-start { background: var(--accent); color: #1a1b1e; }
+    .btn-shuffle { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    button:hover { opacity: .85; }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    .sep { width: 1px; height: 32px; background: var(--border); }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: .75rem; align-items: center; }
+    .leg { display: flex; align-items: center; gap: 5px; }
+    .leg-dot { width: 12px; height: 12px; border-radius: 2px; }
+    .canvas-wrap {
+      background: var(--surface); border-radius: var(--radius);
+      border: 1px solid var(--border); overflow: hidden;
+      margin-bottom: 12px;
+    }
+    canvas { display: block; width: 100%; }
+    .status { font-size: .82rem; color: var(--text); text-align: center; min-height: 20px; }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<h1>📈 Sort Visualizer</h1>
+<p class="subtitle">Watch sorting algorithms animate in real time</p>
+
+<div class="container">
+  <div class="toolbar">
+    <div class="field">
+      <label>Algorithm</label>
+      <select id="algo">
+        <option value="bubble">Bubble Sort</option>
+        <option value="quick">Quick Sort</option>
+        <option value="merge">Merge Sort</option>
+      </select>
+    </div>
+    <div class="sep"></div>
+    <div class="field">
+      <label>Array size: <span id="size-val">40</span></label>
+      <input type="range" id="size" min="10" max="120" value="40" oninput="onSizeChange()"/>
+    </div>
+    <div class="field">
+      <label>Speed: <span id="speed-val">50</span></label>
+      <input type="range" id="speed" min="1" max="100" value="50"/>
+    </div>
+    <div class="sep"></div>
+    <button class="btn-shuffle" onclick="shuffle()" id="btn-shuffle">🔀 Shuffle</button>
+    <button class="btn-start" onclick="startSort()" id="btn-start">▶ Start</button>
+    <div class="sep"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#5c6bc0"></div>Default</div>
+      <div class="leg"><div class="leg-dot" style="background:#ffd43b"></div>Comparing</div>
+      <div class="leg"><div class="leg-dot" style="background:#ff6b6b"></div>Swapping</div>
+      <div class="leg"><div class="leg-dot" style="background:#51cf66"></div>Sorted</div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="canvas" height="380"></canvas>
+  </div>
+  <div class="status" id="status">Shuffle to start, then click ▶ Start</div>
+</div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  let arr = [], states = [], sorting = false, stopFlag = false;
+
+  const COLOR_DEFAULT = '#5c6bc0';
+  const COLOR_CMP = '#ffd43b';
+  const COLOR_SWAP = '#ff6b6b';
+  const COLOR_SORTED = '#51cf66';
+  const COLOR_PIVOT = '#e67e22';
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+  }
+
+  function draw(highlights = {}) {
+    resize();
+    const W = canvas.width, H = canvas.height;
+    ctx.fillStyle = '#12131a';
+    ctx.fillRect(0, 0, W, H);
+    const n = arr.length;
+    const barW = W / n;
+    for (let i = 0; i < n; i++) {
+      const h = Math.round((arr[i] / n) * (H - 10));
+      let color = highlights[i] || COLOR_DEFAULT;
+      ctx.fillStyle = color;
+      ctx.fillRect(i * barW + 0.5, H - h, barW - 1, h);
+    }
+  }
+
+  function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  function getDelay() {
+    const spd = parseInt(document.getElementById('speed').value);
+    return Math.round(1000 / (spd * 3 + 1));
+  }
+
+  function setStatus(msg) {
+    document.getElementById('status').textContent = msg;
+  }
+
+  function genArray(n) {
+    arr = Array.from({length: n}, (_, i) => i + 1);
+  }
+
+  function shuffle() {
+    if (sorting) return;
+    const n = parseInt(document.getElementById('size').value);
+    genArray(n);
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    draw();
+    setStatus('Ready — click ▶ Start to sort');
+  }
+
+  function onSizeChange() {
+    document.getElementById('size-val').textContent = document.getElementById('size').value;
+    if (!sorting) shuffle();
+  }
+
+  document.getElementById('speed').addEventListener('input', () => {
+    document.getElementById('speed-val').textContent = document.getElementById('speed').value;
+  });
+
+  async function startSort() {
+    if (sorting) { stopFlag = true; return; }
+    sorting = true; stopFlag = false;
+    document.getElementById('btn-start').textContent = '⏹ Stop';
+    document.getElementById('btn-shuffle').disabled = true;
+
+    const algo = document.getElementById('algo').value;
+    if (algo === 'bubble') await bubbleSort();
+    else if (algo === 'quick') await quickSort(0, arr.length - 1);
+    else if (algo === 'merge') await mergeSort(0, arr.length - 1);
+
+    if (!stopFlag) {
+      draw(Object.fromEntries(arr.map((_, i) => [i, COLOR_SORTED])));
+      setStatus('Done!');
+    }
+
+    sorting = false;
+    document.getElementById('btn-start').textContent = '▶ Start';
+    document.getElementById('btn-shuffle').disabled = false;
+  }
+
+  async function bubbleSort() {
+    const n = arr.length;
+    for (let i = 0; i < n - 1 && !stopFlag; i++) {
+      for (let j = 0; j < n - i - 1 && !stopFlag; j++) {
+        draw({[j]: COLOR_CMP, [j+1]: COLOR_CMP});
+        setStatus(`Bubble Sort — comparing [${j}] and [${j+1}]`);
+        await sleep(getDelay());
+        if (arr[j] > arr[j+1]) {
+          draw({[j]: COLOR_SWAP, [j+1]: COLOR_SWAP});
+          [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+          await sleep(getDelay());
+        }
+      }
+    }
+  }
+
+  async function quickSort(lo, hi) {
+    if (lo >= hi || stopFlag) return;
+    const pivot = await partition(lo, hi);
+    await quickSort(lo, pivot - 1);
+    await quickSort(pivot + 1, hi);
+  }
+
+  async function partition(lo, hi) {
+    const pivotVal = arr[hi];
+    let i = lo - 1;
+    for (let j = lo; j < hi && !stopFlag; j++) {
+      draw({[j]: COLOR_CMP, [hi]: COLOR_PIVOT});
+      setStatus(`Quick Sort — pivot=${pivotVal}, comparing [${j}]`);
+      await sleep(getDelay());
+      if (arr[j] <= pivotVal) {
+        i++;
+        draw({[i]: COLOR_SWAP, [j]: COLOR_SWAP, [hi]: COLOR_PIVOT});
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        await sleep(getDelay());
+      }
+    }
+    draw({[i+1]: COLOR_SWAP, [hi]: COLOR_SWAP});
+    [arr[i+1], arr[hi]] = [arr[hi], arr[i+1]];
+    await sleep(getDelay());
+    return i + 1;
+  }
+
+  async function mergeSort(lo, hi) {
+    if (lo >= hi || stopFlag) return;
+    const mid = Math.floor((lo + hi) / 2);
+    await mergeSort(lo, mid);
+    await mergeSort(mid + 1, hi);
+    await merge(lo, mid, hi);
+  }
+
+  async function merge(lo, mid, hi) {
+    const left = arr.slice(lo, mid + 1);
+    const right = arr.slice(mid + 1, hi + 1);
+    let i = 0, j = 0, k = lo;
+    while (i < left.length && j < right.length && !stopFlag) {
+      const hl = {};
+      for (let x = lo; x <= hi; x++) hl[x] = COLOR_CMP;
+      draw(hl);
+      setStatus(`Merge Sort — merging [${lo}…${hi}]`);
+      await sleep(getDelay());
+      if (left[i] <= right[j]) arr[k++] = left[i++];
+      else arr[k++] = right[j++];
+    }
+    while (i < left.length) arr[k++] = left[i++];
+    while (j < right.length) arr[k++] = right[j++];
+    const hl = {};
+    for (let x = lo; x <= hi; x++) hl[x] = COLOR_SWAP;
+    draw(hl);
+    await sleep(getDelay());
+  }
+
+  shuffle();
+</script>
+</body>
+</html>

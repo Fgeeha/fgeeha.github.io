@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>World Clock | FgeeHa Tools</title>
+  <meta name="description" content="Real-time digital clock for cities around the world."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; }
+    .add-row {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+      background: var(--surface); border-radius: var(--radius);
+      padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .add-row label { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+    select {
+      flex: 1; min-width: 200px; padding: 8px 12px;
+      background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius); font-size: .88rem; cursor: pointer;
+    }
+    button {
+      padding: 8px 16px; border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: .85rem; font-weight: 700; transition: opacity .15s;
+    }
+    .btn-add { background: var(--accent); color: #1a1b1e; }
+    button:hover { opacity: .85; }
+    .clocks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .clock-card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 20px;
+      position: relative; transition: border-color .2s;
+    }
+    .clock-card:hover { border-color: rgba(77,171,247,.3); }
+    .clock-card.local { border-color: rgba(81,207,102,.3); }
+    .remove-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,107,107,.15); color: #ff6b6b;
+      border: none; cursor: pointer; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .remove-btn:hover { background: rgba(255,107,107,.35); }
+    .city-name { font-size: .82rem; color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    .timezone-label { font-size: .72rem; color: rgba(193,194,197,.5); margin-bottom: 12px; }
+    .time-display {
+      font-size: 2rem; font-weight: 800; color: var(--text-bright);
+      font-family: 'Fira Code', 'Cascadia Code', monospace; letter-spacing: .02em;
+    }
+    .date-display { font-size: .78rem; color: var(--text); margin-top: 4px; }
+    .day-night {
+      position: absolute; top: 20px; right: 38px; font-size: 1.1rem;
+    }
+    .local-badge {
+      position: absolute; bottom: 12px; right: 12px;
+      font-size: .65rem; color: var(--green); border: 1px solid rgba(81,207,102,.3);
+      border-radius: 20px; padding: 2px 8px;
+    }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="container">
+  <h1>🕐 World Clock</h1>
+  <p class="subtitle">Real-time digital clocks for cities around the world</p>
+
+  <div class="add-row">
+    <label>Add city:</label>
+    <select id="city-select">
+      <option value="UTC|UTC|🌐">UTC</option>
+      <option value="Europe/Moscow|Moscow|🇷🇺">Moscow</option>
+      <option value="America/New_York|New York|🇺🇸">New York</option>
+      <option value="Asia/Tokyo|Tokyo|🇯🇵">Tokyo</option>
+      <option value="Europe/London|London|🇬🇧">London</option>
+      <option value="Asia/Dubai|Dubai|🇦🇪">Dubai</option>
+      <option value="America/Los_Angeles|Los Angeles|🇺🇸">Los Angeles</option>
+      <option value="Europe/Paris|Paris|🇫🇷">Paris</option>
+      <option value="Asia/Shanghai|Shanghai|🇨🇳">Shanghai</option>
+      <option value="Asia/Singapore|Singapore|🇸🇬">Singapore</option>
+      <option value="America/Chicago|Chicago|🇺🇸">Chicago</option>
+      <option value="Australia/Sydney|Sydney|🇦🇺">Sydney</option>
+      <option value="America/Sao_Paulo|São Paulo|🇧🇷">São Paulo</option>
+      <option value="Asia/Kolkata|Mumbai|🇮🇳">Mumbai</option>
+      <option value="Africa/Cairo|Cairo|🇪🇬">Cairo</option>
+      <option value="Europe/Berlin|Berlin|🇩🇪">Berlin</option>
+      <option value="Asia/Seoul|Seoul|🇰🇷">Seoul</option>
+      <option value="America/Toronto|Toronto|🇨🇦">Toronto</option>
+      <option value="Asia/Bangkok|Bangkok|🇹🇭">Bangkok</option>
+      <option value="Europe/Rome|Rome|🇮🇹">Rome</option>
+    </select>
+    <button class="btn-add" onclick="addCity()">+ Add</button>
+  </div>
+
+  <div class="clocks-grid" id="clocks-grid"></div>
+</div>
+
+<script>
+  const PRESETS = [
+    {tz: 'UTC', label: 'UTC', flag: '🌐'},
+    {tz: 'Europe/Moscow', label: 'Moscow', flag: '🇷🇺'},
+    {tz: 'America/New_York', label: 'New York', flag: '🇺🇸'},
+    {tz: 'Asia/Tokyo', label: 'Tokyo', flag: '🇯🇵'},
+    {tz: 'Europe/London', label: 'London', flag: '🇬🇧'},
+    {tz: 'Asia/Dubai', label: 'Dubai', flag: '🇦🇪'},
+  ];
+
+  let cities = [...PRESETS];
+
+  function getLocalTz() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  function isDay(hours) { return hours >= 7 && hours < 20; }
+
+  function renderClock(city, isLocal) {
+    const id = 'clock-' + city.tz.replace(/\//g, '-').replace(/\s/g, '_');
+    let el = document.getElementById(id);
+    if (!el) return;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-GB', {timeZone: city.tz, hour12: false});
+    const dateStr = now.toLocaleDateString('en-GB', {timeZone: city.tz, weekday: 'short', month: 'short', day: 'numeric'});
+    const hours = parseInt(timeStr.split(':')[0]);
+
+    el.querySelector('.time-display').textContent = timeStr;
+    el.querySelector('.date-display').textContent = dateStr;
+    el.querySelector('.day-night').textContent = isDay(hours) ? '☀️' : '🌙';
+  }
+
+  function buildCard(city, isLocal) {
+    const id = 'clock-' + city.tz.replace(/\//g, '-').replace(/\s/g, '_');
+    const div = document.createElement('div');
+    div.className = 'clock-card' + (isLocal ? ' local' : '');
+    div.id = id;
+    div.innerHTML = `
+      <button class="remove-btn" onclick="removeCity('${city.tz}')" title="Remove">✕</button>
+      <div class="day-night">☀️</div>
+      <div class="city-name">${city.flag} ${city.label}</div>
+      <div class="timezone-label">${city.tz}</div>
+      <div class="time-display">--:--:--</div>
+      <div class="date-display">---</div>
+      ${isLocal ? '<div class="local-badge">LOCAL</div>' : ''}
+    `;
+    return div;
+  }
+
+  function redrawGrid() {
+    const grid = document.getElementById('clocks-grid');
+    grid.innerHTML = '';
+    const localTz = getLocalTz();
+    cities.forEach(c => {
+      const isLocal = c.tz === localTz;
+      grid.appendChild(buildCard(c, isLocal));
+      renderClock(c, isLocal);
+    });
+  }
+
+  function addCity() {
+    const val = document.getElementById('city-select').value;
+    const [tz, label, flag] = val.split('|');
+    if (cities.find(c => c.tz === tz)) return;
+    cities.push({tz, label, flag});
+    redrawGrid();
+  }
+
+  function removeCity(tz) {
+    cities = cities.filter(c => c.tz !== tz);
+    redrawGrid();
+  }
+
+  function tick() {
+    const localTz = getLocalTz();
+    cities.forEach(c => renderClock(c, c.tz === localTz));
+  }
+
+  redrawGrid();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>

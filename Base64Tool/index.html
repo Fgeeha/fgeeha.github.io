@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Base64 Tool | FgeeHa Tools</title>
+  <meta name="description" content="Encode and decode Base64, Hex, and URL percent-encoding in the browser."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 20px; border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .card h2 { font-size: 1rem; color: var(--text-bright); margin-bottom: 14px; }
+    label { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 5px; }
+    textarea {
+      width: 100%; height: 120px; resize: vertical;
+      background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px; font-family: 'Fira Code', monospace; font-size: .85rem;
+      outline: none; transition: border-color .2s; margin-bottom: 10px;
+    }
+    textarea:focus { border-color: var(--accent); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; align-items: center; }
+    button {
+      padding: 7px 14px; border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: .83rem; font-weight: 600; transition: opacity .15s, transform .1s;
+    }
+    button:active { transform: scale(.97); }
+    .btn-accent { background: var(--accent); color: #1a1b1e; }
+    .btn-ghost { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    button:hover { opacity: .85; }
+    .toggle-label { font-size: .83rem; color: var(--text); display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent); }
+    .error { color: var(--red); font-size: .82rem; margin-top: 4px; min-height: 18px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width:600px){ .grid2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="container">
+  <h1>🔒 Base64 Tool</h1>
+  <p class="subtitle">Encode &amp; decode Base64, Hex, and URL percent-encoding</p>
+
+  <!-- Base64 Section -->
+  <div class="card">
+    <h2>Base64</h2>
+    <div class="grid2">
+      <div>
+        <label>Input</label>
+        <textarea id="b64-input" placeholder="Enter text to encode or Base64 to decode…"></textarea>
+      </div>
+      <div>
+        <label>Output</label>
+        <textarea id="b64-output" readonly placeholder="Result appears here…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-accent" onclick="b64Encode()">Encode → Base64</button>
+      <button class="btn-ghost" onclick="b64Decode()">Decode ← Base64</button>
+      <button class="btn-ghost" onclick="b64Copy()">Copy Output</button>
+      <label class="toggle-label">
+        <input type="checkbox" id="urlSafe" onchange="refreshB64()"/> URL-safe (- _ instead of + /)
+      </label>
+    </div>
+    <div class="error" id="b64-err"></div>
+  </div>
+
+  <!-- Hex Section -->
+  <div class="card">
+    <h2>Hex Encoding</h2>
+    <div class="grid2">
+      <div>
+        <label>Input</label>
+        <textarea id="hex-input" placeholder="Enter text or hex…"></textarea>
+      </div>
+      <div>
+        <label>Output</label>
+        <textarea id="hex-output" readonly placeholder="Result appears here…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-accent" onclick="hexEncode()">Encode → Hex</button>
+      <button class="btn-ghost" onclick="hexDecode()">Decode ← Hex</button>
+      <button class="btn-ghost" onclick="hexCopy()">Copy Output</button>
+    </div>
+    <div class="error" id="hex-err"></div>
+  </div>
+
+  <!-- URL Encoding Section -->
+  <div class="card">
+    <h2>URL Percent-Encoding</h2>
+    <div class="grid2">
+      <div>
+        <label>Input</label>
+        <textarea id="url-input" placeholder="Enter text or percent-encoded URL…"></textarea>
+      </div>
+      <div>
+        <label>Output</label>
+        <textarea id="url-output" readonly placeholder="Result appears here…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-accent" onclick="urlEncode()">Encode → %XX</button>
+      <button class="btn-ghost" onclick="urlDecode()">Decode ← %XX</button>
+      <button class="btn-ghost" onclick="urlCopy()">Copy Output</button>
+    </div>
+    <div class="error" id="url-err"></div>
+  </div>
+</div>
+
+<script>
+  // ---- Base64 ----
+  let lastB64Input = '', lastB64Op = 'encode';
+
+  function applyUrlSafe(str) {
+    if (document.getElementById('urlSafe').checked)
+      return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    return str;
+  }
+  function reverseUrlSafe(str) {
+    if (document.getElementById('urlSafe').checked)
+      return str.replace(/-/g, '+').replace(/_/g, '/');
+    return str;
+  }
+
+  function b64Encode() {
+    lastB64Op = 'encode';
+    const txt = document.getElementById('b64-input').value;
+    try {
+      const result = applyUrlSafe(btoa(unescape(encodeURIComponent(txt))));
+      document.getElementById('b64-output').value = result;
+      document.getElementById('b64-err').textContent = '';
+    } catch(e) {
+      document.getElementById('b64-err').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  function b64Decode() {
+    lastB64Op = 'decode';
+    const txt = reverseUrlSafe(document.getElementById('b64-input').value.trim());
+    try {
+      const padded = txt + '==='.slice((txt.length + 3) % 4);
+      const result = decodeURIComponent(escape(atob(padded)));
+      document.getElementById('b64-output').value = result;
+      document.getElementById('b64-err').textContent = '';
+    } catch(e) {
+      document.getElementById('b64-err').textContent = 'Invalid Base64: ' + e.message;
+    }
+  }
+
+  function refreshB64() {
+    if (lastB64Op === 'encode') b64Encode(); else b64Decode();
+  }
+
+  function b64Copy() {
+    const v = document.getElementById('b64-output').value;
+    if (v) navigator.clipboard.writeText(v);
+  }
+
+  // Live encode on input
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('b64-input').addEventListener('input', b64Encode);
+  });
+
+  // ---- Hex ----
+  function hexEncode() {
+    const txt = document.getElementById('hex-input').value;
+    const result = Array.from(new TextEncoder().encode(txt))
+      .map(b => b.toString(16).padStart(2, '0')).join(' ');
+    document.getElementById('hex-output').value = result;
+    document.getElementById('hex-err').textContent = '';
+  }
+
+  function hexDecode() {
+    const txt = document.getElementById('hex-input').value.trim().replace(/\s+/g, '');
+    if (!/^[0-9a-fA-F]*$/.test(txt) || txt.length % 2 !== 0) {
+      document.getElementById('hex-err').textContent = 'Invalid hex string';
+      return;
+    }
+    const bytes = new Uint8Array(txt.match(/.{2}/g).map(h => parseInt(h, 16)));
+    document.getElementById('hex-output').value = new TextDecoder().decode(bytes);
+    document.getElementById('hex-err').textContent = '';
+  }
+
+  function hexCopy() {
+    const v = document.getElementById('hex-output').value;
+    if (v) navigator.clipboard.writeText(v);
+  }
+
+  // ---- URL ----
+  function urlEncode() {
+    document.getElementById('url-output').value = encodeURIComponent(document.getElementById('url-input').value);
+    document.getElementById('url-err').textContent = '';
+  }
+
+  function urlDecode() {
+    try {
+      document.getElementById('url-output').value = decodeURIComponent(document.getElementById('url-input').value);
+      document.getElementById('url-err').textContent = '';
+    } catch(e) {
+      document.getElementById('url-err').textContent = 'Invalid encoded string';
+    }
+  }
+
+  function urlCopy() {
+    const v = document.getElementById('url-output').value;
+    if (v) navigator.clipboard.writeText(v);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>JSON Formatter | FgeeHa Tools</title>
+  <meta name="description" content="Prettify, minify and validate JSON with syntax highlighting."/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --yellow: #ffd43b;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 60px 20px 20px;
+    }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; color: var(--text); margin-bottom: 20px; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1200px; margin: 0 auto; }
+    @media(max-width:700px){ .layout { grid-template-columns: 1fr; } }
+    .panel { background: var(--surface); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); }
+    label { font-size: .8rem; color: var(--text); display: block; margin-bottom: 6px; letter-spacing: .05em; text-transform: uppercase; }
+    textarea {
+      width: 100%; height: 300px; resize: vertical;
+      background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: .85rem;
+      outline: none; transition: border-color .2s;
+    }
+    textarea:focus { border-color: var(--accent); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button {
+      padding: 8px 16px; border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: .85rem; font-weight: 600; transition: opacity .15s, transform .1s;
+    }
+    button:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: #1a1b1e; }
+    .btn-secondary { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    .btn-green { background: var(--green); color: #1a1b1e; }
+    .btn-copy { background: var(--surface2); color: var(--text-bright); border: 1px solid var(--border); }
+    button:hover { opacity: .85; }
+    .error-box {
+      margin-top: 10px; padding: 10px 14px;
+      background: rgba(255,107,107,.12); border: 1px solid rgba(255,107,107,.4);
+      border-radius: var(--radius); color: var(--red); font-size: .85rem;
+      display: none;
+    }
+    .success-box {
+      margin-top: 10px; padding: 10px 14px;
+      background: rgba(81,207,102,.12); border: 1px solid rgba(81,207,102,.4);
+      border-radius: var(--radius); color: var(--green); font-size: .85rem;
+      display: none;
+    }
+    .output-wrapper { position: relative; margin-top: 12px; }
+    .output-wrapper pre {
+      margin: 0; border-radius: var(--radius); max-height: 400px;
+      overflow: auto; font-size: .83rem;
+    }
+    .copy-float {
+      position: absolute; top: 8px; right: 8px;
+      padding: 4px 10px; font-size: .75rem; border-radius: 6px;
+      background: rgba(0,0,0,.5); color: #fff; border: 1px solid rgba(255,255,255,.2);
+      cursor: pointer;
+    }
+    .copy-float:hover { background: rgba(77,171,247,.7); }
+    .header { max-width: 1200px; margin: 0 auto 20px; }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="header">
+  <h1>🔧 JSON Formatter</h1>
+  <p class="subtitle">Prettify, minify and validate JSON with syntax highlighting</p>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <label>Input JSON</label>
+    <textarea id="input" placeholder='{"key": "value", "arr": [1,2,3]}'></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="prettify()">Prettify JSON</button>
+      <button class="btn-secondary" onclick="minify()">Minify JSON</button>
+      <button class="btn-green" onclick="validate()">Validate</button>
+      <button class="btn-secondary" onclick="clearAll()">Clear</button>
+    </div>
+    <div id="error-box" class="error-box"></div>
+    <div id="success-box" class="success-box"></div>
+  </div>
+
+  <div class="panel">
+    <label>Output</label>
+    <div class="output-wrapper">
+      <pre><code id="output" class="language-json"></code></pre>
+      <button class="copy-float" onclick="copyOutput()">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+  const inputEl = document.getElementById('input');
+  const outputEl = document.getElementById('output');
+  const errorBox = document.getElementById('error-box');
+  const successBox = document.getElementById('success-box');
+
+  function showError(msg) {
+    errorBox.textContent = '✗ ' + msg;
+    errorBox.style.display = 'block';
+    successBox.style.display = 'none';
+  }
+  function showSuccess(msg) {
+    successBox.textContent = '✓ ' + msg;
+    successBox.style.display = 'block';
+    errorBox.style.display = 'none';
+  }
+  function hideMessages() {
+    errorBox.style.display = 'none';
+    successBox.style.display = 'none';
+  }
+
+  function setOutput(text) {
+    outputEl.textContent = text;
+    hljs.highlightElement(outputEl);
+  }
+
+  function prettify() {
+    const raw = inputEl.value.trim();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      setOutput(JSON.stringify(parsed, null, 2));
+      showSuccess('Valid JSON – prettified successfully');
+    } catch(e) {
+      showError(e.message);
+      setOutput('');
+    }
+  }
+
+  function minify() {
+    const raw = inputEl.value.trim();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      setOutput(JSON.stringify(parsed));
+      showSuccess('Valid JSON – minified successfully');
+    } catch(e) {
+      showError(e.message);
+      setOutput('');
+    }
+  }
+
+  function validate() {
+    const raw = inputEl.value.trim();
+    if (!raw) { showError('Input is empty'); return; }
+    try {
+      JSON.parse(raw);
+      showSuccess('Valid JSON ✓');
+    } catch(e) {
+      showError(e.message);
+    }
+  }
+
+  function clearAll() {
+    inputEl.value = '';
+    outputEl.textContent = '';
+    hideMessages();
+  }
+
+  function copyOutput() {
+    const text = outputEl.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-float');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+  }
+
+  // Auto-prettify on paste
+  inputEl.addEventListener('paste', () => setTimeout(prettify, 50));
+</script>
+</body>
+</html>

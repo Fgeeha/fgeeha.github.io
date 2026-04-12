@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Image Compressor | FgeeHa Tools</title>
+  <meta name="description" content="Compress JPG and PNG images in the browser with quality control."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --red: #ff6b6b;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; }
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 48px 24px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s; margin-bottom: 16px;
+      background: var(--surface);
+    }
+    .drop-zone.drag-over { border-color: var(--accent); background: rgba(77,171,247,.07); }
+    .drop-zone .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .drop-zone p { color: var(--text); font-size: .9rem; }
+    .drop-zone span { color: var(--accent); cursor: pointer; }
+    input[type=file] { display: none; }
+    .controls {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 18px 20px; border: 1px solid var(--border); margin-bottom: 16px;
+      display: none;
+    }
+    .controls.visible { display: block; }
+    .control-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+    label { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+    input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); cursor: pointer; }
+    .range-val { font-size: .88rem; font-weight: 700; color: var(--text-bright); font-family: monospace; min-width: 40px; }
+    select {
+      padding: 7px 12px; background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius); font-size: .85rem; cursor: pointer;
+    }
+    button {
+      padding: 9px 20px; border: none; border-radius: var(--radius);
+      cursor: pointer; font-size: .88rem; font-weight: 700; transition: opacity .15s;
+    }
+    .btn-compress { background: var(--accent); color: #1a1b1e; }
+    .btn-dl { background: var(--green); color: #1a1b1e; display: none; }
+    button:hover { opacity: .85; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    @media(max-width:600px){ .preview-grid { grid-template-columns: 1fr; } }
+    .preview-panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    .preview-header { padding: 10px 14px; background: var(--surface2); font-size: .8rem; display: flex; justify-content: space-between; align-items: center; }
+    .preview-header .panel-title { font-weight: 700; color: var(--text-bright); }
+    .preview-header .size-badge { font-size: .75rem; color: var(--text); font-family: monospace; }
+    .preview-panel img { width: 100%; max-height: 280px; object-fit: contain; background: #12131a; display: block; }
+    .preview-panel .empty { min-height: 180px; display: flex; align-items: center; justify-content: center; color: rgba(193,194,197,.3); font-size: .9rem; }
+    .savings-bar {
+      padding: 12px 16px; background: var(--surface); border-radius: var(--radius);
+      border: 1px solid var(--border); display: none;
+    }
+    .savings-bar.visible { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .savings-val { font-size: 1.3rem; font-weight: 800; color: var(--green); }
+    .savings-label { font-size: .82rem; color: var(--text); }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="container">
+  <h1>🖼️ Image Compressor</h1>
+  <p class="subtitle">Compress JPG and PNG images client-side — no upload to any server</p>
+
+  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+    <div class="icon">🖼️</div>
+    <p>Drag &amp; drop an image here, or <span>click to browse</span></p>
+    <p style="font-size:.78rem;margin-top:6px;opacity:.6">Supports JPG, PNG, WebP · Processed locally</p>
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" onchange="loadFile(event)"/>
+  </div>
+
+  <div class="controls" id="controls">
+    <div class="control-row">
+      <label>Quality:</label>
+      <input type="range" id="quality" min="10" max="100" value="80" oninput="onQualityChange()"/>
+      <span class="range-val" id="quality-val">80%</span>
+      <label style="margin-left:8px">Format:</label>
+      <select id="format">
+        <option value="image/webp">WebP</option>
+        <option value="image/jpeg">JPEG</option>
+      </select>
+    </div>
+    <div class="control-row">
+      <button class="btn-compress" onclick="compress()">🗜 Compress</button>
+      <button class="btn-dl" id="btn-dl" onclick="download()">⬇ Download</button>
+    </div>
+  </div>
+
+  <div class="savings-bar" id="savings-bar">
+    <div>
+      <div class="savings-val" id="savings-val">—</div>
+      <div class="savings-label">Size reduction</div>
+    </div>
+    <div>
+      <div style="font-size:.88rem;color:var(--text-bright);" id="size-before">Before: —</div>
+      <div style="font-size:.88rem;color:var(--green);" id="size-after">After: —</div>
+    </div>
+  </div>
+
+  <div class="preview-grid">
+    <div class="preview-panel">
+      <div class="preview-header">
+        <span class="panel-title">Original</span>
+        <span class="size-badge" id="orig-size">—</span>
+      </div>
+      <div id="orig-preview" class="empty">No image loaded</div>
+    </div>
+    <div class="preview-panel">
+      <div class="preview-header">
+        <span class="panel-title">Compressed</span>
+        <span class="size-badge" id="comp-size">—</span>
+      </div>
+      <div id="comp-preview" class="empty">Compress to preview</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let originalFile = null, compressedBlob = null, compressedExt = 'webp';
+  const canvas = document.createElement('canvas');
+  const ctx2 = canvas.getContext('2d');
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function loadFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    originalFile = file;
+    compressedBlob = null;
+    document.getElementById('btn-dl').style.display = 'none';
+    document.getElementById('controls').classList.add('visible');
+    document.getElementById('savings-bar').classList.remove('visible');
+    document.getElementById('orig-size').textContent = formatBytes(file.size);
+    document.getElementById('comp-size').textContent = '—';
+
+    const url = URL.createObjectURL(file);
+    document.getElementById('orig-preview').innerHTML = `<img src="${url}" alt="original"/>`;
+    document.getElementById('comp-preview').innerHTML = '<div class="empty" style="min-height:180px;display:flex;align-items:center;justify-content:center;color:rgba(193,194,197,.3);font-size:.9rem;">Compress to preview</div>';
+  }
+
+  // Drag & drop
+  const dz = document.getElementById('drop-zone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      originalFile = file;
+      loadFile({target: {files: [file]}});
+    }
+  });
+
+  function onQualityChange() {
+    document.getElementById('quality-val').textContent = document.getElementById('quality').value + '%';
+  }
+
+  function compress() {
+    if (!originalFile) return;
+    const quality = parseInt(document.getElementById('quality').value) / 100;
+    const format = document.getElementById('format').value;
+    compressedExt = format === 'image/webp' ? 'webp' : 'jpg';
+
+    const img = new Image();
+    const url = URL.createObjectURL(originalFile);
+    img.onload = () => {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx2.clearRect(0, 0, canvas.width, canvas.height);
+      if (format === 'image/jpeg') {
+        ctx2.fillStyle = '#ffffff';
+        ctx2.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx2.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        compressedBlob = blob;
+        const compUrl = URL.createObjectURL(blob);
+        document.getElementById('comp-preview').innerHTML = `<img src="${compUrl}" alt="compressed"/>`;
+        document.getElementById('comp-size').textContent = formatBytes(blob.size);
+
+        const saved = originalFile.size - blob.size;
+        const pct = Math.round((saved / originalFile.size) * 100);
+        const savings = document.getElementById('savings-bar');
+        savings.classList.add('visible');
+        document.getElementById('savings-val').textContent = (pct > 0 ? '-' : '+') + Math.abs(pct) + '%';
+        document.getElementById('savings-val').style.color = pct > 0 ? 'var(--green)' : 'var(--red)';
+        document.getElementById('size-before').textContent = 'Before: ' + formatBytes(originalFile.size);
+        document.getElementById('size-after').textContent = 'After: ' + formatBytes(blob.size);
+
+        document.getElementById('btn-dl').style.display = 'inline-block';
+      }, format, quality);
+    };
+    img.src = url;
+  }
+
+  function download() {
+    if (!compressedBlob) return;
+    const base = originalFile.name.replace(/\.[^.]+$/, '');
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(compressedBlob);
+    link.download = base + '_compressed.' + compressedExt;
+    link.click();
+  }
+</script>
+</body>
+</html>

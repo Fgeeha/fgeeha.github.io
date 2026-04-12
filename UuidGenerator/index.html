@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>UUID Generator | FgeeHa Tools</title>
+  <meta name="description" content="Generate UUID v4 and nanoid-style IDs in the browser."/>
+  <style>
+    :root {
+      --bg: #1a1b1e;
+      --surface: #25262b;
+      --surface2: #2c2e33;
+      --border: rgba(255,255,255,0.1);
+      --text: #c1c2c5;
+      --text-bright: #e9ecef;
+      --accent: #4dabf7;
+      --green: #51cf66;
+      --radius: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 60px 20px 20px;
+    }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { color: var(--text-bright); font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { font-size: .9rem; margin-bottom: 24px; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 20px; border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 16px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    input[type=number] {
+      width: 90px; padding: 8px 10px;
+      background: var(--bg); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: .9rem; outline: none;
+    }
+    input[type=number]:focus { border-color: var(--accent); }
+    .type-btns { display: flex; gap: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    .type-btn {
+      padding: 8px 14px; border: none; cursor: pointer;
+      font-size: .83rem; font-weight: 600; background: var(--surface2); color: var(--text);
+      transition: background .15s, color .15s; flex: 1;
+    }
+    .type-btn.active { background: var(--accent); color: #1a1b1e; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    button.btn-gen {
+      padding: 9px 18px; background: var(--accent); color: #1a1b1e;
+      border: none; border-radius: var(--radius); font-size: .9rem; font-weight: 700;
+      cursor: pointer; transition: opacity .15s;
+    }
+    button.btn-gen:hover { opacity: .85; }
+    button.btn-copy {
+      padding: 9px 18px; background: var(--surface2); color: var(--text-bright);
+      border: 1px solid var(--border); border-radius: var(--radius); font-size: .9rem;
+      cursor: pointer; font-weight: 600; transition: opacity .15s;
+    }
+    button.btn-copy:hover { opacity: .85; }
+    .uuid-list {
+      margin-top: 16px; font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: .88rem;
+    }
+    .uuid-item {
+      padding: 8px 12px; background: var(--bg); border-radius: 6px;
+      margin-bottom: 5px; border: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color .2s; cursor: pointer;
+    }
+    .uuid-item:hover { border-color: var(--accent); }
+    .uuid-item span { flex: 1; word-break: break-all; }
+    .uuid-item .copy-one {
+      font-size: .72rem; padding: 2px 8px; background: var(--surface2);
+      border: none; border-radius: 4px; color: var(--text); cursor: pointer;
+      margin-left: 10px; white-space: nowrap;
+    }
+    .uuid-item .copy-one:hover { color: var(--accent); }
+    .count-badge {
+      font-size: .78rem; color: var(--text); margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+
+<div class="container">
+  <h1>🆔 UUID Generator</h1>
+  <p class="subtitle">Generate UUID v4 and nanoid-style short IDs client-side</p>
+
+  <div class="card">
+    <div class="controls">
+      <div class="field">
+        <label>Count (1–100)</label>
+        <input type="number" id="count" value="5" min="1" max="100"/>
+      </div>
+      <div class="field">
+        <label>Format</label>
+        <div class="type-btns">
+          <button class="type-btn active" id="btn-uuid" onclick="setType('uuid')">UUID v4</button>
+          <button class="type-btn" id="btn-nano" onclick="setType('nano')">Nanoid (21)</button>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gen" onclick="generate()">Generate</button>
+      <button class="btn-copy" id="copyAllBtn" onclick="copyAll()">Copy All</button>
+    </div>
+    <div class="uuid-list" id="list"></div>
+  </div>
+</div>
+
+<script>
+  let currentType = 'uuid';
+
+  function setType(t) {
+    currentType = t;
+    document.getElementById('btn-uuid').classList.toggle('active', t === 'uuid');
+    document.getElementById('btn-nano').classList.toggle('active', t === 'nano');
+  }
+
+  function uuidV4() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    // Fallback
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+  }
+
+  function nanoid(size = 21) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+    const bytes = crypto.getRandomValues(new Uint8Array(size));
+    return Array.from(bytes).map(b => chars[b % 64]).join('');
+  }
+
+  function generate() {
+    const count = Math.min(100, Math.max(1, parseInt(document.getElementById('count').value) || 1));
+    const ids = Array.from({length: count}, () => currentType === 'uuid' ? uuidV4() : nanoid());
+    const list = document.getElementById('list');
+    list.innerHTML = `<div class="count-badge">${count} ID${count > 1 ? 's' : ''} generated</div>` +
+      ids.map(id => `
+        <div class="uuid-item">
+          <span>${id}</span>
+          <button class="copy-one" onclick="copyOne(this,'${id}')">Copy</button>
+        </div>`).join('');
+  }
+
+  function copyOne(btn, id) {
+    navigator.clipboard.writeText(id).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1200);
+    });
+  }
+
+  function copyAll() {
+    const spans = document.querySelectorAll('.uuid-item span');
+    if (!spans.length) return;
+    const text = Array.from(spans).map(s => s.textContent).join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyAllBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy All', 1500);
+    });
+  }
+
+  // Generate on load
+  generate();
+</script>
+</body>
+</html>
