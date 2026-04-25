@@ -2,6 +2,6 @@ User-agent: *
 Disallow: /old_version_web/
 Disallow: /YouTube/
 Disallow: /.idea/
-Allow: /
+Disallow: /.claude/
 
 Sitemap: https://fgeeha.github.io/sitemap.xml

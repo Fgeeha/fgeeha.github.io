@@ -2,50 +2,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fgeeha.github.io/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/social/</loc>
+    <lastmod>2026-04-25T12:59:24+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/GreenSentry/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://fgeeha.github.io/PasswordGenerator/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/csvEditor/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
   </url>
   <url>
-    <loc>https://fgeeha.github.io/Roulette/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://fgeeha.github.io/FileEncodingIdentifier/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
   </url>
   <url>
-    <loc>https://fgeeha.github.io/infinity/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://fgeeha.github.io/ImageCompressor/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/PasswordGenerator/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/QrGenerator/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/Base64Tool/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/ContrastChecker/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/GameOfLife/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/JsonFormatter/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/OgPreview/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/SortVisualizer/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/TextDiff/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/TypingTest/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/UuidGenerator/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/WorldClock/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/Candle/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <lastmod>2026-02-23T18:51:16+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/Candles/</loc>
-    <lastmod>2026-02-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <lastmod>2026-02-23T18:51:16+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/DoomDash/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/DungeonDash/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/infinity/</loc>
+    <lastmod>2026-02-23T18:51:16+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/Roulette/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/WorkDayTimer/</loc>
+    <lastmod>2026-04-12T18:19:25+03:00</lastmod>
   </url>
 </urlset>
