@@ -1,0 +1,1656 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Никита Колесников — Python Backend Developer · Резюме</title>
+  <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+    <meta name="description" content="Резюме Никиты Колесникова (FgeeHa) — Python backend разработчик. Django, FastAPI, PostgreSQL, Docker, REST API. 4 года опыта в backend, интеграциях и аналитике данных." />
+    <meta name="keywords" content="Колесников Никита, FgeeHa, Python разработчик, backend developer, FastAPI, Django, PostgreSQL, Docker, резюме, CV" />
+    <meta name="author" content="Nikita Kolesnikov" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://fgeeha.github.io/cv/" />
+
+    <meta property="og:title" content="Никита Колесников — Python Backend Developer" />
+    <meta property="og:description" content="Python backend разработчик. 4 года опыта: Django, FastAPI, PostgreSQL, Docker, CI/CD, интеграции, аналитика данных." />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://fgeeha.github.io/cv/" />
+    <meta property="og:image" content="https://fgeeha.github.io/images/i.webp" />
+    <meta property="og:locale" content="ru_RU" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Никита Колесников — Python Backend Developer" />
+    <meta name="twitter:description" content="Резюме: Python, Django, FastAPI, PostgreSQL, Docker." />
+    <meta name="twitter:image" content="https://fgeeha.github.io/images/i.jpg" />
+
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
+    <link rel="shortcut icon" href="/images/favicon.webp" type="image/webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "name": "Резюме — Никита Колесников",
+        "url": "https://fgeeha.github.io/cv/",
+        "mainEntity": {
+            "@type": "Person",
+            "name": "Nikita Kolesnikov",
+            "alternateName": "FgeeHa",
+            "jobTitle": "Python Backend Developer",
+            "url": "https://fgeeha.github.io/",
+            "image": "https://fgeeha.github.io/images/i.webp",
+            "email": ["mailto:<span class="cf-email-protect"></span>", "mailto:<span class="cf-email-protect"></span>"],
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Волгоград",
+                "addressCountry": "RU"
+            },
+            "knowsAbout": ["Python", "Django", "FastAPI", "PostgreSQL", "Docker", "REST API", "SQLAlchemy", "Redis", "Celery"],
+            "sameAs": [
+                "https://t.me/fgeeha",
+                "https://github.com/Fgeeha",
+                "https://gitverse.ru/nkolesnikov",
+                "https://www.linkedin.com/in/nikita-kolesnikov-337b78323/"
+            ]
+        }
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --bg-elev: #111827;
+            --surface: rgba(255, 255, 255, 0.035);
+            --surface-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(148, 163, 184, 0.14);
+            --border-strong: rgba(148, 163, 184, 0.28);
+            --text: #e8ecf3;
+            --text-soft: #cbd5e1;
+            --muted: #94a3b8;
+            --muted-2: #64748b;
+            --accent: #38bdf8;
+            --accent-2: #fbbf24;
+            --accent-soft: rgba(56, 189, 248, 0.14);
+
+            --font-display: "Fraunces", "Georgia", serif;
+            --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+            --font-mono: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--text);
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse 60% 50% at 15% 0%, rgba(29, 78, 216, 0.22), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 90% 10%, rgba(124, 58, 237, 0.18), transparent 55%),
+                radial-gradient(ellipse 80% 60% at 50% 100%, rgba(251, 191, 36, 0.06), transparent 70%);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            z-index: 1;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 2;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 56px 32px 80px;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 56px;
+            margin-bottom: 56px;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0 0 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease 0.05s forwards;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 36px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: clamp(2.6rem, 6.2vw, 5.2rem);
+            line-height: 1.02;
+            margin: 0 0 22px;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.15s forwards;
+        }
+
+        .hero h1 .italic {
+            font-style: italic;
+            color: var(--text-soft);
+            font-weight: 400;
+        }
+
+        .hero h1 .accent {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .hero-sub {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin: 0 0 32px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.25s forwards;
+        }
+
+        .hero-sub span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-sub span::before {
+            content: "";
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .hero-tagline {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+            color: var(--text-soft);
+            max-width: 60ch;
+            line-height: 1.5;
+            margin: 0 0 36px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.35s forwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.45s forwards;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            margin-top: 44px;
+            padding: 22px 0 4px;
+            border-top: 1px dashed var(--border);
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.55s forwards;
+        }
+
+        @media (max-width: 640px) {
+            .stats { grid-template-columns: repeat(2, 1fr); gap: 18px 0; }
+        }
+
+        .stat {
+            padding: 0 22px;
+            border-left: 1px solid var(--border);
+        }
+
+        .stat:first-child { border-left: none; padding-left: 0; }
+
+        .stat .num {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1;
+            display: block;
+        }
+
+        .stat .num .small {
+            color: var(--accent);
+            font-size: 0.7em;
+            font-style: italic;
+        }
+
+        .stat .label {
+            display: block;
+            margin-top: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--border-strong);
+            background: var(--surface);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: #0a0e1a;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .btn.primary:hover {
+            background: #7dd3fc;
+            border-color: #7dd3fc;
+        }
+
+        .btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ============ LAYOUT ============ */
+        .grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 64px;
+        }
+
+        @media (max-width: 880px) {
+            .grid { grid-template-columns: 1fr; gap: 48px; }
+            .wrap { padding: 36px 22px 64px; }
+        }
+
+        /* ============ SIDEBAR ============ */
+        .side {
+            position: sticky;
+            top: 32px;
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        @media (max-width: 880px) {
+            .side { position: static; }
+        }
+
+        .side-block h3 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+            margin: 0 0 14px;
+            font-weight: 500;
+        }
+
+        .side-block p,
+        .side-block li {
+            margin: 0;
+            font-size: 0.94rem;
+            color: var(--text-soft);
+        }
+
+        .side-block ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .side-block a {
+            color: var(--text-soft);
+            text-decoration: none;
+            transition: color 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .side-block a:hover { color: var(--accent); }
+
+        .side-block a .arrow {
+            color: var(--muted-2);
+            font-family: var(--font-mono);
+            transition: transform 0.18s ease;
+        }
+
+        .side-block a:hover .arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        .lang-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .lang-row:last-child { border-bottom: none; }
+
+        .lang-row span:last-child {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--accent);
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main { min-width: 0; }
+
+        section { margin-bottom: 64px; }
+
+        .section-head {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin: 0 0 32px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-num {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+        }
+
+        .section-head h2 {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: clamp(1.5rem, 2.2vw, 1.85rem);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .section-head h2 em {
+            font-style: italic;
+            color: var(--text-soft);
+            font-weight: 400;
+        }
+
+        /* ============ ABOUT ============ */
+        .about p {
+            font-size: 1.02rem;
+            color: var(--text-soft);
+            margin: 0 0 16px;
+            max-width: 68ch;
+        }
+
+        .about p:last-child { margin-bottom: 0; }
+
+        .about p strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .highlight {
+            color: var(--accent-2);
+            font-style: italic;
+            font-family: var(--font-display);
+        }
+
+        /* ============ TIMELINE ============ */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: relative;
+        }
+
+        .job {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 32px;
+            padding: 26px 26px 26px 28px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+            overflow: hidden;
+        }
+
+        .job::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent), transparent);
+            opacity: 0.5;
+            transition: opacity 0.25s ease;
+        }
+
+        .job:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+        }
+
+        .job:hover::before { opacity: 1; }
+
+        @media (max-width: 640px) {
+            .job { grid-template-columns: 1fr; gap: 14px; padding: 22px; }
+        }
+
+        .job-date {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--muted);
+            line-height: 1.55;
+            padding-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .job-date .duration {
+            color: var(--muted-2);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .job-date .ongoing {
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 500;
+        }
+
+        .job-date .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .job-role {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+
+        .job h3 {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin: 0;
+            letter-spacing: -0.005em;
+        }
+
+        .job-chip {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-strong);
+            color: var(--muted);
+            background: rgba(255,255,255,0.02);
+            white-space: nowrap;
+        }
+
+        .job .company {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--accent);
+            margin: 0 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .job .company .sep {
+            color: var(--muted-2);
+        }
+
+        .job .company .loc {
+            color: var(--muted);
+        }
+
+        .job ul {
+            margin: 0 0 18px;
+            padding: 0;
+            list-style: none;
+            color: var(--text-soft);
+            font-size: 0.95rem;
+        }
+
+        .job ul li {
+            margin-bottom: 8px;
+            padding-left: 22px;
+            position: relative;
+            line-height: 1.55;
+        }
+
+        .job ul li::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            top: 0.62em;
+            width: 10px;
+            height: 1px;
+            background: var(--accent);
+            opacity: 0.7;
+        }
+
+        .job ul li strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .job-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .job-stack .s-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+            margin-right: 4px;
+            align-self: center;
+        }
+
+        .job-stack .s-tag {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            padding: 3px 9px;
+            border-radius: 5px;
+            background: rgba(56, 189, 248, 0.06);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            color: var(--text-soft);
+        }
+
+        /* ============ SKILLS ============ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-group {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .skill-group:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+        }
+
+        .skill-group h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0 0 14px;
+            font-weight: 500;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            color: var(--text-soft);
+            transition: all 0.18s ease;
+        }
+
+        .tag:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .tag.warm {
+            background: rgba(251, 191, 36, 0.07);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .tag.warm:hover {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--accent-2);
+            border-color: var(--accent-2);
+        }
+
+        /* ============ EDUCATION ============ */
+        .edu-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .edu {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 24px;
+            padding: 20px 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .edu:hover { border-color: var(--border-strong); }
+
+        @media (max-width: 640px) {
+            .edu { grid-template-columns: 1fr; gap: 8px; }
+        }
+
+        .edu-year {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-2);
+        }
+
+        .edu-degree {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin: 0 0 4px;
+        }
+
+        .edu h4 {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 1.08rem;
+            margin: 0 0 4px;
+        }
+
+        .edu p {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        /* ============ PROJECTS ============ */
+        .project-card {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 32px;
+            padding: 26px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            transition: border-color 0.25s ease, transform 0.25s ease;
+            overflow: hidden;
+        }
+
+        .project-card + .project-card { margin-top: 18px; }
+
+        .project-card::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-2), transparent);
+            opacity: 0.6;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 640px) {
+            .project-card { grid-template-columns: 1fr; gap: 14px; padding: 22px; }
+        }
+
+        .project-side {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .project-side .year {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 2rem;
+            line-height: 1;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .project-side .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-strong);
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            align-self: start;
+            width: fit-content;
+        }
+
+        .project-side .pill.hot {
+            background: rgba(251, 191, 36, 0.08);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: var(--accent-2);
+        }
+
+        .project-head {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin-bottom: 4px;
+        }
+
+        .project-head h3 {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 1.35rem;
+            margin: 0;
+            letter-spacing: -0.005em;
+        }
+
+        .project-head .team {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--text-soft);
+        }
+
+        .project-card .role {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent);
+            margin: 0 0 16px;
+        }
+
+        .project-card .desc {
+            color: var(--text-soft);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0 0 18px;
+            max-width: 64ch;
+        }
+
+        .project-card .desc em {
+            color: var(--accent);
+            font-style: italic;
+            font-family: var(--font-display);
+        }
+
+        .project-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin: 0 0 18px;
+            padding: 14px 0;
+            border-top: 1px dashed var(--border);
+            border-bottom: 1px dashed var(--border);
+        }
+
+        @media (max-width: 600px) {
+            .project-metrics { grid-template-columns: repeat(2, 1fr); gap: 12px 0; }
+        }
+
+        .project-metrics .m {
+            padding: 0 16px;
+            border-left: 1px solid var(--border);
+        }
+
+        .project-metrics .m:first-child { border-left: none; padding-left: 0; }
+
+        .project-metrics .m .v {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .project-metrics .m .v .x {
+            color: var(--accent);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .project-metrics .m .l {
+            display: block;
+            margin-top: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+        }
+
+        .project-card ul {
+            margin: 0 0 18px;
+            padding: 0;
+            list-style: none;
+            color: var(--text-soft);
+            font-size: 0.95rem;
+        }
+
+        .project-card ul li {
+            margin-bottom: 8px;
+            padding-left: 22px;
+            position: relative;
+            line-height: 1.55;
+        }
+
+        .project-card ul li::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            top: 0.62em;
+            width: 10px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .project-card ul li strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .project-card ul li em {
+            font-family: var(--font-mono);
+            font-style: normal;
+            font-size: 0.88em;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 1px 6px;
+            border-radius: 4px;
+            color: var(--text-soft);
+        }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 13px;
+            border-radius: 8px;
+            border: 1px solid var(--border-strong);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .project-link:hover {
+            background: var(--accent);
+            color: #0a0e1a;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .project-link svg { width: 14px; height: 14px; }
+
+        /* ============ FOOTER ============ */
+        footer {
+            margin-top: 80px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--muted-2);
+        }
+
+        footer a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.18s ease;
+        }
+
+        footer a:hover { color: var(--accent); }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #0a0e1a;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ============ PRINT ============ */
+        @media print {
+            body { background: #fff; color: #111; }
+            body::before { display: none; }
+            .hero-actions, footer { display: none; }
+            .wrap { padding: 0; }
+            .skill-group, .edu { background: transparent; border-color: #ccc; }
+            * { color: #111 !important; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- ============ HERO ============ -->
+        <header class="hero">
+            <p class="eyebrow">Curriculum Vitae · 2026</p>
+
+            <h1>
+                Никита Колесников <br />
+                <span class="accent">Python</span> <span class="italic">backend</span> <span class="accent">developer</span>
+            </h1>
+
+            <div class="hero-sub">
+                <span>Волгоград, RU</span>
+                <span>Опыт 4 года</span>
+                <span>Готов к переезду</span>
+                <span>Удалённо · Офис</span>
+            </div>
+
+            <p class="hero-tagline">
+                Разрабатываю надёжные backend-системы и интеграции на Python. Оптимизирую базы данных, проектирую REST/SOAP-сервисы, автоматизирую процессы. Работаю с <em>Django</em>, <em>FastAPI</em>, <em>PostgreSQL</em>, <em>Docker</em> — от MVP до продакшена.
+            </p>
+
+            <div class="hero-actions">
+                <a class="btn primary" href="https://t.me/fgeeha" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                    Telegram
+                </a>
+                <a class="btn" href="#" data-cf-email-protect>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9 6 9-6M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7a2 2 0 012-2h14a2 2 0 012 2"/></svg>
+                    <span class="cf-email-protect"></span>
+                </a>
+                <a class="btn" href="https://github.com/Fgeeha" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                    GitHub
+                </a>
+                <a class="btn" href="https://fgeeha.github.io/social/" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 10a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Все контакты
+                </a>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="num">4<span class="small">+</span></span>
+                    <span class="label">года в разработке</span>
+                </div>
+                <div class="stat">
+                    <span class="num">15<span class="small">+</span></span>
+                    <span class="label">проектов в проде</span>
+                </div>
+                <div class="stat">
+                    <span class="num">8</span>
+                    <span class="label">ключевых сервисов</span>
+                </div>
+                <div class="stat">
+                    <span class="num">B2</span>
+                    <span class="label">английский</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- ============ SIDEBAR ============ -->
+            <aside class="side">
+                <div class="side-block">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><a href="https://t.me/fgeeha" target="_blank" rel="noopener">Telegram <span class="arrow">→</span></a></li>
+                        <li><a href="#" data-cf-email-protect><span class="cf-email-protect"></span> <span class="arrow">→</span></a></li>
+                        <li><a href="https://github.com/Fgeeha" target="_blank" rel="noopener">github.com/Fgeeha <span class="arrow">→</span></a></li>
+                        <li><a href="https://gitverse.ru/nkolesnikov" target="_blank" rel="noopener">GitVerse <span class="arrow">→</span></a></li>
+                        <li><a href="https://www.linkedin.com/in/nikita-kolesnikov-337b78323/" target="_blank" rel="noopener">LinkedIn <span class="arrow">→</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="side-block">
+                    <h3>Языки</h3>
+                    <ul>
+                        <li class="lang-row"><span>Русский</span><span>native</span></li>
+                        <li class="lang-row"><span>English</span><span>B2</span></li>
+                    </ul>
+                </div>
+
+                <div class="side-block">
+                    <h3>Локация</h3>
+                    <p>Волгоград, Россия</p>
+                    <p style="color: var(--muted-2); font-size: 0.85rem; margin-top: 6px;">Готов к переезду и редким командировкам</p>
+                </div>
+
+                <div class="side-block">
+                    <h3>Формат</h3>
+                    <p>Полная занятость</p>
+                    <p>Офис · Удалённо</p>
+                </div>
+            </aside>
+
+            <!-- ============ MAIN ============ -->
+            <main class="main">
+                <!-- ============ ABOUT ============ -->
+                <section class="about" id="about">
+                    <div class="section-head">
+                        <span class="section-num">01 /</span>
+                        <h2>О <em>себе</em></h2>
+                    </div>
+                    <p>
+                        Мотивированный и результативный <strong>Python-разработчик</strong> с опытом создания backend-систем, интеграционных решений и аналитических инструментов. Стремлюсь к профессиональному росту в качестве <span class="highlight">Backend-инженера</span>, готов вносить вклад в сложные и интересные проекты.
+                    </p>
+                    <p>
+                        Имею опыт работы с широким спектром инструментов: <strong>FastAPI</strong>, <strong>Django</strong>, <strong>Flask</strong>, <strong>SQLAlchemy</strong>, <strong>aiogram</strong>, <strong>Celery</strong>, <strong>Redis</strong>, <strong>pydantic</strong>, <strong>alembic</strong>, <strong>poetry</strong>. Уверенно использую системы контроля версий и контейнеризации (<strong>Git</strong>, <strong>Docker</strong>). Оптимизировал базы данных, автоматизировал процессы и разрабатывал интеграционные адаптеры.
+                    </p>
+                    <p>
+                        Развиваюсь в направлении <span class="highlight">аналитики данных и BI</span> — успешно развернул Yandex DataLens для создания дашбордов и отчётов. Имею навыки работы с ML и опыт написания SOAP- и REST-сервисов. Активно совершенствую знания через профильную литературу, Habr и arXiv. Сейчас изучаю <strong>Golang</strong> для расширения кругозора.
+                    </p>
+                </section>
+
+                <!-- ============ EXPERIENCE ============ -->
+                <section id="experience">
+                    <div class="section-head">
+                        <span class="section-num">02 /</span>
+                        <h2>Опыт <em>работы</em></h2>
+                    </div>
+
+                    <div class="timeline">
+                        <article class="job">
+                            <div class="job-date">
+                                Авг 2025 —<br />
+                                <span class="ongoing"><span class="dot"></span>наст. время</span>
+                                <span class="duration">10 мес.</span>
+                            </div>
+                            <div>
+                                <div class="job-role">
+                                    <h3>Ведущий инженер</h3>
+                                    <span class="job-chip">QA · Analysis</span>
+                                </div>
+                                <p class="company">ГБУ ВО «ЦИТ ВО» <span class="sep">·</span> <span class="loc">Волгоград</span></p>
+                                <ul>
+                                    <li><strong>Внедрил процесс тестирования ПО</strong> на всех этапах разработки — от ревью требований до релиза, что снизило количество дефектов в продакшене</li>
+                                    <li><strong>Разработал чек-листы и тест-кейсы</strong> для регрессионного и функционального тестирования ключевых модулей</li>
+                                    <li><strong>Провёл аудит технической документации</strong> — выявил несоответствия, подготовил предложения по доработке и согласовал их с разработкой</li>
+                                    <li><strong>Спроектировал реестр рисков</strong> с матрицей вероятности и планами митигации для критических компонентов</li>
+                                </ul>
+                                <div class="job-stack">
+                                    <span class="s-label">Стек</span>
+                                    <span class="s-tag">QA</span>
+                                    <span class="s-tag">SQL</span>
+                                    <span class="s-tag">Postman</span>
+                                    <span class="s-tag">Git</span>
+                                    <span class="s-tag">Docker</span>
+                                    <span class="s-tag">Confluence</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="job">
+                            <div class="job-date">
+                                Июн 2025 —<br />Авг 2025
+                                <span class="duration">3 мес.</span>
+                            </div>
+                            <div>
+                                <div class="job-role">
+                                    <h3>Системный аналитик</h3>
+                                    <span class="job-chip">Fullstack · DevOps</span>
+                                </div>
+                                <p class="company">Волготранс ВЛГ <span class="sep">·</span> <span class="loc">Волгоград</span></p>
+                                <ul>
+                                    <li><strong>Разработал веб-приложение</strong> для учёта рабочего времени сотрудников с многоуровневой ролевой моделью и журналом аудита действий</li>
+                                    <li><strong>Спроектировал REST API</strong> на FastAPI: эндпоинты для смен, отпусков, отчётов; миграции через Alembic, аутентификация по JWT</li>
+                                    <li><strong>Развернул инфраструктуру на Proxmox</strong>: поднял виртуальные машины под backend, БД и фронтенд, настроил резервное копирование</li>
+                                    <li><strong>Собрал и формализовал требования</strong> от бизнеса в технические спецификации, наладил мониторинг производительности сервиса</li>
+                                </ul>
+                                <div class="job-stack">
+                                    <span class="s-label">Стек</span>
+                                    <span class="s-tag">Python</span>
+                                    <span class="s-tag">FastAPI</span>
+                                    <span class="s-tag">PostgreSQL</span>
+                                    <span class="s-tag">SQLAlchemy</span>
+                                    <span class="s-tag">Alembic</span>
+                                    <span class="s-tag">Docker</span>
+                                    <span class="s-tag">Proxmox</span>
+                                    <span class="s-tag">Linux</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="job">
+                            <div class="job-date">
+                                Фев 2025 —<br />Май 2025
+                                <span class="duration">4 мес.</span>
+                            </div>
+                            <div>
+                                <div class="job-role">
+                                    <h3>PHP-разработчик</h3>
+                                    <span class="job-chip">E-commerce</span>
+                                </div>
+                                <p class="company">КликОН <span class="sep">·</span> <span class="loc">Южный округ</span></p>
+                                <ul>
+                                    <li><strong>Разработал кастомные модули и обработчики событий</strong> для 1С-Битрикс под задачи корпоративных и e-commerce клиентов</li>
+                                    <li><strong>Настроил компоненты Bitrix</strong>: умный фильтр каталога, формы обратной связи, AJAX-подгрузка и кастомные шаблоны</li>
+                                    <li><strong>Кастомизировал шаблоны OpenCart</strong>, реализовал массовый импорт товаров и SEO-оптимизацию карточек</li>
+                                    <li><strong>Поддерживал и дорабатывал</strong> существующие сайты: исправление багов, ускорение страниц, интеграции с внешними сервисами</li>
+                                </ul>
+                                <div class="job-stack">
+                                    <span class="s-label">Стек</span>
+                                    <span class="s-tag">PHP</span>
+                                    <span class="s-tag">1С-Битрикс</span>
+                                    <span class="s-tag">OpenCart</span>
+                                    <span class="s-tag">MySQL</span>
+                                    <span class="s-tag">JS · AJAX</span>
+                                    <span class="s-tag">SEO</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="job">
+                            <div class="job-date">
+                                Дек 2021 —<br />Июл 2024
+                                <span class="duration">2 года 8 мес.</span>
+                            </div>
+                            <div>
+                                <div class="job-role">
+                                    <h3>Специалист по ИТ</h3>
+                                    <span class="job-chip">Python · Backend</span>
+                                </div>
+                                <p class="company">ФГБОУ ВО Волгоградский ГАУ <span class="sep">·</span> <span class="loc">Волгоград</span></p>
+                                <ul>
+                                    <li><strong>Разработал приложение на Python</strong> для генерации HTML-отчётов из XML-выгрузок ЭИОС: безопасный парсинг через <em>defusedxml</em>, шаблоны на <em>jinja2</em>, автоматическая сборка в .exe через GitHub Actions</li>
+                                    <li><strong>Разработал Telegram-бота</strong> на <em>aiogram</em> для системы вызова ИТ-специалиста: маршрутизация заявок по кабинетам, статусы, уведомления исполнителей и фоновые задачи</li>
+                                    <li><strong>Спроектировал SOAP-адаптер на Django</strong> для приёма данных из ЭИОС: контракты сервисов, валидация payload, упаковка в Docker и развёртывание на сервере</li>
+                                    <li><strong>Оптимизировал PostgreSQL</strong>: настроил регламентные бэкапы, провёл VACUUM FULL и ANALYZE, перенёс боевую БД на отдельный тестовый контур</li>
+                                    <li><strong>Развернул Yandex DataLens</strong> и построил дашборды по успеваемости студентов, среднему баллу абитуриентов и географии поступающих — заменил ручные Excel-отчёты</li>
+                                    <li><strong>Внедрил и сопровождал ЭИОС</strong>, написал пользовательскую документацию и регламенты для администраторов и преподавателей</li>
+                                </ul>
+                                <div class="job-stack">
+                                    <span class="s-label">Стек</span>
+                                    <span class="s-tag">Python</span>
+                                    <span class="s-tag">Django</span>
+                                    <span class="s-tag">aiogram</span>
+                                    <span class="s-tag">PostgreSQL</span>
+                                    <span class="s-tag">SOAP · REST</span>
+                                    <span class="s-tag">Docker</span>
+                                    <span class="s-tag">GitHub Actions</span>
+                                    <span class="s-tag">jinja2</span>
+                                    <span class="s-tag">DataLens</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- ============ PROJECTS ============ -->
+                <section id="projects">
+                    <div class="section-head">
+                        <span class="section-num">03 /</span>
+                        <h2>Проекты <em>и хакатоны</em></h2>
+                    </div>
+
+                    <article class="project-card">
+                        <div class="project-side">
+                            <span class="year">2026</span>
+                            <span class="pill">ML / CV · хакатон</span>
+                            <span class="pill hot">Капитан команды</span>
+                        </div>
+                        <div>
+                            <div class="project-head">
+                                <h3>Полка под контролем</h3>
+                                <span class="team">Lenta Tech Life Hack 2026</span>
+                            </div>
+                            <p class="role">Команда «Стабилизируй это» · ML/CV Engineer, MLOps</p>
+                            <p class="desc">
+                                Разработал <em>ML/CV-пайплайн</em> для автоматического распознавания ценников с видеопотока робота-инвентаризатора. На входе — 4K-видео полок, на выходе — структурированный CSV из 29 полей по каждому ценнику. Стартовали с <strong>0/274</strong>, довели метрику до <strong>47/274 (0.1715)</strong>.
+                            </p>
+                            <div class="project-metrics">
+                                <div class="m"><span class="v">0.1715</span><span class="l">ALL_VALUE</span></div>
+                                <div class="m"><span class="v">175<span class="x">/175</span></span><span class="l">unit-тесты</span></div>
+                                <div class="m"><span class="v">0 <span class="x">→</span> 47</span><span class="l">ценников</span></div>
+                            </div>
+                            <ul>
+                                <li><strong>Спроектировал пайплайн</strong> детекции и трекинга: <em>YOLOv8n tiled</em> (4K → тайлы 640×640, mAP50 = 0.776), <em>MSER fallback</em>, <em>ByteTrack</em> и per-video lens correction.</li>
+                                <li><strong>Реализовал каскад декодеров QR/штрихкодов</strong>: WeChat QR → pyzbar → cv2.barcode → zxing-cpp → qreader с валидацией EAN-13.</li>
+                                <li><strong>Построил OCR-стек</strong>: <em>PaddleOCR</em> для чисел/цен, <em>EasyOCR ru</em> для названий товаров.</li>
+                                <li><strong>Внедрил 4-уровневый catalog lookup</strong> с пропагацией полей через штрихкод — брейктру <em>0/274 → 35/274</em>.</li>
+                                <li><strong>Настроил CI/CD на GitHub Actions</strong>: ruff lint, 175 unit-тестов, авто-деплой на <em>HuggingFace Spaces</em>. Собрал <em>Docker</em>-образ для production-деплоя.</li>
+                                <li><strong>Сделал Gradio-демо</strong> для запуска пайплайна через веб-интерфейс.</li>
+                            </ul>
+                            <div class="project-links">
+                                <a class="project-link" href="https://github.com/Fgeeha/Lenta-Tech-Life-Hack-2026" target="_blank" rel="noopener">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                                    GitHub
+                                </a>
+                                <a class="project-link" href="https://huggingface.co/spaces/fgeeha/shelf-control" target="_blank" rel="noopener">
+                                    <span style="font-size: 1.1em;">🤗</span> HuggingFace Space
+                                </a>
+                            </div>
+                            <div class="job-stack">
+                                <span class="s-label">Стек</span>
+                                <span class="s-tag">Python</span>
+                                <span class="s-tag">PyTorch</span>
+                                <span class="s-tag">YOLOv8</span>
+                                <span class="s-tag">OpenCV</span>
+                                <span class="s-tag">PaddleOCR</span>
+                                <span class="s-tag">EasyOCR</span>
+                                <span class="s-tag">ByteTrack</span>
+                                <span class="s-tag">pyzbar · zxing</span>
+                                <span class="s-tag">Gradio</span>
+                                <span class="s-tag">Docker</span>
+                                <span class="s-tag">GitHub Actions</span>
+                                <span class="s-tag">HuggingFace</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-side">
+                            <span class="year">2025</span>
+                            <span class="pill">ML · NLP · RAG</span>
+                            <span class="pill hot">ML Engineer</span>
+                        </div>
+                        <div>
+                            <div class="project-head">
+                                <h3>Настройка RAG для Q&amp;A</h3>
+                                <span class="team">Альфа-Будущее · Changellenge 2025</span>
+                            </div>
+                            <p class="role">Команда «MireaFive» · ML Engineer, RAG, NLP · Ноябрь 2025</p>
+                            <p class="desc">
+                                Разработал <em>RAG-систему</em> для поиска релевантных веб-страниц по вопросам на русском. Корпус <strong>~7 000 веб-документов</strong>, на выходе — ранжированный топ-5 на каждый запрос. Стартовали с нуля и поздно включились, но итеративно вышли в верхнюю половину лидерборда.
+                            </p>
+                            <div class="project-metrics">
+                                <div class="m"><span class="v">0.34 <span class="x">→</span> 0.42</span><span class="l">F1 · публичный LB</span></div>
+                                <div class="m"><span class="v">8<span class="x">/день</span></span><span class="l">лимит сабмитов</span></div>
+                                <div class="m"><span class="v">RTX<span class="x"> 4090</span></span><span class="l">локальное железо</span></div>
+                            </div>
+                            <ul>
+                                <li><strong>Построил гибридный ретривер</strong>: <em>BGE-M3</em> эмбеддинги + <em>BM25</em> с <em>RRF-фьюжином</em> для объединения лексического и семантического поиска.</li>
+                                <li><strong>Реализовал Query Expansion через Qwen3-30B</strong>: 2–3 парафразы на вопрос, результаты объединялись через RRF — дало первый заметный прирост.</li>
+                                <li><strong>Экспериментировал с HyDE</strong> и <em>Convex Combination fusion</em> для взвешенного объединения обратных ранжировок.</li>
+                                <li><strong>Подключил cross-encoder реранкер</strong> с <em>4-битной квантизацией</em>: чанки 700 токенов вместо 2000 — компромисс под 4090.</li>
+                                <li><strong>Провёл предобработку корпуса</strong>: чистка HTML, нормализация пробелов и lowercase — без стемминга и стоп-слов.</li>
+                                <li><strong>Итерировал по embedding-моделям</strong> (paraphrase-mpnet, BGE-M3, Qwen 8B) и параметрам чанкинга.</li>
+                                <li><strong>Финал — выбыли по reshuffle</strong>: организаторы пересчитали приватный LB с ограничением топ-5, обнулив команды с &gt;5 ссылками.</li>
+                            </ul>
+                            <div class="job-stack">
+                                <span class="s-label">Стек</span>
+                                <span class="s-tag">Python</span>
+                                <span class="s-tag">FAISS</span>
+                                <span class="s-tag">BM25</span>
+                                <span class="s-tag">BGE-M3</span>
+                                <span class="s-tag">Sentence Transformers</span>
+                                <span class="s-tag">Qwen3-30B</span>
+                                <span class="s-tag">Cross-Encoder</span>
+                                <span class="s-tag">RRF · HyDE</span>
+                                <span class="s-tag">4-bit quant</span>
+                                <span class="s-tag">RTX 4090</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-side">
+                            <span class="year">2025</span>
+                            <span class="pill">AI · Full-Stack · ML</span>
+                            <span class="pill hot">Капитан</span>
+                        </div>
+                        <div>
+                            <div class="project-head">
+                                <h3>Green Sentry</h3>
+                                <span class="team">Sber500 × GigaChat · AI-трек</span>
+                            </div>
+                            <p class="role">Капитан · Full-Stack ML Engineer</p>
+                            <p class="desc">
+                                Разработал <em>интеллектуальную систему диагностики заболеваний растений</em>, совмещающую компьютерное зрение и reasoning-компонент на базе <em>GigaChat</em>. Пользователь загружает фото — система определяет болезнь, стадию, строит прогноз и план лечения с учётом региона и климата.
+                            </p>
+                            <div class="project-metrics">
+                                <div class="m"><span class="v">87<span class="x">%+</span></span><span class="l">точность ResNet50</span></div>
+                                <div class="m"><span class="v">JWT<span class="x"> · RBAC</span></span><span class="l">enterprise-безопасность</span></div>
+                                <div class="m"><span class="v">Prod<span class="x">-Ready</span></span><span class="l">полный стек</span></div>
+                            </div>
+                            <ul>
+                                <li><strong>Спроектировал CV + Reasoning пайплайн</strong>: <em>ResNet50</em> для классификации болезни, <em>GigaChat</em> для reasoning — генерации стадии заболевания, прогноза и агрономических рекомендаций с региональной адаптацией.</li>
+                                <li><strong>Построил production-бэкенд</strong> на <em>FastAPI</em> + <em>PostgreSQL</em> + <em>SQLAlchemy/Alembic</em>; тяжёлые задачи вынес в <em>Celery</em> + <em>Redis</em>; весь стек за <em>Nginx</em> reverse proxy.</li>
+                                <li><strong>Реализовал enterprise-безопасность</strong>: JWT, <em>bcrypt</em>, RBAC, rate limiting, защита от SQL-инъекций и XSS, валидация входных данных.</li>
+                                <li><strong>Настроил мониторинг</strong>: <em>Prometheus</em> + <em>Grafana</em> дашборды, health-check эндпоинты, централизованные логи.</li>
+                                <li><strong>Написал React-фронтенд</strong> (<em>Vite</em> + <em>Tailwind CSS</em>) с drag-and-drop загрузкой изображений и отчётом диагностики.</li>
+                                <li><strong>Собрал полный CI/CD</strong> на GitHub Actions, <em>Docker Compose</em> для локальной разработки и production-сборки с автоскейлингом; покрытие unit- и integration-тестами.</li>
+                            </ul>
+                            <div class="project-links">
+                                <a class="project-link" href="https://github.com/fgeeha/Green-Sentry" target="_blank" rel="noopener">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                                    github.com/fgeeha/Green-Sentry
+                                </a>
+                            </div>
+                            <div class="job-stack">
+                                <span class="s-label">Стек</span>
+                                <span class="s-tag">Python</span>
+                                <span class="s-tag">FastAPI</span>
+                                <span class="s-tag">PyTorch</span>
+                                <span class="s-tag">ResNet50</span>
+                                <span class="s-tag">GigaChat</span>
+                                <span class="s-tag">Celery · Redis</span>
+                                <span class="s-tag">PostgreSQL</span>
+                                <span class="s-tag">React · Vite</span>
+                                <span class="s-tag">Tailwind CSS</span>
+                                <span class="s-tag">Docker · Nginx</span>
+                                <span class="s-tag">Prometheus · Grafana</span>
+                                <span class="s-tag">GitHub Actions</span>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- ============ SKILLS ============ -->
+                <section id="skills">
+                    <div class="section-head">
+                        <span class="section-num">04 /</span>
+                        <h2>Навыки <em>и стек</em></h2>
+                    </div>
+
+                    <div class="skills-grid">
+                        <div class="skill-group">
+                            <h4>Языки</h4>
+                            <div class="tags">
+                                <span class="tag">Python</span>
+                                <span class="tag warm">Golang · в процессе</span>
+                                <span class="tag">SQL</span>
+                                <span class="tag">PHP</span>
+                                <span class="tag">C++</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Backend · Фреймворки</h4>
+                            <div class="tags">
+                                <span class="tag">Django</span>
+                                <span class="tag">FastAPI</span>
+                                <span class="tag">Flask</span>
+                                <span class="tag">SQLAlchemy</span>
+                                <span class="tag">aiogram</span>
+                                <span class="tag">pydantic</span>
+                                <span class="tag">async / await</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Базы данных</h4>
+                            <div class="tags">
+                                <span class="tag">PostgreSQL</span>
+                                <span class="tag">MySQL</span>
+                                <span class="tag">Redis</span>
+                                <span class="tag">VACUUM · ANALYZE</span>
+                                <span class="tag">оптимизация запросов</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>API · Интеграции</h4>
+                            <div class="tags">
+                                <span class="tag">REST API</span>
+                                <span class="tag">SOAP</span>
+                                <span class="tag">HTTP</span>
+                                <span class="tag">парсеры данных</span>
+                                <span class="tag">интеграционные адаптеры</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Инфраструктура · DevOps</h4>
+                            <div class="tags">
+                                <span class="tag">Docker</span>
+                                <span class="tag">Linux · Debian</span>
+                                <span class="tag">Git</span>
+                                <span class="tag">GitHub Actions</span>
+                                <span class="tag">CI/CD</span>
+                                <span class="tag">Proxmox</span>
+                                <span class="tag">gunicorn · uvicorn</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Аналитика · Данные</h4>
+                            <div class="tags">
+                                <span class="tag warm">Pandas</span>
+                                <span class="tag warm">Yandex DataLens</span>
+                                <span class="tag warm">Celery</span>
+                                <span class="tag warm">ETL</span>
+                                <span class="tag warm">аналитические отчёты</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Инструменты разработки</h4>
+                            <div class="tags">
+                                <span class="tag">poetry</span>
+                                <span class="tag">alembic</span>
+                                <span class="tag">pytest</span>
+                                <span class="tag">XML · jinja2</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>ML, NLP & Computer Vision</h4>
+                            <div class="tags">
+                                <span class="tag warm">PyTorch</span>
+                                <span class="tag warm">YOLOv8</span>
+                                <span class="tag warm">OpenCV</span>
+                                <span class="tag warm">PaddleOCR · EasyOCR</span>
+                                <span class="tag warm">ByteTrack</span>
+                                <span class="tag warm">RAG · FAISS · BM25</span>
+                                <span class="tag warm">BGE-M3 · Qwen3</span>
+                                <span class="tag warm">Sentence Transformers</span>
+                                <span class="tag warm">HuggingFace · Gradio</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-group">
+                            <h4>Принципы · подход</h4>
+                            <div class="tags">
+                                <span class="tag">SOLID</span>
+                                <span class="tag">DRY</span>
+                                <span class="tag">KISS</span>
+                                <span class="tag">ООП</span>
+                                <span class="tag">code review</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ EDUCATION ============ -->
+                <section id="education">
+                    <div class="section-head">
+                        <span class="section-num">05 /</span>
+                        <h2>Образование</h2>
+                    </div>
+
+                    <div class="edu-list">
+                        <article class="edu">
+                            <div class="edu-year">2024 — 2027</div>
+                            <div>
+                                <p class="edu-degree">аспирантура · в процессе</p>
+                                <h4>Волгоградский государственный технический университет</h4>
+                                <p>1.2.1 «Искусственный интеллект и машинное обучение» · Факультет электроники и вычислительной техники.</p>
+                            </div>
+                        </article>
+
+                        <article class="edu">
+                            <div class="edu-year">2024</div>
+                            <div>
+                                <p class="edu-degree">магистратура</p>
+                                <h4>Волгоградский государственный аграрный университет</h4>
+                                <p>09.04.03 «Прикладная информатика» · Эколого-мелиоративный факультет.</p>
+                            </div>
+                        </article>
+
+                        <article class="edu">
+                            <div class="edu-year">2022</div>
+                            <div>
+                                <p class="edu-degree">бакалавриат</p>
+                                <h4>Волгоградский государственный аграрный университет</h4>
+                                <p>09.03.03 «Прикладная информатика» · Эколого-мелиоративный факультет.</p>
+                            </div>
+                        </article>
+
+                        <article class="edu">
+                            <div class="edu-year">2024</div>
+                            <div>
+                                <p class="edu-degree">повышение квалификации</p>
+                                <h4>1С: Предприятие 8.3 — программирование и разработка ИТ-продуктов</h4>
+                                <p>ВолгГТУ. Специалист по информационным системам.</p>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <span>© 2026 Nikita Kolesnikov · FgeeHa</span>
+            <span><a href="https://fgeeha.github.io/">fgeeha.github.io</a> · обновлено в мае 2026</span>
+        </footer>
+    </div>
+
+<script>
+// Bypass Cloudflare Email Obfuscation: build email at runtime
+(function() {
+    const u = 'kolesnikov.n', d = 'icloud.com';
+    const addr = u + '@' + d;
+    document.querySelectorAll('a[data-cf-email-protect]').forEach(a => {
+        a.setAttribute('href', 'mailto:' + addr);
+        a.removeAttribute('data-cf-email-protect');
+    });
+    document.querySelectorAll('.cf-email-protect').forEach(el => {
+        el.textContent = addr;
+        el.classList.remove('cf-email-protect');
+    });
+})();
+</script>
+</body>
+</html>
