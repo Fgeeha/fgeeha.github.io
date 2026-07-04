@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
+  <title>Горячие клавиши — macOS и Ubuntu + niri + DMS</title>
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --bg-soft: #121621;
+      --card: rgba(22, 27, 40, 0.9);
+      --card-hover: rgba(28, 35, 51, 0.98);
+      --text: #eef2ff;
+      --muted: #9aa4bb;
+      --border: rgba(255,255,255,.09);
+      --accent: #6ea8fe;
+      --accent-2: #9b8cff;
+      --success: #63d6a4;
+      --danger: #ff7d91;
+      --kbd-bg: #080a0f;
+      --kbd-border: #3c455c;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+      --radius: 18px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f5f9;
+      --bg-soft: #e9edf5;
+      --card: rgba(255,255,255,.92);
+      --card-hover: #fff;
+      --text: #151925;
+      --muted: #626b7d;
+      --border: rgba(20,25,35,.10);
+      --accent: #2867d8;
+      --accent-2: #7657d8;
+      --success: #188761;
+      --danger: #c73e59;
+      --kbd-bg: #f6f7fb;
+      --kbd-border: #c7cddb;
+      --shadow: 0 18px 55px rgba(35,45,75,.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(110,168,254,.18), transparent 32rem),
+        radial-gradient(circle at 100% 5%, rgba(155,140,255,.15), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      width: min(1240px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 70px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(110,168,254,.15), rgba(155,140,255,.11)), var(--card);
+      box-shadow: var(--shadow);
+      padding: clamp(24px, 5vw, 52px);
+      margin-bottom: 22px;
+    }
+
+    .hero::after {
+      content: "⌘  Super";
+      position: absolute;
+      right: -10px;
+      bottom: -28px;
+      font-size: clamp(74px, 16vw, 190px);
+      font-weight: 900;
+      letter-spacing: -.08em;
+      color: rgba(255,255,255,.035);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.035);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font-size: clamp(32px, 6vw, 68px);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    .subtitle {
+      margin: 18px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: auto minmax(220px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 94%, transparent);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .os-tabs {
+      display: flex;
+      gap: 7px;
+      padding: 4px;
+      background: var(--bg-soft);
+      border-radius: 13px;
+    }
+
+    .tab, .icon-btn, .filter-chip {
+      border: 1px solid transparent;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .tab {
+      padding: 10px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-weight: 750;
+    }
+
+    .tab:hover, .tab.active {
+      background: var(--card-hover);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-soft);
+      color: var(--text);
+      outline: none;
+      padding: 12px 14px 12px 40px;
+      transition: .18s ease;
+    }
+
+    #search:focus {
+      border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--bg-soft);
+      border-color: var(--border);
+      color: var(--text);
+      font-size: 17px;
+    }
+
+    .icon-btn:hover { transform: translateY(-1px); background: var(--card-hover); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+
+    .legend span {
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px 1px 14px;
+      margin-bottom: 3px;
+    }
+
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-chip {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border-color: var(--border);
+      background: var(--card);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .filter-chip:hover, .filter-chip.active {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--accent) 48%, var(--border));
+      background: color-mix(in srgb, var(--accent) 13%, var(--card));
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active { display: block; }
+
+    .category {
+      margin-top: 26px;
+      scroll-margin-top: 100px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 3px 12px;
+    }
+
+    .category h2 {
+      margin: 0;
+      font-size: clamp(20px, 3vw, 29px);
+      letter-spacing: -.025em;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .shortcut {
+      display: grid;
+      grid-template-columns: minmax(180px, 44%) 1fr;
+      gap: 18px;
+      align-items: center;
+      min-height: 78px;
+      padding: 15px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: 0 8px 28px rgba(0,0,0,.06);
+      transition: .18s ease;
+    }
+
+    .shortcut:hover {
+      transform: translateY(-2px);
+      background: var(--card-hover);
+      border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+    }
+
+    .keys {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    kbd {
+      min-width: 30px;
+      padding: 6px 8px;
+      border: 1px solid var(--kbd-border);
+      border-bottom-width: 3px;
+      border-radius: 8px;
+      background: var(--kbd-bg);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1;
+      text-align: center;
+      box-shadow: 0 2px 0 rgba(0,0,0,.12);
+    }
+
+    .or {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 2px;
+    }
+
+    .action {
+      font-weight: 690;
+      line-height: 1.35;
+    }
+
+    .action small {
+      display: block;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .empty {
+      display: none;
+      padding: 56px 20px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background: var(--card);
+    }
+
+    .footer {
+      margin-top: 36px;
+      padding: 20px 4px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .print-note {
+      display: none;
+    }
+
+    mark {
+      color: inherit;
+      background: color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    @media (max-width: 840px) {
+      .toolbar {
+        grid-template-columns: 1fr auto;
+      }
+      .os-tabs { grid-column: 1 / -1; }
+      .search-wrap { min-width: 0; }
+      .shortcut-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .app { width: min(100% - 18px, 1240px); padding-top: 10px; }
+      .hero { border-radius: 20px; padding: 24px 20px; }
+      .toolbar { top: 5px; padding: 8px; border-radius: 15px; }
+      .tab { flex: 1; text-align: center; padding-inline: 9px; }
+      .shortcut {
+        grid-template-columns: 1fr;
+        gap: 11px;
+        align-items: start;
+      }
+      .toolbar-actions .print-btn { display: none; }
+    }
+
+    @media print {
+      :root {
+        --bg: #fff;
+        --card: #fff;
+        --card-hover: #fff;
+        --text: #111;
+        --muted: #555;
+        --border: #ccc;
+        --kbd-bg: #fff;
+        --kbd-border: #777;
+      }
+
+      body { background: #fff; }
+      .app { width: 100%; padding: 0; }
+      .hero {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 18px 0;
+        margin: 0 0 12px;
+        background: #fff;
+      }
+      .hero::after, .toolbar, .filters, .footer { display: none !important; }
+      .section { display: none !important; }
+      .section.active { display: block !important; }
+      .legend { margin-bottom: 10px; }
+      .legend span { background: #fff; padding: 4px 7px; }
+      .category { margin-top: 16px; break-inside: avoid; }
+      .category h2 { font-size: 18px; }
+      .shortcut-grid { gap: 5px; }
+      .shortcut {
+        box-shadow: none;
+        min-height: 0;
+        padding: 8px 10px;
+        border-radius: 8px;
+        break-inside: avoid;
+      }
+      kbd { padding: 4px 6px; font-size: 10px; }
+      .action { font-size: 12px; }
+      .print-note { display: block; color: #555; font-size: 11px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <main class="app">
+    <header class="hero">
+      <div class="eyebrow">Персональная шпаргалка</div>
+      <h1>Горячие клавиши</h1>
+      <p class="subtitle">
+        macOS и Ubuntu с niri + DMS. Используйте поиск, переключайте систему,
+        фильтруйте категории и распечатывайте нужный раздел.
+      </p>
+      <p class="print-note">Распечатана активная вкладка.</p>
+    </header>
+
+    <nav class="toolbar" aria-label="Панель управления">
+      <div class="os-tabs" role="tablist">
+        <button class="tab active" data-target="mac" role="tab" aria-selected="true"> macOS</button>
+        <button class="tab" data-target="linux" role="tab" aria-selected="false">◈ Ubuntu + niri</button>
+      </div>
+
+      <label class="search-wrap">
+        <span>⌕</span>
+        <input id="search" type="search" placeholder="Найти действие или сочетание…" autocomplete="off" />
+      </label>
+
+      <div class="toolbar-actions">
+        <button class="icon-btn print-btn" id="printBtn" title="Печать" aria-label="Печать">⎙</button>
+        <button class="icon-btn" id="themeBtn" title="Сменить тему" aria-label="Сменить тему">☼</button>
+      </div>
+    </nav>
+
+    <section id="mac" class="section active" data-os="mac">
+      <div class="legend">
+        <span>⌘ Command</span><span>⌥ Option</span><span>⌃ Control</span><span>⇧ Shift</span><span>Fn Function</span>
+      </div>
+
+      <div class="filters" aria-label="Категории macOS">
+        <button class="filter-chip active" data-filter="all">Все</button>
+        <button class="filter-chip" data-filter="text">Текст</button>
+        <button class="filter-chip" data-filter="apps">Окна и приложения</button>
+        <button class="filter-chip" data-filter="browser">Браузер</button>
+        <button class="filter-chip" data-filter="finder">Finder</button>
+        <button class="filter-chip" data-filter="screens">Скриншоты</button>
+      </div>
+
+      <div class="category" data-category="text">
+        <div class="category-header"><h2>Работа с текстом</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>C</kbd><span class="or">/</span><kbd>V</kbd><span class="or">/</span><kbd>X</kbd></div><div class="action">Копировать / вставить / вырезать</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>Z</kbd></div><div class="action">Отменить действие</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>Z</kbd></div><div class="action">Повторить действие</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>A</kbd></div><div class="action">Выделить всё</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>F</kbd></div><div class="action">Найти</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>←</kbd><span class="or">/</span><kbd>→</kbd></div><div class="action">Начало / конец строки</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌥</kbd><kbd>←</kbd><span class="or">/</span><kbd>→</kbd></div><div class="action">Перейти на одно слово</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>←↑↓→</kbd></div><div class="action">Выделять текст</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌥</kbd><kbd>Delete</kbd></div><div class="action">Удалить слово слева</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Fn</kbd><kbd>Delete</kbd></div><div class="action">Удалить символ справа</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="apps">
+        <div class="category-header"><h2>Окна и приложения</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>Space</kbd></div><div class="action">Открыть Spotlight</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>Tab</kbd></div><div class="action">Переключить приложение</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>`</kbd></div><div class="action">Следующее окно текущего приложения</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>W</kbd></div><div class="action">Закрыть окно или вкладку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>Q</kbd></div><div class="action">Завершить приложение</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>H</kbd></div><div class="action">Скрыть приложение</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>M</kbd></div><div class="action">Свернуть окно</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌃</kbd><kbd>⌘</kbd><kbd>F</kbd></div><div class="action">Полноэкранный режим</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>Esc</kbd></div><div class="action">Принудительно завершить приложение</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌃</kbd><kbd>⌘</kbd><kbd>Q</kbd></div><div class="action">Заблокировать Mac</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="browser">
+        <div class="category-header"><h2>Браузер</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>T</kbd></div><div class="action">Новая вкладка</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>T</kbd></div><div class="action">Вернуть закрытую вкладку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>L</kbd></div><div class="action">Перейти в адресную строку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>R</kbd></div><div class="action">Обновить страницу</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>[</kbd><span class="or">/</span><kbd>]</kbd></div><div class="action">Назад / вперёд</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>+</kbd><span class="or">/</span><kbd>−</kbd><span class="or">/</span><kbd>0</kbd></div><div class="action">Изменить / сбросить масштаб</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>1…9</kbd></div><div class="action">Перейти на вкладку</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="finder">
+        <div class="category-header"><h2>Finder</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Space</kbd></div><div class="action">Быстрый просмотр файла</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>I</kbd></div><div class="action">Свойства файла</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>N</kbd></div><div class="action">Создать папку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>Delete</kbd></div><div class="action">Переместить в корзину</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>G</kbd></div><div class="action">Перейти к папке</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>↑</kbd></div><div class="action">Открыть родительскую папку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⌘</kbd><kbd>↓</kbd></div><div class="action">Открыть файл или папку</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="screens">
+        <div class="category-header"><h2>Скриншоты и запись</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>3</kbd></div><div class="action">Снимок всего экрана</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>4</kbd></div><div class="action">Снимок выбранной области</div></article>
+          <article class="shortcut"><div class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>5</kbd></div><div class="action">Меню скриншотов и записи экрана</div></article>
+        </div>
+      </div>
+      <div class="empty">Ничего не найдено.</div>
+    </section>
+
+    <section id="linux" class="section" data-os="linux">
+      <div class="legend">
+        <span>Mod = Super = клавиша Windows</span><span>Конфигурация: niri + DMS</span>
+      </div>
+
+      <div class="filters" aria-label="Категории Linux">
+        <button class="filter-chip active" data-filter="all">Все</button>
+        <button class="filter-chip" data-filter="dms">DMS и приложения</button>
+        <button class="filter-chip" data-filter="focus">Фокус</button>
+        <button class="filter-chip" data-filter="move">Перемещение</button>
+        <button class="filter-chip" data-filter="size">Размер и режим</button>
+        <button class="filter-chip" data-filter="workspaces">Рабочие пространства</button>
+        <button class="filter-chip" data-filter="monitors">Мониторы</button>
+        <button class="filter-chip" data-filter="screens">Скриншоты</button>
+      </div>
+
+      <div class="category" data-category="dms">
+        <div class="category-header"><h2>DMS и приложения</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Space</kbd></div><div class="action">Запуск приложений<small>DMS Spotlight</small></div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>D</kbd></div><div class="action">Запуск приложений<small>Дублирует Super + Space</small></div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>T</kbd></div><div class="action">Открыть терминал Kitty</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>V</kbd></div><div class="action">Менеджер буфера обмена</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>N</kbd></div><div class="action">Центр уведомлений</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>M</kbd></div><div class="action">Диспетчер задач</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>Delete</kbd></div><div class="action">Диспетчер задач</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>,</kbd></div><div class="action">Настройки DMS</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>N</kbd></div><div class="action">Блокнот DMS</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Y</kbd></div><div class="action">Выбор обоев</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>X</kbd></div><div class="action">Меню питания</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Alt</kbd><kbd>L</kbd></div><div class="action">Заблокировать экран</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>1</kbd></div><div class="action">Открыть или сфокусировать Telegram</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>2</kbd></div><div class="action">Открыть или сфокусировать Spotify</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>3</kbd></div><div class="action">Открыть или сфокусировать Zen Browser</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="focus">
+        <div class="category-header"><h2>Фокус и навигация по окнам</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>H</kbd><span class="or">/</span><kbd>L</kbd></div><div class="action">Колонка слева / справа</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>J</kbd><span class="or">/</span><kbd>K</kbd></div><div class="action">Окно ниже / выше</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>←</kbd><span class="or">/</span><kbd>→</kbd></div><div class="action">Колонка слева / справа</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>↑</kbd><span class="or">/</span><kbd>↓</kbd></div><div class="action">Окно выше / ниже</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Home</kbd><span class="or">/</span><kbd>End</kbd></div><div class="action">Первая / последняя колонка</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Q</kbd></div><div class="action">Закрыть окно</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Tab</kbd></div><div class="action">Обзор окон и рабочих пространств</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Alt</kbd><kbd>Tab</kbd></div><div class="action">Следующее окно на текущем мониторе</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Alt</kbd><kbd>Shift</kbd><kbd>Tab</kbd></div><div class="action">Предыдущее окно на текущем мониторе</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Alt</kbd><kbd>`</kbd></div><div class="action">Следующее окно того же приложения</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="move">
+        <div class="category-header"><h2>Перемещение окон и колонок</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>H</kbd><span class="or">/</span><kbd>L</kbd></div><div class="action">Сдвинуть колонку влево / вправо</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>J</kbd><span class="or">/</span><kbd>K</kbd></div><div class="action">Сдвинуть окно вниз / вверх</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>←</kbd><span class="or">/</span><kbd>→</kbd></div><div class="action">Сдвинуть колонку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>↑</kbd><span class="or">/</span><kbd>↓</kbd></div><div class="action">Сдвинуть окно внутри колонки</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>[</kbd><span class="or">/</span><kbd>]</kbd></div><div class="action">Включить окно в соседнюю колонку или извлечь</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>.</kbd></div><div class="action">Извлечь окно из колонки</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>Home</kbd><span class="or">/</span><kbd>End</kbd></div><div class="action">Переместить колонку в начало / конец</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="size">
+        <div class="category-header"><h2>Размер и режим окна</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>F</kbd></div><div class="action">Развернуть колонку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>F</kbd></div><div class="action">Полноэкранное окно</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>R</kbd></div><div class="action">Переключить предустановленную ширину</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>+</kbd><span class="or">/</span><kbd>−</kbd></div><div class="action">Ширина колонки ±10%</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>R</kbd></div><div class="action">Переключить предустановленную высоту</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>+</kbd><span class="or">/</span><kbd>−</kbd></div><div class="action">Высота окна ±10%</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>F</kbd></div><div class="action">Занять доступную ширину</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>C</kbd></div><div class="action">Центрировать колонку</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>C</kbd></div><div class="action">Центрировать видимые колонки</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>W</kbd></div><div class="action">Переключить вкладки внутри колонки</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>T</kbd></div><div class="action">Плавающий / плиточный режим</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>V</kbd></div><div class="action">Переключить фокус между floating и tiling</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>R</kbd></div><div class="action">Сбросить высоту окна</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="workspaces">
+        <div class="category-header"><h2>Рабочие пространства</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>I</kbd><span class="or">/</span><kbd>U</kbd></div><div class="action">Рабочее пространство выше / ниже</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Page Up</kbd><span class="or">/</span><kbd>Page Down</kbd></div><div class="action">Рабочее пространство выше / ниже</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Ctrl</kbd><kbd>Super</kbd><kbd>1…9</kbd></div><div class="action">Перейти на пространство 1–9</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>1…9</kbd></div><div class="action">Отправить колонку на пространство 1–9</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>I</kbd><span class="or">/</span><kbd>U</kbd></div><div class="action">Отправить колонку на пространство выше / ниже</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>I</kbd><span class="or">/</span><kbd>U</kbd></div><div class="action">Переместить само рабочее пространство</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>R</kbd></div><div class="action">Переименовать рабочее пространство</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="monitors">
+        <div class="category-header"><h2>Мониторы</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>H</kbd><span class="or">/</span><kbd>L</kbd></div><div class="action">Фокус на левый / правый монитор</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Ctrl</kbd><kbd>J</kbd><span class="or">/</span><kbd>K</kbd></div><div class="action">Фокус на нижний / верхний монитор</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>Ctrl</kbd><kbd>H</kbd><span class="or">/</span><kbd>L</kbd></div><div class="action">Перенести колонку на левый / правый монитор</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>Ctrl</kbd><kbd>J</kbd><span class="or">/</span><kbd>K</kbd></div><div class="action">Перенести колонку на нижний / верхний монитор</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Ctrl</kbd><kbd>Super</kbd><kbd>P</kbd></div><div class="action">Включить или отключить правый Dell<small>Пользовательский скрипт niri-toggle-dp1</small></div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>P</kbd></div><div class="action">Выключить все мониторы</div></article>
+        </div>
+      </div>
+
+      <div class="category" data-category="screens">
+        <div class="category-header"><h2>Скриншоты и справка</h2><span class="count"></span></div>
+        <div class="shortcut-grid">
+          <article class="shortcut"><div class="keys"><kbd>Print</kbd></div><div class="action">Снимок выбранной области</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Alt</kbd><kbd>Print</kbd></div><div class="action">Снимок активного окна</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Ctrl</kbd><kbd>Print</kbd></div><div class="action">Снимок всего экрана</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>/</kbd></div><div class="action">Показать встроенную справку hotkey</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Escape</kbd></div><div class="action">Переключить перехват сочетаний приложением</div></article>
+          <article class="shortcut"><div class="keys"><kbd>Super</kbd><kbd>Shift</kbd><kbd>E</kbd></div><div class="action">Завершить сеанс niri</div></article>
+        </div>
+      </div>
+      <div class="empty">Ничего не найдено.</div>
+    </section>
+
+    <footer class="footer">
+      Страница работает без интернета. Поиск выполняется по действиям и клавишам.
+      При печати выводится только активная операционная система.
+    </footer>
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll(".tab");
+    const sections = document.querySelectorAll(".section");
+    const search = document.getElementById("search");
+    const themeBtn = document.getElementById("themeBtn");
+    const printBtn = document.getElementById("printBtn");
+
+    let activeOS = "mac";
+    let activeFilter = "all";
+
+    function currentSection() {
+      return document.getElementById(activeOS);
+    }
+
+    function updateCounts(section) {
+      section.querySelectorAll(".category").forEach(category => {
+        const visible = [...category.querySelectorAll(".shortcut")]
+          .filter(item => item.style.display !== "none").length;
+        const total = category.querySelectorAll(".shortcut").length;
+        const count = category.querySelector(".count");
+        count.textContent = visible === total ? `${total}` : `${visible} из ${total}`;
+      });
+    }
+
+    function applyFilters() {
+      const section = currentSection();
+      const query = search.value.trim().toLocaleLowerCase("ru");
+
+      let anyVisible = false;
+
+      section.querySelectorAll(".category").forEach(category => {
+        const categoryMatch = activeFilter === "all" || category.dataset.category === activeFilter;
+        let categoryVisible = false;
+
+        category.querySelectorAll(".shortcut").forEach(item => {
+          const text = item.textContent.toLocaleLowerCase("ru");
+          const matches = categoryMatch && (!query || text.includes(query));
+          item.style.display = matches ? "" : "none";
+          if (matches) categoryVisible = true;
+        });
+
+        category.style.display = categoryVisible ? "" : "none";
+        if (categoryVisible) anyVisible = true;
+      });
+
+      section.querySelector(".empty").style.display = anyVisible ? "none" : "block";
+      updateCounts(section);
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        activeOS = tab.dataset.target;
+        activeFilter = "all";
+        search.value = "";
+
+        tabs.forEach(t => {
+          const active = t === tab;
+          t.classList.toggle("active", active);
+          t.setAttribute("aria-selected", active ? "true" : "false");
+        });
+
+        sections.forEach(section => section.classList.toggle("active", section.id === activeOS));
+
+        currentSection().querySelectorAll(".filter-chip").forEach((chip, index) => {
+          chip.classList.toggle("active", index === 0);
+        });
+
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll(".filters").forEach(filters => {
+      filters.addEventListener("click", event => {
+        const chip = event.target.closest(".filter-chip");
+        if (!chip) return;
+
+        activeFilter = chip.dataset.filter;
+        filters.querySelectorAll(".filter-chip").forEach(c => c.classList.toggle("active", c === chip));
+        applyFilters();
+
+        const firstVisible = currentSection().querySelector('.category[style=""], .category:not([style])');
+        if (firstVisible && activeFilter !== "all") {
+          firstVisible.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    search.addEventListener("input", applyFilters);
+
+    themeBtn.addEventListener("click", () => {
+      const isDark = document.body.dataset.theme === "dark";
+      document.body.dataset.theme = isDark ? "light" : "dark";
+      themeBtn.textContent = isDark ? "☾" : "☼";
+      localStorage.setItem("hotkeys-theme", document.body.dataset.theme);
+    });
+
+    printBtn.addEventListener("click", () => window.print());
+
+    const savedTheme = localStorage.getItem("hotkeys-theme");
+    if (savedTheme === "light") {
+      document.body.dataset.theme = "light";
+      themeBtn.textContent = "☾";
+    }
+
+    sections.forEach(updateCounts);
+    applyFilters();
+  </script>
+</body>
+</html>
