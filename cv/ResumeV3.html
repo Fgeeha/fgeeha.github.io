@@ -1243,7 +1243,7 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
     <!-- ====== HERO ====== -->
     <section class="hero" style="border-bottom: 1px solid var(--rule); padding-top: 0;">
         <div class="kicker">
-            <span>Резюме · Май 2026</span>
+            <span>Резюме · Июль 2026</span>
             <span class="line"></span>
             <span class="label" style="text-align: right;">Python · Backend · 4+ года</span>
         </div>
@@ -1334,7 +1334,7 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
                 <div class="job-meta">
                     <div class="job-year">2025 <span class="now">→ сейчас</span></div>
                     <span class="job-period">Авг 2025 — наст. время</span>
-                    <span class="job-duration">10 месяцев</span>
+                    <span class="job-duration">1 год</span>
                 </div>
                 <div class="job-body">
                     <div class="job-head">
@@ -1475,6 +1475,135 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
         </div>
 
         <div class="projects">
+            <article class="project">
+                <div class="project-meta">
+                    <div class="project-year">2026</div>
+                    <span class="badge">RAG · LLM · Backend</span>
+                    <span class="badge win">Автор</span>
+                </div>
+                <div class="project-body">
+                    <div class="project-head">
+                        <h3>ROoP</h3>
+                        <span class="team">Rag-Ollama-On-Premises</span>
+                    </div>
+                    <p class="project-role">
+                        Личный проект <span class="sep">·</span> Backend, LLM-инфраструктура, DevOps
+                    </p>
+
+                    <p class="project-desc">
+                        Разработал <em>RAG-систему для закрытого контура</em>: пользователь загружает договоры, регламенты и техническую документацию и задаёт по ним вопросы обычным языком, получая ответ с указанием, из какого файла взят каждый источник. Ни документы, ни вопросы, ни эмбеддинги не уходят во внешние сервисы — модель, векторная база и веб-интерфейс поднимаются одним <em>docker compose</em>. Решение для случаев, когда документы нельзя отправить в облако: закрытый контур, персональные данные, требования регулятора.
+                    </p>
+
+                    <div class="project-metrics">
+                        <div class="m">
+                            <span class="v">16 <span class="x">ГБ</span></span>
+                            <span class="l">RAM достаточно</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">5</span>
+                            <span class="l">форматов документов</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">2</span>
+                            <span class="l">реестра образов</span>
+                        </div>
+                    </div>
+
+                    <ul class="job-list">
+                        <li><strong>Построил пайплайн индексации</strong>: извлечение текста, чанки по 1000 символов с перекрытием 200, эмбеддинги пачками, запись векторов в <em>ChromaDB</em>; живой прогресс «N / M чанков» на <em>HTMX</em> без перезагрузки страницы.</li>
+                        <li><strong>Вынес разграничение доступа на уровень базы</strong> — фильтр по владельцу применяется в самом запросе к ChromaDB, поэтому чужой документ не может попасть в контекст модели даже случайно.</li>
+                        <li><strong>Ограничил выдумывание порогом релевантности</strong>: фрагменты ниже порога отбрасываются до сборки промпта, и при пустой выдаче система прямо отвечает, что информации нет, вместо правдоподобного вымысла.</li>
+                        <li><strong>Уложил систему в 16 ГБ RAM</strong>: сериализованная в один поток индексация, лимит на размер файла, одна модель в памяти, ограничение параллельных запросов и окна контекста.</li>
+                        <li><strong>Настроил CI/CD</strong>: публикация образов в <em>Docker Hub</em> и <em>GHCR</em>, сканирование <em>Trivy</em>, выпуск GitHub Release по git-тегу с версионированными тегами образов.</li>
+                        <li><strong>Реализовал REST API и многопользовательский режим</strong>: изоляция документов и чатов, переиндексация без повторной загрузки файла, публичные ссылки со сроком действия и досрочным отзывом.</li>
+                    </ul>
+
+                    <div class="project-links">
+                        <a class="project-link" href="https://github.com/Fgeeha/ROoP" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                            github.com/Fgeeha/ROoP
+                        </a>
+                    </div>
+
+                    <div class="stack-row">
+                        <span class="lbl">Стек</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Django · HTMX</span>
+                        <span class="tag">Ollama</span>
+                        <span class="tag">ChromaDB</span>
+                        <span class="tag">PostgreSQL</span>
+                        <span class="tag">Docker Compose</span>
+                        <span class="tag">gunicorn</span>
+                        <span class="tag">GitHub Actions</span>
+                        <span class="tag">Trivy</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project">
+                <div class="project-meta">
+                    <div class="project-year">2026</div>
+                    <span class="badge">Edge AI · Research</span>
+                    <span class="badge win">Статья подана</span>
+                </div>
+                <div class="project-body">
+                    <div class="project-head">
+                        <h3>Диагностика болезней растений на edge</h3>
+                        <span class="team">SEDM-2026 · аспирантура ВолгГТУ</span>
+                    </div>
+                    <p class="project-role">
+                        Автор кода и экспериментов <span class="sep">·</span> ML Engineer
+                    </p>
+
+                    <p class="project-desc">
+                        Построил <em>цифровую модель системы диагностики</em> болезней растений для edge-устройств: адаптация домена, квантизация модели и сжатие пространства признаков. Три оси сжатия — <em>CORAL</em>-адаптация домена, <em>INT8</em>-квантизация и <em>PolarQuant-3bit</em> — вместе дают сжатие в <strong>10.6×</strong> при macro-F1 <strong>0.700</strong> против <strong>0.699</strong> у FP32-базлайна.
+                    </p>
+
+                    <div class="project-metrics">
+                        <div class="m">
+                            <span class="v">10.6<span class="x">×</span></span>
+                            <span class="l">сжатие представления</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">0.700</span>
+                            <span class="l">macro-F1 (C4)</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">245.9 <span class="x">мс</span></span>
+                            <span class="l">медиана на RPi 4B</span>
+                        </div>
+                    </div>
+
+                    <ul class="job-list">
+                        <li><strong>Реализовал CORAL domain adaptation</strong> на уровне признаков — качество не деградирует при переносе на реальные съёмки, память не растёт.</li>
+                        <li><strong>Провёл INT8-квантизацию и PolarQuant-3bit</strong>: галерея признаков ужалась с <em>65.9 МБ</em> до <em>6.2 МБ</em> при сохранении macro-F1 на уровне FP32.</li>
+                        <li><strong>Показал ортогональность трёх осей сжатия</strong>: совместный эффект равен сумме отдельных, попарные различия статистически незначимы (Wilcoxon p &gt; 0.05).</li>
+                        <li><strong>Замерил end-to-end латентность на Raspberry Pi 4B</strong> при галерее 8 000: 636.9 мс для ResNet-50 и 245.9 мс для MobileNetV2-конфигурации — проходит порог реального времени в 5 fps.</li>
+                        <li><strong>Собрал воспроизводимый пайплайн</strong>: 5 сидов, ONNX-экспорт, бенчмарк на Raspberry Pi только на <em>numpy</em> и <em>onnxruntime</em> без PyTorch, unit-тесты композиции пайплайна.</li>
+                        <li><strong>Оформил артефакты для публикации</strong>: PlantWild_v2 (115 классов, 11 488 изображений), чекпоинты и признаки — через Zenodo и HuggingFace.</li>
+                    </ul>
+
+                    <div class="project-links">
+                        <a class="project-link" href="https://github.com/Fgeeha/sedm2026-edge-ai-plant-diagnostics" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                            github.com/Fgeeha/sedm2026-edge-ai-plant-diagnostics
+                        </a>
+                    </div>
+
+                    <div class="stack-row">
+                        <span class="lbl">Стек</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">PyTorch</span>
+                        <span class="tag">ONNX Runtime</span>
+                        <span class="tag">CORAL</span>
+                        <span class="tag">INT8 · PolarQuant</span>
+                        <span class="tag">Raspberry Pi 4B</span>
+                        <span class="tag">numpy</span>
+                        <span class="tag">pytest · uv</span>
+                    </div>
+                </div>
+            </article>
+
             <article class="project">
                 <div class="project-meta">
                     <div class="project-year">2026</div>
@@ -1741,6 +1870,8 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
                     <span class="t">CI/CD</span>
                     <span class="t">Proxmox</span>
                     <span class="t">gunicorn · uvicorn</span>
+                    <span class="t">Gitea Actions</span>
+                    <span class="t">Trivy</span>
                 </div>
             </div>
 
@@ -1774,6 +1905,9 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
                     <span class="t warm">PaddleOCR · EasyOCR</span>
                     <span class="t warm">ByteTrack</span>
                     <span class="t warm">RAG · FAISS · BM25</span>
+                    <span class="t warm">Ollama · ChromaDB</span>
+                    <span class="t warm">ONNX Runtime</span>
+                    <span class="t warm">квантизация INT8</span>
                     <span class="t warm">BGE-M3 · Qwen3</span>
                     <span class="t warm">Sentence Transformers</span>
                     <span class="t warm">HuggingFace · Gradio</span>
@@ -1883,7 +2017,7 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
 
     <footer>
         <span>© 2026 Nikita Kolesnikov · FgeeHa</span>
-        <span><a href="https://fgeeha.github.io/">fgeeha.github.io</a> · обновлено май 2026</span>
+        <span><a href="https://fgeeha.github.io/">fgeeha.github.io</a> · обновлено июль 2026</span>
     </footer>
 </div>
 
@@ -1993,7 +2127,7 @@ mount();
 <script>
 // Bypass Cloudflare Email Obfuscation: build email at runtime
 (function() {
-    const u = 'kolesnikov.n', d = 'icloud.com';
+    const u = 'kolesnikov.nikitavlg', d = 'gmail.com';
     const addr = u + '@' + d;
     document.querySelectorAll('a[data-cf-email-protect]').forEach(a => {
         a.setAttribute('href', 'mailto:' + addr);
