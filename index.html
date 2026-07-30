@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Nikita Kolesnikov (FgeeHa) -- Python / Go Developer | Backend, AI/ML, DevOps</title>
       <meta name="description" content="Колесников Никита -- Python и Go разработчик. Backend (Django, FastAPI, Flask), AI/ML (RAG, LangChain, Ollama, ChromaDB, PyTorch), DevOps (Docker, Prometheus, CI/CD). 56+ open-source проектов.">
-      <meta name="keywords" content="Nikita Kolesnikov, FgeeHa, Python developer, Go developer, Django, FastAPI, Flask, RAG, LangChain, Ollama, ChromaDB, PyTorch, Edge AI, DevOps, Docker, Prometheus, GitHub Actions, backend developer, AI ML developer, Колесников Никита, разработчик Python">
+      <meta name="keywords" content="Nikita Kolesnikov, FgeeHa, Python developer, Go developer, Django, FastAPI, Flask, RAG, LangChain, Ollama, ChromaDB, PyTorch, Edge AI, DevOps, Docker, Prometheus, GitHub Actions, GitHub Action MAX, MAX Bot API, уведомления в MAX, max-action, backend developer, AI ML developer, Колесников Никита, разработчик Python">
       <meta name="author" content="Nikita Kolesnikov">
       <meta name="robots" content="index, follow">
       <link rel="canonical" href="https://fgeeha.github.io/">
@@ -43,12 +43,36 @@
         "image": "https://avatars.githubusercontent.com/u/33605615",
         "jobTitle": "Software Developer",
         "description": "Python / Go developer specializing in Backend, AI/ML and DevOps",
-        "knowsAbout": ["Python", "Go", "PHP", "Bash", "Django", "FastAPI", "Flask", "aiogram", "RAG", "LangChain", "Ollama", "ChromaDB", "PyTorch", "Keras", "Docker", "GitHub Actions", "Prometheus", "Grafana", "PostgreSQL", "MySQL", "Linux", "CI/CD", "Git", "Edge AI", "Computer Vision"],
+        "knowsAbout": ["Python", "Go", "PHP", "Bash", "Django", "FastAPI", "Flask", "aiogram", "RAG", "LangChain", "Ollama", "ChromaDB", "PyTorch", "Keras", "Docker", "GitHub Actions", "MAX Bot API", "Prometheus", "Grafana", "PostgreSQL", "MySQL", "Linux", "CI/CD", "Git", "Edge AI", "Computer Vision"],
         "sameAs": [
           "https://github.com/Fgeeha",
           "https://t.me/fgeeha",
           "https://gitverse.ru/nkolesnikov"
         ]
+      }
+      </script>
+
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "max-action",
+        "alternateName": "MAX Action",
+        "description": "GitHub Action, отправляющий уведомления в мессенджер MAX из CI-workflow через официальный MAX Bot API: пуши, пул-реквесты, деплои и упавшие сборки в чат, канал или личные сообщения. Написан на Go без сторонних зависимостей.",
+        "codeRepository": "https://github.com/Fgeeha/max-action",
+        "url": "https://github.com/Fgeeha/max-action",
+        "programmingLanguage": "Go",
+        "runtimePlatform": "GitHub Actions",
+        "operatingSystem": "Linux",
+        "applicationCategory": "DeveloperApplication",
+        "softwareVersion": "1.0.0",
+        "license": "https://opensource.org/licenses/MIT",
+        "keywords": "GitHub Action, MAX, MAX Bot API, уведомления, CI/CD, Go, Docker",
+        "author": {
+          "@type": "Person",
+          "name": "Nikita Kolesnikov",
+          "url": "https://fgeeha.github.io/"
+        }
       }
       </script>
 
@@ -181,6 +205,21 @@
                             <h2 id="projectsTitle">Избранные проекты</h2>
                             <p class="section-desc" id="projectsDesc">Open-source проекты на GitHub и GitVerse</p>
                             <div class="row g-3 mt-1 mb-4" id="projectsContainer">
+                                <div class="col-md-6">
+                                    <div class="card h-100 project-card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">MAX Action</h4>
+                                            <p class="card-text" id="proj_maxaction">GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.0 под MIT</p>
+                                            <span class="badge bg-info text-dark">Go</span>
+                                            <span class="badge bg-secondary">GitHub Actions</span>
+                                            <span class="badge bg-secondary">MAX Bot API</span>
+                                            <span class="badge bg-secondary">Docker</span>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <a href="https://github.com/Fgeeha/max-action" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
@@ -652,6 +691,7 @@
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
                     projectsTitle: 'Избранные проекты',
                     projectsDesc: 'Open-source проекты на GitHub и GitVerse',
+                    proj_maxaction: 'GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.0 под MIT',
                     proj_roop: 'RAG-Ollama-On-Premises -- ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте',
                     proj_sedm: 'Код к статье для SEDM-2026: диагностика болезней растений на edge-устройствах. CORAL-адаптация домена, INT8-квантизация и PolarQuant-3bit дают сжатие 10.6x при macro-F1 0.700 и 246 мс на Raspberry Pi 4B',
                     proj_lenta: 'Lenta Tech Life Hack 2026: pipeline распознавания ценников с видеопотока робота. Детекция, OCR и сопоставление с каталогом, 175 тестов, демо на Hugging Face Spaces',
@@ -694,6 +734,7 @@
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
                     projectsTitle: 'Featured Projects',
                     projectsDesc: 'Open-source projects on GitHub and GitVerse',
+                    proj_maxaction: 'A GitHub Action that sends notifications to the MAX messenger straight from a workflow: pushes, pull requests, deployments and failed builds reach a chat, channel or direct message through the official MAX Bot API. Written in Go with no third-party dependencies: the token is masked in logs, redirects are refused, retries honour Retry-After. Released as v1.0.0 under MIT',
                     proj_roop: 'RAG-Ollama-On-Premises -- an assistant over internal documents (PDF, DOCX, TXT, MD) that never leaves your network: chunking, embeddings, vector search in ChromaDB, Ollama answers with source references. CI/CD included',
                     proj_sedm: 'Code for the SEDM-2026 paper on plant disease diagnostics at the edge. CORAL domain adaptation, INT8 quantization and PolarQuant-3bit give 10.6x compression at 0.700 macro-F1 and 246 ms on a Raspberry Pi 4B',
                     proj_lenta: 'Lenta Tech Life Hack 2026: price tag recognition pipeline from a robot video stream. Detection, OCR and catalogue matching, 175 tests, live demo on Hugging Face Spaces',

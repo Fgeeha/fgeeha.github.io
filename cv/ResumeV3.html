@@ -1478,6 +1478,66 @@ footer a:hover { color: var(--accent); border-color: var(--accent); }
             <article class="project">
                 <div class="project-meta">
                     <div class="project-year">2026</div>
+                    <span class="badge">Go · CI/CD · Open Source</span>
+                    <span class="badge win">Релиз v1.0.0</span>
+                </div>
+                <div class="project-body">
+                    <div class="project-head">
+                        <h3>max-action</h3>
+                        <span class="team">GitHub Action для мессенджера MAX</span>
+                    </div>
+                    <p class="project-role">
+                        Личный проект <span class="sep">·</span> Go, интеграции, безопасность CI
+                    </p>
+
+                    <p class="project-desc">
+                        Написал <em>GitHub Action, который отправляет уведомления в мессенджер MAX</em>: команда добавляет в свой workflow несколько строк и получает в рабочий чат сообщение о пуше, пул-реквесте, деплое или упавшей сборке. Раньше для этого приходилось писать в каждом репозитории свой скрипт с curl и токеном в открытом виде — action закрывает эту задачу одним шагом и разбирается с токеном, повторами и ошибками API сам. Реализован на <em>Go</em> без сторонних зависимостей и опубликован под MIT.
+                    </p>
+
+                    <div class="project-metrics">
+                        <div class="m">
+                            <span class="v">0</span>
+                            <span class="l">сторонних зависимостей</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">13</span>
+                            <span class="l">входных параметров</span>
+                        </div>
+                        <div class="m">
+                            <span class="v">4000</span>
+                            <span class="l">символов лимит MAX</span>
+                        </div>
+                    </div>
+
+                    <ul class="job-list">
+                        <li><strong>Реализовал отправку через официальный MAX Bot API</strong>: чат, канал или личный диалог, текст из параметра, из файла или из автоматически собранного шаблона по контексту workflow.</li>
+                        <li><strong>Закрыл утечку токена в логи</strong>: маскировка через <em>::add-mask::</em>, передача только в заголовке <em>Authorization</em>, очистка токена из текста ошибок API и запрет редиректов, чтобы заголовок не ушёл на чужой хост.</li>
+                        <li><strong>Зафиксировал доверие к сертификатам на этапе сборки</strong>: корневой сертификат вкомпилирован в бинарник и добавляется только в пул HTTP-клиента самого action — системное хранилище раннера остаётся нетронутым.</li>
+                        <li><strong>Сделал отказы предсказуемыми</strong>: взаимоисключающие <em>chat_id</em> и <em>user_id</em> и лимит в 4000 символов проверяются до запроса, ответ <em>429</em> повторяется по заголовку <em>Retry-After</em>, таймаут и число повторов настраиваются.</li>
+                        <li><strong>Выстроил релизный процесс</strong>: тесты на каждый пуш, Docker-образ action, SemVer с подвижным тегом <em>v1</em> и Dependabot на зависимости workflow.</li>
+                    </ul>
+
+                    <div class="project-links">
+                        <a class="project-link" href="https://github.com/Fgeeha/max-action" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.68.79.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                            github.com/Fgeeha/max-action
+                        </a>
+                    </div>
+
+                    <div class="stack-row">
+                        <span class="lbl">Стек</span>
+                        <span class="tag">Go</span>
+                        <span class="tag">GitHub Actions</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">MAX Bot API</span>
+                        <span class="tag">SemVer</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project">
+                <div class="project-meta">
+                    <div class="project-year">2026</div>
                     <span class="badge">RAG · LLM · Backend</span>
                     <span class="badge win">Автор</span>
                 </div>
