@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Harness — методичка по open source решениям</title>
+<style>
+  :root{
+    --bg:#0d1017;
+    --panel:#141922;
+    --panel-2:#1a2029;
+    --ink:#e6ebf1;
+    --ink-dim:#9aa7b8;
+    --ink-faint:#5f6d7e;
+    --line:#242c38;
+    --line-bright:#33404f;
+    --acc:#5ee6a8;      /* сигнальный зелёный терминала */
+    --acc-2:#4aa8ff;    /* холодный синий */
+    --acc-3:#ffb454;    /* янтарь-предупреждение */
+    --acc-4:#ff6b6b;    /* красный */
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);line-height:1.6;
+    font-feature-settings:"ss01","cv01";
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--acc);color:#04120b}
+
+  /* ---------- фоновая сетка ---------- */
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:52px 52px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 20%,transparent 75%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* ---------- шапка ---------- */
+  header{padding:80px 0 48px;border-bottom:1px solid var(--line)}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--acc);margin-bottom:22px;display:flex;
+    align-items:center;gap:10px}
+  .kicker::before{content:"";width:8px;height:8px;background:var(--acc);
+    border-radius:50%;box-shadow:0 0 12px var(--acc);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:clamp(34px,6vw,60px);line-height:1.02;margin:0 0 20px;
+    font-weight:800;letter-spacing:-.02em}
+  h1 .mono{font-family:var(--mono);font-weight:500;color:var(--acc)}
+  .lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink-dim);max-width:660px}
+  .meta{margin-top:32px;display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-family:var(--mono);font-size:12px;color:var(--ink-dim);
+    border:1px solid var(--line-bright);padding:5px 11px;border-radius:4px;
+    background:var(--panel)}
+  .tag b{color:var(--ink)}
+
+  /* ---------- навигация ---------- */
+  nav.toc{position:sticky;top:0;z-index:20;background:rgba(13,16,23,.86);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+    padding:12px 0;margin-bottom:56px}
+  nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+  nav.toc .wrap::-webkit-scrollbar{display:none}
+  nav.toc a{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);
+    text-decoration:none;white-space:nowrap;padding:6px 12px;border-radius:5px;
+    transition:.15s}
+  nav.toc a:hover{color:var(--ink);background:var(--panel)}
+  nav.toc a .n{color:var(--acc);margin-right:6px}
+
+  /* ---------- секции ---------- */
+  section{margin-bottom:72px;scroll-margin-top:70px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  .sec-num{font-family:var(--mono);font-size:14px;color:var(--acc);
+    border:1px solid var(--line-bright);padding:3px 9px;border-radius:4px;
+    flex-shrink:0}
+  h2{font-size:clamp(24px,3.6vw,32px);margin:0;font-weight:750;
+    letter-spacing:-.01em}
+  .sec-sub{color:var(--ink-dim);margin:14px 0 32px;max-width:720px;font-size:16px}
+
+  p{margin:0 0 16px}
+  a.inline{color:var(--acc-2);text-decoration:none;border-bottom:1px solid var(--line-bright)}
+  a.inline:hover{border-color:var(--acc-2)}
+  strong{color:#fff;font-weight:650}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);
+    padding:2px 6px;border-radius:4px;color:var(--acc);border:1px solid var(--line)}
+
+  /* ---------- концепция: три слоя ---------- */
+  .layers{display:grid;gap:14px;margin:28px 0}
+  .layer{display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px 22px;position:relative;overflow:hidden}
+  .layer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .layer.l1::before{background:var(--acc-3)}
+  .layer.l2::before{background:var(--acc-2)}
+  .layer.l3::before{background:var(--acc)}
+  .layer .icon{font-family:var(--mono);font-size:22px;text-align:center}
+  .layer h4{margin:0 0 4px;font-size:17px}
+  .layer h4 .en{font-family:var(--mono);font-size:13px;color:var(--ink-faint);
+    font-weight:400;margin-left:8px}
+  .layer p{margin:0;color:var(--ink-dim);font-size:14.5px}
+
+  /* ---------- карточки решений ---------- */
+  .cards{display:grid;gap:18px;margin-top:8px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:26px 26px 22px;transition:.2s;position:relative}
+  .card:hover{border-color:var(--line-bright);transform:translateY(-2px)}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;
+    gap:16px;margin-bottom:14px;flex-wrap:wrap}
+  .card h3{margin:0;font-size:21px;font-weight:750;display:flex;
+    align-items:center;gap:10px;flex-wrap:wrap}
+  .card h3 .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .card .lang{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+  .badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:4px;
+    border:1px solid var(--line-bright);color:var(--ink-dim);white-space:nowrap}
+  .badge.stars{color:var(--acc-3);border-color:#3d3320}
+  .badge.lic{color:var(--acc);border-color:#234034}
+  .badge.owner{color:var(--acc-2);border-color:#1e3450}
+  .card .desc{color:var(--ink-dim);font-size:15px;margin-bottom:16px}
+  .card .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.card .row{grid-template-columns:1fr}}
+  .box{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;
+    padding:13px 15px}
+  .box .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .box.plus .lbl{color:var(--acc)}
+  .box.minus .lbl{color:var(--acc-4)}
+  .box ul{margin:0;padding-left:16px}
+  .box li{font-size:13.5px;color:var(--ink-dim);margin-bottom:5px}
+  .card .when{margin-top:16px;font-size:14px;padding:12px 15px;
+    background:linear-gradient(90deg,rgba(94,230,168,.06),transparent);
+    border-left:2px solid var(--acc);border-radius:0 8px 8px 0}
+  .card .when b{color:var(--acc)}
+
+  /* ---------- таблица ---------- */
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;
+    scrollbar-width:thin}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+  th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{background:var(--panel-2);font-family:var(--mono);font-size:11.5px;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--ink-dim);
+    position:sticky;top:0;font-weight:500}
+  tbody tr:hover{background:var(--panel)}
+  tbody td:first-child{font-weight:650;color:var(--ink)}
+  td .mono{font-family:var(--mono);font-size:12.5px}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;
+    padding:2px 7px;border-radius:20px}
+  .pill.hi{background:rgba(94,230,168,.12);color:var(--acc)}
+  .pill.mid{background:rgba(255,180,84,.12);color:var(--acc-3)}
+  .pill.lo{background:rgba(255,107,107,.12);color:var(--acc-4)}
+
+  /* ---------- дерево выбора ---------- */
+  .tree{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:28px;font-family:var(--mono);font-size:14px}
+  .tree .q{color:var(--ink);margin:0 0 6px;font-weight:600}
+  .tree .branch{margin:14px 0 14px 4px;padding-left:22px;
+    border-left:1px dashed var(--line-bright)}
+  .tree .opt{margin-bottom:12px}
+  .tree .cond{color:var(--acc-3)}
+  .tree .arrow{color:var(--ink-faint);margin:0 8px}
+  .tree .pick{color:var(--acc);font-weight:600}
+  .tree .note{color:var(--ink-faint);font-size:12.5px;display:block;
+    margin-top:2px;font-family:var(--sans)}
+
+  /* ---------- callout ---------- */
+  .callout{display:grid;grid-template-columns:44px 1fr;gap:16px;
+    background:var(--panel);border:1px solid var(--line-bright);
+    border-radius:12px;padding:20px 22px;margin:28px 0}
+  .callout .ci{font-size:22px;text-align:center}
+  .callout.warn{border-color:#3d3320;background:linear-gradient(90deg,rgba(255,180,84,.05),var(--panel))}
+  .callout.warn .ci{color:var(--acc-3)}
+  .callout h4{margin:0 0 6px;font-size:16px}
+  .callout p{margin:0;color:var(--ink-dim);font-size:14.5px}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;
+    color:var(--ink-faint);font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  footer a{color:var(--ink-dim);text-decoration:none;border-bottom:1px solid var(--line)}
+  .sources{margin-top:24px;font-family:var(--mono);font-size:12px;line-height:1.9}
+  .sources a{color:var(--acc-2);text-decoration:none}
+
+  h2,h3{text-wrap:balance}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">методичка · август 2026</div>
+    <h1>Agent&nbsp;Harness:<br>карта <span class="mono">open&nbsp;source</span> решений</h1>
+    <p class="lede">Что подложить под модель, чтобы она не просто говорила, а действовала — с обзором живых проектов, честными минусами и деревом выбора под вашу задачу.</p>
+    <div class="meta">
+      <span class="tag">данные на <b>середину 2026</b></span>
+      <span class="tag"><b>13</b> решений</span>
+      <span class="tag">разбор + <b>сравнение</b></span>
+      <span class="tag">дерево <b>выбора</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#concept"><span class="n">00</span>Что такое harness</a>
+    <a href="#map"><span class="n">01</span>Как читать карту</a>
+    <a href="#frameworks"><span class="n">02</span>Решения</a>
+    <a href="#table"><span class="n">03</span>Сравнение</a>
+    <a href="#choose"><span class="n">04</span>Как выбрать</a>
+    <a href="#pitfalls"><span class="n">05</span>Грабли</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- 00 КОНЦЕПЦИЯ -->
+<section id="concept">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <h2>Harness, framework, runtime — где что</h2>
+  </div>
+  <p class="sec-sub">В 2025 у этого слоя не было даже устоявшегося названия. К 2026 сложилась трёхуровневая модель — её удобно держать в голове, разбирая любой проект. Формулировка принадлежит Харрисону Чейзу (CEO LangChain): «LangGraph — это runtime, LangChain — абстракция, Deep Agents — harness».</p>
+
+  <div class="layers">
+    <div class="layer l1">
+      <div class="icon">◇</div>
+      <div>
+        <h4>Framework <span class="en">абстракция</span></h4>
+        <p>Строительные блоки и способ описать логику: цепочки, роли, промпты, парсеры вывода. Сам по себе ничего не «крутит» — даёт словарь.</p>
+      </div>
+    </div>
+    <div class="layer l2">
+      <div class="icon">↻</div>
+      <div>
+        <h4>Runtime <span class="en">исполнение</span></h4>
+        <p>Движок, который гоняет цикл: состояние, ветвления, циклы, human-in-the-loop, персистентная память. Здесь живёт граф выполнения.</p>
+      </div>
+    </div>
+    <div class="layer l3">
+      <div>
+        <div class="icon" style="line-height:1">▣</div>
+      </div>
+      <div>
+        <h4>Harness <span class="en">боевая обвязка</span></h4>
+        <p>Всё, что нужно одному агенту, чтобы действовать самому: выполнение инструментов, песочница, память, управление контекстом, guardrails, трейсинг. Frameworks композируют агентов — harness их запускает.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ci">≡</div>
+    <div>
+      <h4>Простое правило разделения</h4>
+      <p>Frameworks <strong>компонуют</strong> агентов (как их собрать и связать). Harness <strong>исполняет</strong> одного агента (как он живёт в бою: инструменты, границы, контекст). На практике граница размыта — LangGraph работает и как runtime, и как harness, а Pydantic AI в v2.0 встроил harness прямо в ядро.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 01 КАК ЧИТАТЬ -->
+<section id="map">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>Как читать эту карту</h2>
+  </div>
+  <p class="sec-sub">Решения делятся на два больших лагеря. Выбор между ними — это в первую очередь выбор степени контроля и уровня привязки к экосистеме, а не «кто мощнее».</p>
+
+  <div class="layers">
+    <div class="layer l2">
+      <div class="icon">⊞</div>
+      <div>
+        <h4>Граф-ориентированные <span class="en">graph-based</span></h4>
+        <p>Вы сами рисуете граф шагов: узлы, рёбра, ветвления. Максимум контроля и предсказуемости, выше порог входа. Сюда: <strong>LangGraph</strong>, <strong>Microsoft Agent Framework</strong>, <strong>Google ADK 2.0</strong>.</p>
+      </div>
+    </div>
+    <div class="layer l3">
+      <div class="icon">↻</div>
+      <div>
+        <h4>Модель-ведомые <span class="en">model-driven loop</span></h4>
+        <p>Цикл ведёт сама модель, решая на каждом шаге, что делать. Меньше кода, меньше контроля. Сюда: <strong>OpenAI Agents SDK</strong>, <strong>Claude Agent SDK</strong>, <strong>Strands</strong>, <strong>smolagents</strong>, <strong>Pydantic AI</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 РЕШЕНИЯ -->
+<section id="frameworks">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Разбор решений</h2>
+  </div>
+  <p class="sec-sub">Тринадцать проектов, которые реально используют в 2026. Звёзды GitHub даны как порядок величины на середину года — они устаревают за недели, так что ориентируйтесь на них грубо, а не буквально.</p>
+
+  <div class="cards">
+
+    <!-- LangGraph -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-2)"></span>LangGraph <span class="lang">Python · JS/TS</span></h3>
+        <div class="badges">
+          <span class="badge owner">LangChain</span>
+          <span class="badge lic">MIT</span>
+        </div>
+      </div>
+      <p class="desc">Дефолт для сложных Python-воркфлоу. Агент как явный граф состояний: вы сами описываете узлы и переходы, есть циклы, персистентная память и human-in-the-loop. В связке идут <strong>Deep Agents</strong> (собственно harness для долгих задач) и <strong>LangSmith</strong> (трейсинг, оценки, деплой).</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Полная видимость границы «агент ↔ модель»</li>
+            <li>Явный контроль состояния и ветвлений</li>
+            <li>Зрелая экосистема, 1000+ интеграций</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Высокий порог входа в начале</li>
+            <li>Многословность для простых задач</li>
+            <li>Легко утонуть в индирекции LangChain</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> сложные production-воркфлоу на Python, где нужен полный контроль над каждым шагом и состоянием.</div>
+    </div>
+
+    <!-- Claude Agent SDK -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc)"></span>Claude Agent SDK <span class="lang">Python · TS</span></h3>
+        <div class="badges">
+          <span class="badge owner">Anthropic</span>
+          <span class="badge">batteries-included</span>
+        </div>
+      </div>
+      <p class="desc">Вырос напрямую из Claude Code. Принцип: «дай агенту компьютер» — shell, файловая система, веб, как у человека. 8 встроенных инструментов из коробки (Bash, Read/Write/Edit, Glob/Search) плюс субагенты и поддержка MCP. Единственный SDK, где агент напрямую управляет ОС.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Работает сразу, без ручной обвязки инструментов</li>
+            <li>Hooks для тонкого контроля поведения</li>
+            <li>Мульти-облако: Bedrock, Vertex, Azure Foundry</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Заточен под модели Claude</li>
+            <li>Меньше «конвейерных» абстракций для мульти-агента</li>
+            <li>Биллинг менялся в 2026 — следите за условиями</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> terminal-first работа с кодом и файлами на моделях Claude, нужен контроль через hooks и экосистема MCP.</div>
+    </div>
+
+    <!-- OpenAI Agents SDK -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-3)"></span>OpenAI Agents SDK <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge owner">OpenAI</span>
+          <span class="badge lic">MIT</span>
+          <span class="badge stars">★ ~28k</span>
+        </div>
+      </div>
+      <p class="desc">Лёгкий фреймворк с минимумом абстракций. Строится вокруг двух идей: <strong>handoffs</strong> (передача разговора между специализированными агентами) и <strong>guardrails</strong> (слои валидации входов/выходов). Автоматический трейсинг каждого прогона. Провайдер-агностик: 100+ моделей через совместимый endpoint.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Низкий порог входа, минимум магии</li>
+            <li>Встроенные guardrails и трейсинг</li>
+            <li>Hosted-инструменты, голосовые агенты</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Глубже всего интегрирован с моделями OpenAI</li>
+            <li>Меньше контроля, чем у граф-подхода</li>
+            <li>Роутинг через handoffs — не универсален</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> нужны минимальные абстракции, встроенные guardrails/трейсинг и голосовые сценарии, стек завязан на OpenAI.</div>
+    </div>
+
+    <!-- Google ADK -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-2)"></span>Google ADK 2.0 <span class="lang">Python · Java · Go</span></h3>
+        <div class="badges">
+          <span class="badge owner">Google</span>
+          <span class="badge lic">Apache&nbsp;2.0</span>
+          <span class="badge stars">★ ~20k</span>
+        </div>
+      </div>
+      <p class="desc">Open-source спутник Vertex AI Agent Builder. Версия 2.0 (стабильна с мая 2026) сменила модель исполнения с LLM-ведомой на <strong>граф-based</strong>: детерминированный Workflow Runtime, структурированный Task API для мульти-агентной делегации, протокол A2A для общения агентов между фреймворками.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Детерминированное исполнение вне решений LLM</li>
+            <li>Нативная интеграция с Cloud Run и Vertex</li>
+            <li>Grounding через Google Search</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>2.0 ломает совместимость с 1.x (сменилась вся модель)</li>
+            <li>Экосистема уже LangChain вне Google Cloud</li>
+            <li>Кривая обучения растёт с завязкой на GCP</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> вы в экосистеме Google Cloud и нужна LangGraph-альтернатива со встроенной инфраструктурой.</div>
+    </div>
+
+    <!-- smolagents -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc)"></span>smolagents <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge owner">Hugging Face</span>
+          <span class="badge lic">Apache&nbsp;2.0</span>
+          <span class="badge stars">★ ~26k</span>
+        </div>
+      </div>
+      <p class="desc">Минимализм: ~1000 строк ядра — легче всего понять и изменить. Ключевая фишка — <strong>CodeAgent</strong>: агент генерирует Python-код вызова инструментов, фреймворк исполняет его в песочнице и возвращает результат. Такой подход снижает число вызовов LLM примерно на 30% против классического function-calling.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Прозрачное ядро, всё читается за вечер</li>
+            <li>Песочницы: E2B, Modal, Docker, Pyodide+Deno</li>
+            <li>Model-agnostic через LiteLLM, есть локальные модели</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Меньше готовых production-фич</li>
+            <li>Мульти-агент — только через иерархии агентов</li>
+            <li>Исполнение кода требует аккуратной песочницы</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> хотите лёгкий, понятный до дна harness и подход «агент пишет код», в т.ч. на локальных моделях.</div>
+    </div>
+
+    <!-- Pydantic AI -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-2)"></span>Pydantic AI <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge owner">Pydantic</span>
+          <span class="badge lic">MIT</span>
+          <span class="badge">v2.0 harness-first</span>
+        </div>
+      </div>
+      <p class="desc">Type-safe подход для Python-сервисов. В версии 2.0 (июнь 2026, ломающая) переехал на <strong>harness-first дизайн</strong> с «capabilities» как ядром: единый композируемый блок, который связывает инструменты, hooks, инструкции и настройки модели. Когда фреймворк встраивает harness в ядро — это лучший признак, что слой стал реальностью.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Строгая типизация и валидация на входе/выходе</li>
+            <li>50+ capabilities в harness-документации</li>
+            <li>Естественно ложится в типизированные сервисы</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>v1→v2 — ломающий переход (осторожно с обещаниями стабильности)</li>
+            <li>Только Python</li>
+            <li>Молодой harness-слой ещё устаканивается</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> типобезопасные Python-сервисы, где важна валидация и композируемые capabilities.</div>
+    </div>
+
+    <!-- Strands -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-3)"></span>Strands Agents <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge owner">AWS</span>
+          <span class="badge">model-driven</span>
+        </div>
+      </div>
+      <p class="desc">Провайдерский SDK в модель-ведомом лагере: меняет часть контроля на простоту. Хороший выбор, если вы уже привязаны к одной модельной экосистеме и не хотите вручную собирать граф.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Простой цикл, ведомый моделью</li>
+            <li>Меньше кода на старте</li>
+            <li>Ложится в экосистему AWS</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Меньше контроля над шагами</li>
+            <li>Привязка к экосистеме</li>
+            <li>Экосистема меньше, чем у LangGraph</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> нужен простой model-driven агент внутри стека AWS.</div>
+    </div>
+
+    <!-- Microsoft Agent Framework -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-2)"></span>Microsoft Agent Framework <span class="lang">.NET · Python</span></h3>
+        <div class="badges">
+          <span class="badge owner">Microsoft</span>
+          <span class="badge">GA 1.0 · апр&nbsp;2026</span>
+        </div>
+      </div>
+      <p class="desc">Наследник AutoGen и Semantic Kernel, слитых в один SDK (GA с апреля 2026). Граф-ориентированный, с прицелом на enterprise: интеграция с Microsoft Foundry, обнаружение навыков через MCP (<code>McpSkillsPlugin</code>), защита от prompt injection, деплой в Azure Container Apps с наблюдаемостью.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Единый преемник двух зрелых проектов</li>
+            <li>Стабильный ритм релизов, enterprise-фокус</li>
+            <li>Встроенная безопасность и наблюдаемость</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Лучше всего раскрывается в экосистеме Azure</li>
+            <li>Требует миграции с AutoGen</li>
+            <li>Граф-подход = выше порог входа</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> enterprise на .NET/Azure, нужен официальный преемник AutoGen с governance из коробки.</div>
+    </div>
+
+    <!-- CrewAI -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-3)"></span>CrewAI <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge">role-based</span>
+          <span class="badge stars">★ ~52k</span>
+        </div>
+      </div>
+      <p class="desc">Ролевая оркестрация: агенты с чёткими ролями (аналитик, писатель, ревьюер) в команде-«экипаже». Низкий порог входа — быстрее всего поднять мульти-агентную систему, если задача аккуратно раскладывается на роли.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Быстрый старт мульти-агентной системы</li>
+            <li>Интуитивная модель ролей</li>
+            <li>Большое активное сообщество</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Меньше контроля на границе агент↔модель, чем у графа</li>
+            <li>Ролевая модель подходит не под всякую задачу</li>
+            <li>Сложнее отлаживать нестандартные потоки</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> задача раскладывается на чёткие роли и нужно быстро собрать работающий прототип.</div>
+    </div>
+
+    <!-- Mastra / Vercel -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc)"></span>Mastra · Vercel AI SDK <span class="lang">TypeScript</span></h3>
+        <div class="badges">
+          <span class="badge owner">TS-экосистема</span>
+        </div>
+      </div>
+      <p class="desc">Основной выбор для TypeScript. Если бэкенд и фронтенд на TS и вы не хотите тащить Python ради агентов — эти два проекта закрывают потребность нативно, без переключения стека.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Нативный TypeScript, один язык на весь стек</li>
+            <li>Хорошая интеграция с веб-фронтендом</li>
+            <li>Быстрый путь от прототипа к деплою</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Экосистема агентов на TS моложе питоновской</li>
+            <li>Меньше готовых интеграций, чем у LangChain</li>
+            <li>Тяжёлый мульти-агент — не главный сценарий</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> весь продукт на TypeScript и агенты должны жить в том же стеке.</div>
+    </div>
+
+    <!-- Agno -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-2)"></span>Agno <span class="lang">Python</span></h3>
+        <div class="badges">
+          <span class="badge">lightweight</span>
+        </div>
+      </div>
+      <p class="desc">Лёгкий Python-фреймворк, регулярно попадающий в обзоры 2026 как компактная альтернатива тяжёлым решениям. Ставка на скорость разработки и простоту при сохранении мульти-агентных сценариев.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ сильные стороны</div>
+          <ul>
+            <li>Небольшой и быстрый в освоении</li>
+            <li>Меньше накладных абстракций</li>
+            <li>Подходит для быстрых прототипов</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ цена</div>
+          <ul>
+            <li>Сообщество меньше мейнстримных</li>
+            <li>Меньше готовых production-гарантий</li>
+            <li>Проверяйте актуальность под свой кейс</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Брать когда:</b> нужен компактный Python-фреймворк без лишнего веса для быстрой сборки.</div>
+    </div>
+
+    <!-- AutoGen -->
+    <div class="card">
+      <div class="card-top">
+        <h3><span class="dot" style="background:var(--acc-4)"></span>AutoGen <span class="lang">Python · .NET</span></h3>
+        <div class="badges">
+          <span class="badge owner">Microsoft</span>
+          <span class="badge" style="color:var(--acc-4);border-color:#3d2020">maintenance</span>
+          <span class="badge stars">★ ~60k</span>
+        </div>
+      </div>
+      <p class="desc">Исторически самый звёздный фреймворк в обзоре. Но с конца 2025 — в режиме поддержки: только багфиксы и патчи безопасности, новых фич нет, дальше ведётся сообществом. Microsoft рекомендует переезд на Microsoft Agent Framework и публикует гайд по миграции.</p>
+      <div class="row">
+        <div class="box plus">
+          <div class="lbl">▲ что осталось</div>
+          <ul>
+            <li>Огромная база примеров и материалов</li>
+            <li>Существующие приложения продолжают работать</li>
+            <li>Проверенные паттерны мульти-агента</li>
+          </ul>
+        </div>
+        <div class="box minus">
+          <div class="lbl">▼ почему осторожно</div>
+          <ul>
+            <li>Нет новых фич — только поддержка</li>
+            <li>Официально рекомендован преемник</li>
+            <li>Двойное лицензирование (MIT код + CC-BY-4.0 контент)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="when"><b>Не начинать новое на нём.</b> Для новых проектов — Microsoft Agent Framework. AutoGen оставьте существующим системам.</div>
+    </div>
+
+  </div>
+
+  <div class="callout warn">
+    <div class="ci">⚡</div>
+    <div>
+      <h4>Про «вирусные» проекты и хайп</h4>
+      <p>Летом 2026 в лентах гремели новые имена вроде self-hosted harness'ов, набиравших десятки тысяч звёзд за считанные дни. Звёзды — это внимание, а не зрелость. Прежде чем ставить такое в production, проверьте: частоту коммитов, ясность лицензии, наличие issue-триажа и живой ли безопасностный процесс. Быстрый рост звёзд сам по себе ничего не гарантирует.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ТАБЛИЦА -->
+<section id="table">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Сравнение одним взглядом</h2>
+  </div>
+  <p class="sec-sub">Контроль — насколько вы управляете каждым шагом. Порог входа — сколько учиться до первого работающего агента. Экосистема — размер сообщества и число готовых интеграций.</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Решение</th>
+          <th>Язык</th>
+          <th>Тип</th>
+          <th>Контроль</th>
+          <th>Порог входа</th>
+          <th>Экосистема</th>
+          <th>Ниша</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>LangGraph</td>
+          <td class="mono">Python · TS</td>
+          <td>граф</td>
+          <td><span class="pill hi">высокий</span></td>
+          <td><span class="pill lo">высокий</span></td>
+          <td><span class="pill hi">большая</span></td>
+          <td>Сложные production-воркфлоу</td>
+        </tr>
+        <tr>
+          <td>Claude Agent SDK</td>
+          <td class="mono">Python · TS</td>
+          <td>model-driven</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill mid">MCP</span></td>
+          <td>Код и файлы, доступ к ОС</td>
+        </tr>
+        <tr>
+          <td>OpenAI Agents SDK</td>
+          <td class="mono">Python</td>
+          <td>model-driven</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill hi">большая</span></td>
+          <td>Handoffs, guardrails, голос</td>
+        </tr>
+        <tr>
+          <td>Google ADK 2.0</td>
+          <td class="mono">Py · Java · Go</td>
+          <td>граф</td>
+          <td><span class="pill hi">высокий</span></td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill mid">GCP</span></td>
+          <td>Экосистема Google Cloud</td>
+        </tr>
+        <tr>
+          <td>smolagents</td>
+          <td class="mono">Python</td>
+          <td>model-driven</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill mid">растёт</span></td>
+          <td>Лёгкий, «агент пишет код»</td>
+        </tr>
+        <tr>
+          <td>Pydantic AI</td>
+          <td class="mono">Python</td>
+          <td>model-driven</td>
+          <td><span class="pill hi">высокий</span></td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill mid">растёт</span></td>
+          <td>Типобезопасные сервисы</td>
+        </tr>
+        <tr>
+          <td>Strands</td>
+          <td class="mono">Python</td>
+          <td>model-driven</td>
+          <td><span class="pill lo">низкий</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill mid">AWS</span></td>
+          <td>Простой агент в стеке AWS</td>
+        </tr>
+        <tr>
+          <td>MS Agent Framework</td>
+          <td class="mono">.NET · Python</td>
+          <td>граф</td>
+          <td><span class="pill hi">высокий</span></td>
+          <td><span class="pill lo">высокий</span></td>
+          <td><span class="pill mid">Azure</span></td>
+          <td>Enterprise на .NET/Azure</td>
+        </tr>
+        <tr>
+          <td>CrewAI</td>
+          <td class="mono">Python</td>
+          <td>роли</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill hi">большая</span></td>
+          <td>Быстрый мульти-агент по ролям</td>
+        </tr>
+        <tr>
+          <td>Mastra · Vercel</td>
+          <td class="mono">TypeScript</td>
+          <td>model-driven</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill mid">TS</span></td>
+          <td>Агенты в TS-стеке</td>
+        </tr>
+        <tr>
+          <td>Agno</td>
+          <td class="mono">Python</td>
+          <td>model-driven</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">низкий</span></td>
+          <td><span class="pill lo">малая</span></td>
+          <td>Компактный быстрый прототип</td>
+        </tr>
+        <tr>
+          <td>AutoGen</td>
+          <td class="mono">Python · .NET</td>
+          <td>роли</td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill mid">средний</span></td>
+          <td><span class="pill hi">большая</span></td>
+          <td>⚠ maintenance — не для нового</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 04 ВЫБОР -->
+<section id="choose">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Как выбрать под себя</h2>
+  </div>
+  <p class="sec-sub">Главный водораздел — язык и экосистема, а уже потом нужная степень контроля. Пройдите сверху вниз.</p>
+
+  <div class="tree">
+    <p class="q">▸ На каком языке пишете?</p>
+    <div class="branch">
+      <div class="opt">
+        <span class="cond">TypeScript</span><span class="arrow">→</span><span class="pick">Mastra / Vercel AI SDK</span>
+        <span class="note">не тащите Python ради агентов, если весь стек на TS</span>
+      </div>
+      <div class="opt">
+        <span class="cond">.NET</span><span class="arrow">→</span><span class="pick">Microsoft Agent Framework</span>
+        <span class="note">официальный преемник AutoGen с enterprise-фичами</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Python</span><span class="arrow">→</span> идём дальше ↓
+      </div>
+    </div>
+
+    <p class="q">▸ Привязаны к экосистеме модели?</p>
+    <div class="branch">
+      <div class="opt">
+        <span class="cond">Только Claude</span><span class="arrow">→</span><span class="pick">Claude Agent SDK</span>
+        <span class="note">особенно для работы с кодом, файлами и доступом к ОС</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Только OpenAI</span><span class="arrow">→</span><span class="pick">OpenAI Agents SDK</span>
+        <span class="note">минимум абстракций, встроенный трейсинг и guardrails</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Google Cloud</span><span class="arrow">→</span><span class="pick">Google ADK 2.0</span>
+        <span class="note">детерминированный граф + нативная инфраструктура Vertex</span>
+      </div>
+      <div class="opt">
+        <span class="cond">AWS</span><span class="arrow">→</span><span class="pick">Strands Agents</span>
+        <span class="note">простой model-driven цикл в стеке AWS</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Модель-агностик</span><span class="arrow">→</span> идём дальше ↓
+      </div>
+    </div>
+
+    <p class="q">▸ Что важнее для задачи?</p>
+    <div class="branch">
+      <div class="opt">
+        <span class="cond">Максимум контроля, сложный поток</span><span class="arrow">→</span><span class="pick">LangGraph</span>
+        <span class="note">явный граф состояний, полная видимость каждого шага</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Строгая типизация сервиса</span><span class="arrow">→</span><span class="pick">Pydantic AI</span>
+        <span class="note">harness-first, валидация входов/выходов</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Понять harness до дна / локальные модели</span><span class="arrow">→</span><span class="pick">smolagents</span>
+        <span class="note">~1000 строк ядра, подход «агент пишет код»</span>
+      </div>
+      <div class="opt">
+        <span class="cond">Быстро собрать мульти-агента по ролям</span><span class="arrow">→</span><span class="pick">CrewAI</span>
+        <span class="note">низкий порог, если задача раскладывается на роли</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ci">◈</div>
+    <div>
+      <h4>Трейсинг — отдельно от harness</h4>
+      <p>Наблюдаемость стоит выбирать независимо. <strong>LangSmith</strong> (от LangChain) и <strong>Langfuse</strong> (open source) работают поверх почти любого стека: собирают трейсы, стоимость, латентность и качество ответов на каждом шаге. Ставьте это с первого дня — без трейсинга отладка агента превращается в гадание.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 ГРАБЛИ -->
+<section id="pitfalls">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>Грабли, на которые стоит наступить чужими ногами</h2>
+  </div>
+  <p class="sec-sub">Короткий чек-лист перед тем, как закоммититься в конкретный проект.</p>
+
+  <div class="cards">
+    <div class="card" style="padding:22px 26px">
+      <h3 style="font-size:18px;margin-bottom:10px"><span class="dot" style="background:var(--acc-3)"></span>Ломающие мажорные версии</h3>
+      <p class="desc" style="margin:0">Pydantic AI (v1→v2) и Google ADK (1.x→2.0) в 2026 сменили саму модель исполнения. Обещание стабильности API — не гарантия. Закладывайте бюджет на миграцию и читайте changelog до апгрейда.</p>
+    </div>
+    <div class="card" style="padding:22px 26px">
+      <h3 style="font-size:18px;margin-bottom:10px"><span class="dot" style="background:var(--acc-4)"></span>Лицензии сложнее, чем кажется</h3>
+      <p class="desc" style="margin:0">У AutoGen код под MIT, а примеры и документация — под CC-BY-4.0. Обзоры, называющие «одну лицензию», описывают половину. Проверяйте фактические файлы лицензий в репозитории, а не строчку на карточке.</p>
+    </div>
+    <div class="card" style="padding:22px 26px">
+      <h3 style="font-size:18px;margin-bottom:10px"><span class="dot" style="background:var(--acc-4)"></span>Исполнение кода = песочница обязательна</h3>
+      <p class="desc" style="margin:0">CodeAgent-подход (smolagents) и любой агент с доступом к shell мощны, но опасны. Никогда не запускайте сгенерированный код без изоляции: E2B, Modal, Docker или WASM (Pyodide+Deno). Отдельно — защита от prompt injection.</p>
+    </div>
+    <div class="card" style="padding:22px 26px">
+      <h3 style="font-size:18px;margin-bottom:10px"><span class="dot" style="background:var(--acc-2)"></span>Провайдерский SDK = мягкий lock-in</h3>
+      <p class="desc" style="margin:0">Claude Agent SDK, OpenAI Agents SDK, ADK, Strands раскрываются полнее всего внутри «своей» экосистемы. Это не плохо, но если завтра захотите сменить модель — заложите, что часть кода придётся переписать.</p>
+    </div>
+    <div class="card" style="padding:22px 26px">
+      <h3 style="font-size:18px;margin-bottom:10px"><span class="dot" style="background:var(--acc)"></span>Начните со своего цикла на 60 строк</h3>
+      <p class="desc" style="margin:0">Прежде чем брать фреймворк, соберите минимальный harness сами: описание инструментов → цикл «модель ↔ вызов» → лимит шагов. Тогда любой проект из этого списка станет понятным — внутри все они делают ровно это.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>Методичка · Agent Harness · данные на середину 2026. Звёзды GitHub и статусы версий устаревают — проверяйте перед выбором.</div>
+    <div><span style="font-family:var(--mono);color:var(--acc)">▣</span> harness = тело для мозга-модели</div>
+  </div>
+  <div class="wrap sources">
+    <div style="color:var(--ink-faint);margin-bottom:8px">Источники:</div>
+    <a href="https://langfuse.com/blog/2025-03-19-ai-agent-comparison">Langfuse · сравнение фреймворков</a> ·
+    <a href="https://winder.ai/ai-agent-harness-comparison/">Winder.ai · harness comparison</a> ·
+    <a href="https://atlan.com/know/ai-agent/agent-harness-vs-agent-framework/">Atlan · harness vs framework</a> ·
+    <a href="https://www.langchain.com/resources/ai-agent-frameworks">LangChain · agent frameworks</a> ·
+    <a href="https://htek.dev/articles/all-agent-harnesses-live-comparison">htek.dev · live comparison</a> ·
+    <a href="https://www.firecrawl.dev/blog/best-open-source-agent-frameworks">Firecrawl · open source frameworks</a> ·
+    <a href="https://www.morphllm.com/ai-agent-framework">Morph · 8 SDKs compared</a> ·
+    <a href="https://www.digitalapplied.com/blog/best-open-source-ai-agent-projects-github-2026">DigitalApplied · GitHub map</a>
+  </div>
+</footer>
+
+</body>
+</html>
