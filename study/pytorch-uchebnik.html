@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyTorch — подробный учебник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Commissioner:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E7ECF3;
+  --card:#FBFCFE;
+  --ink:#0E1A2B;
+  --ink-2:#3B4C63;
+  --muted:#78899F;
+  --line:#C6D1E0;
+  --fwd:#0F4FD8;
+  --bwd:#CE0F5E;
+  --amber:#B26A00;
+  --green:#0E7A5F;
+  --code-bg:#0E1A2B;
+  --code-fg:#D5DEEB;
+  --radius:4px;
+  --f-display:"Unbounded","Trebuchet MS",sans-serif;
+  --f-body:"Commissioner","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono","Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--f-body);
+  font-weight:350;
+  font-size:17px;
+  line-height:1.62;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(to right, rgba(120,137,159,.13) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120,137,159,.13) 1px, transparent 1px);
+  background-size:26px 26px;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+/* ---------- шапка и прогресс ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(231,236,243,.88);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar__in{
+  max-width:1240px;margin:0 auto;padding:10px 22px;
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);
+}
+.topbar__dot{width:9px;height:9px;background:var(--fwd);border-radius:50%;flex:none}
+.topbar__sp{margin-left:auto;color:var(--muted)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--bwd);width:0}
+
+/* ---------- оглавление ---------- */
+.rail{display:none}
+@media (min-width:1240px){
+  .rail{
+    display:block;position:fixed;top:96px;left:24px;width:196px;z-index:20;
+    font-family:var(--f-mono);font-size:11.5px;line-height:1.5;
+  }
+  .rail ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+  .rail a{
+    display:block;padding:5px 0 5px 12px;margin-left:-1px;
+    border-left:1px solid transparent;
+    color:var(--muted);text-decoration:none;
+  }
+  .rail a:hover{color:var(--ink)}
+  .rail a.active{color:var(--fwd);border-left-color:var(--fwd);font-weight:600}
+}
+
+/* ---------- контейнер ---------- */
+.wrap{max-width:830px;margin:0 auto;padding:0 22px 90px}
+
+/* ---------- герой ---------- */
+.hero{padding:70px 0 46px;border-bottom:1px solid var(--line)}
+.kicker{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--bwd);margin:0 0 18px;
+}
+h1{
+  font-family:var(--f-display);font-weight:800;
+  font-size:clamp(34px,6.4vw,64px);line-height:1.02;letter-spacing:-.02em;
+  margin:0 0 22px;
+}
+h1 em{font-style:normal;color:var(--fwd)}
+.lede{font-size:clamp(17px,2.2vw,20px);color:var(--ink-2);max-width:60ch;margin:0 0 34px}
+
+/* цикл обучения в герое */
+.loop{
+  background:var(--code-bg);border-radius:var(--radius);padding:20px 18px;
+  box-shadow:0 14px 34px -22px rgba(14,26,43,.9);
+}
+.loop__label{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:#61748D;margin-bottom:12px;
+}
+.loop__line{
+  display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
+  font-family:var(--f-mono);font-size:clamp(12.5px,2.5vw,15.5px);line-height:1.85;
+  color:var(--code-fg);padding:1px 8px;border-radius:3px;
+  border-left:2px solid transparent;transition:background .15s,border-color .15s;
+}
+.loop__line:hover{background:rgba(255,255,255,.06)}
+.loop__line.on{background:rgba(15,79,216,.24);border-left-color:#6E9BFF}
+.loop__line:focus-visible{outline:2px solid #6E9BFF;outline-offset:1px}
+.loop__note{
+  margin-top:14px;padding:12px 14px;border-left:2px solid var(--fwd);
+  background:var(--card);border-radius:0 var(--radius) var(--radius) 0;
+  font-size:15px;color:var(--ink-2);min-height:54px;
+}
+.loop__note b{color:var(--ink);font-weight:600}
+.hint{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+
+/* ---------- секции ---------- */
+.sec{padding:52px 0;border-bottom:1px solid var(--line)}
+.sec__num{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px;
+}
+.sec__num span{color:var(--bwd)}
+h2{
+  font-family:var(--f-display);font-weight:600;
+  font-size:clamp(24px,3.6vw,34px);line-height:1.14;letter-spacing:-.015em;
+  margin:0 0 20px;
+}
+h3{
+  font-family:var(--f-body);font-weight:600;font-size:18.5px;
+  margin:32px 0 10px;color:var(--ink);
+}
+p{margin:0 0 16px}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin-bottom:7px}
+code{
+  font-family:var(--f-mono);font-size:.87em;
+  background:#DAE2EC;padding:1px 5px;border-radius:3px;color:#122A4D;
+}
+a{color:var(--fwd)}
+strong{font-weight:600}
+
+/* ---------- блоки кода ---------- */
+.codewrap{position:relative;margin:0 0 20px}
+.codewrap pre{
+  margin:0;background:var(--code-bg);color:var(--code-fg);
+  border-radius:var(--radius);padding:18px 18px 18px 16px;
+  overflow-x:auto;font-family:var(--f-mono);font-size:13.5px;line-height:1.66;
+  box-shadow:0 12px 30px -24px rgba(14,26,43,.9);
+}
+.codewrap .cap{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px;
+}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;
+  background:rgba(255,255,255,.09);color:#9DB0C8;border:0;border-radius:3px;
+  padding:4px 8px;cursor:pointer;opacity:0;transition:opacity .15s;
+}
+.codewrap:hover .copy,.copy:focus-visible{opacity:1}
+.tok-kw{color:#8FB2FF}
+.tok-str{color:#7FD1B0}
+.tok-num{color:#E8B45C}
+.tok-com{color:#6C7F98;font-style:italic}
+.tok-fn{color:#EFE3B0}
+.tok-self{color:#D98BB5}
+
+/* ---------- врезки ---------- */
+.note{
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  background:var(--card);border-radius:0 var(--radius) var(--radius) 0;
+  padding:14px 16px;margin:0 0 20px;font-size:15.5px;
+}
+.note--fwd{border-left-color:var(--fwd)}
+.note--bwd{border-left-color:var(--bwd)}
+.note__t{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:5px;
+}
+
+/* ---------- таблицы ---------- */
+.tablewrap{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:14.8px;background:var(--card);min-width:520px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;background:#EFF3F8;
+}
+td code{background:#E3EAF3}
+
+/* ---------- игровая площадка autograd ---------- */
+.lab{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin:0 0 22px;
+}
+.lab__head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.lab__title{font-family:var(--f-display);font-weight:600;font-size:17px}
+.lab__dir{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-left:auto;
+}
+.lab__dir.f{color:var(--fwd)}
+.lab__dir.b{color:var(--bwd)}
+.lab__sub{font-size:14.5px;color:var(--ink-2);margin:0 0 14px}
+.svgscroll{overflow-x:auto;padding-bottom:6px}
+.svgscroll svg{min-width:660px;width:100%;height:auto;display:block}
+
+.nd rect{fill:#FFF;stroke:var(--line);stroke-width:1.2}
+.nd.leaf rect{fill:#EEF3FA}
+.nd.lit rect{stroke:var(--fwd);stroke-width:1.8}
+.nd.litb rect{stroke:var(--bwd);stroke-width:1.8}
+.nd .expr{font-family:var(--f-mono);font-size:12.5px;font-weight:600;fill:var(--ink)}
+.nd .val{font-family:var(--f-mono);font-size:12px;fill:var(--fwd);opacity:0;transition:opacity .3s}
+.nd.lit .val,.nd.litb .val{opacity:1}
+.nd .grad{font-family:var(--f-mono);font-size:11px;fill:var(--bwd);opacity:0;transition:opacity .3s}
+.nd.litb .grad{opacity:1}
+.edge{fill:none;stroke:var(--line);stroke-width:1.6}
+.flow{fill:none;stroke:var(--fwd);stroke-width:2.6;stroke-linecap:round}
+.flow.bwd{stroke:var(--bwd)}
+
+.ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
+.slider{display:flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:12.5px}
+.slider input{width:128px;accent-color:var(--fwd)}
+.slider b{color:var(--fwd);min-width:44px;display:inline-block}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;
+  border:1px solid var(--ink);background:var(--ink);color:#F4F7FB;
+  padding:8px 13px;border-radius:3px;cursor:pointer;transition:transform .1s,opacity .15s;
+}
+.btn:hover{opacity:.86}
+.btn:active{transform:translateY(1px)}
+.btn--f{background:var(--fwd);border-color:var(--fwd)}
+.btn--b{background:var(--bwd);border-color:var(--bwd)}
+.btn--g{background:none;color:var(--ink-2);border-color:var(--line)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.readout{
+  display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+  font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);
+}
+.readout b{font-size:19px;color:var(--ink);font-weight:600;display:block}
+.spark{border:1px solid var(--line);background:#F2F6FA;border-radius:3px}
+
+/* ---------- карточки ошибок ---------- */
+.cards{display:grid;gap:12px;grid-template-columns:1fr;margin:0 0 20px}
+@media(min-width:620px){.cards{grid-template-columns:1fr 1fr}}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 15px;font-size:15px;
+}
+.card h4{
+  margin:0 0 7px;font-family:var(--f-mono);font-size:12.5px;font-weight:600;
+  color:var(--bwd);letter-spacing:.01em;
+}
+.card p{margin:0;color:var(--ink-2);font-size:14.6px;line-height:1.55}
+
+/* ---------- футер ---------- */
+footer{
+  padding:40px 0 0;font-family:var(--f-mono);font-size:12px;color:var(--muted);
+  line-height:1.7;
+}
+footer a{color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__in">
+    <span class="topbar__dot"></span>
+    <span>PyTorch · учебник</span>
+    <span class="topbar__sp">прямой проход → · ← обратный проход</span>
+  </div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<nav class="rail" aria-label="Оглавление">
+  <ol>
+    <li><a href="#s1">01 Установка</a></li>
+    <li><a href="#s2">02 Тензоры</a></li>
+    <li><a href="#s3">03 Autograd</a></li>
+    <li><a href="#s4">04 nn.Module</a></li>
+    <li><a href="#s5">05 Потери и оптимизаторы</a></li>
+    <li><a href="#s6">06 Данные</a></li>
+    <li><a href="#s7">07 Полный пример</a></li>
+    <li><a href="#s8">08 GPU</a></li>
+    <li><a href="#s9">09 Сохранение</a></li>
+    <li><a href="#s10">10 Частые ошибки</a></li>
+    <li><a href="#s11">11 Что дальше</a></li>
+    <li><a href="#s12">12 Шпаргалка</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= ГЕРОЙ ================= -->
+<header class="hero">
+  <p class="kicker">Учебник · от тензора до обученной модели</p>
+  <h1>Шесть строк, <em>которые повторяются</em> миллион раз</h1>
+  <p class="lede">
+    PyTorch — библиотека для обучения нейросетей. Представьте машину с миллионами
+    ручек-настроек: она делает предположение, ошибается, и каждая ручка чуть
+    поворачивается в сторону меньшей ошибки. Вся библиотека существует, чтобы этот
+    поворот происходил автоматически. Вот как выглядит сердце любой обучающей программы —
+    нажмите на строку, чтобы понять, что она делает.
+  </p>
+
+  <div class="loop">
+    <div class="loop__label">цикл обучения</div>
+    <button class="loop__line" data-note="<b>Берём порцию данных (батч).</b> DataLoader выдаёт не по одному примеру, а пачками — например, по 64 картинки сразу. Так GPU загружен, а оценка градиента менее шумная. <code>x</code> — входы, <code>y</code> — правильные ответы.">for x, y in loader:</button>
+    <button class="loop__line" data-note="<b>Прямой проход (forward).</b> Модель считает предсказание. Попутно PyTorch записывает каждую операцию в граф вычислений — чтобы потом знать, откуда взялось каждое число.">    pred = model(x)</button>
+    <button class="loop__line" data-note="<b>Насколько мы ошиблись.</b> Функция потерь сворачивает всё предсказание в одно число: чем оно больше, тем хуже. Именно это число мы и будем минимизировать.">    loss = loss_fn(pred, y)</button>
+    <button class="loop__line" data-note="<b>Стираем прошлые градиенты.</b> PyTorch их <em>накапливает</em>, а не перезаписывает. Забудете эту строку — градиенты со всех прошлых батчей сложатся, и обучение развалится. Самая частая ошибка новичка.">    optimizer.zero_grad()</button>
+    <button class="loop__line" data-note="<b>Обратный проход (backward).</b> Autograd идёт по графу назад и для каждого параметра считает: «если повернуть тебя на волосок вверх, ошибка вырастет или упадёт и насколько?» Ответ кладётся в <code>param.grad</code>.">    loss.backward()</button>
+    <button class="loop__line" data-note="<b>Поворачиваем ручки.</b> Оптимизатор берёт градиенты и делает шаг: примерно <code>param -= lr * param.grad</code>. Всё, одна итерация обучения закончена — возвращаемся к началу.">    optimizer.step()</button>
+    <div class="loop__note" id="loopnote">Выберите строку выше — здесь появится объяснение.</div>
+  </div>
+  <p class="hint">Дальше — то же самое, но медленно и по деталям: тензоры, autograd, слои, данные, полный рабочий пример.</p>
+</header>
+
+<!-- ================= 01 ================= -->
+<section class="sec" id="s1">
+  <p class="sec__num"><span>§ 01</span> · подготовка</p>
+  <h2>Установка и проверка</h2>
+  <p>
+    Для начала хватит CPU-версии — она ставится одной командой и работает везде.
+    Версию с поддержкой GPU (CUDA) собирают под конкретную версию драйвера, поэтому
+    команду для неё лучше брать в конфигураторе на официальном сайте.
+  </p>
+  <div class="codewrap"><div class="cap">терминал</div><pre><code class="py"># CPU-версия — подходит для обучения основам
+pip install torch torchvision
+
+# Проверяем, что всё встало
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"</code></pre></div>
+  <p>
+    Три пакета, которые вы будете видеть чаще всего: <code>torch</code> — само ядро,
+    <code>torchvision</code> — картинки (датасеты, аугментации, готовые архитектуры),
+    <code>torchaudio</code> — звук. Всё остальное — уже сторонние надстройки.
+  </p>
+</section>
+
+<!-- ================= 02 ================= -->
+<section class="sec" id="s2">
+  <p class="sec__num"><span>§ 02</span> · данные в памяти</p>
+  <h2>Тензор — это просто сетка чисел</h2>
+  <p>
+    Число, список, таблица, стопка таблиц — всё это тензоры разной размерности.
+    По сути это массив NumPy с двумя суперспособностями: его можно отправить на
+    видеокарту и он умеет запоминать, как был получен (об этом — в следующем разделе).
+  </p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Размерность</th><th>Как называют</th><th>Пример</th></tr></thead>
+    <tbody>
+      <tr><td>0D</td><td>скаляр</td><td>значение функции потерь: <code>3.14</code></td></tr>
+      <tr><td>1D</td><td>вектор</td><td>эмбеддинг слова: <code>[0.2, -1.1, 0.7]</code></td></tr>
+      <tr><td>2D</td><td>матрица</td><td>батч признаков: <code>(64, 784)</code></td></tr>
+      <tr><td>3D</td><td>тензор</td><td>картинка: <code>(3, 224, 224)</code> — каналы, высота, ширина</td></tr>
+      <tr><td>4D</td><td>тензор</td><td>батч картинок: <code>(64, 3, 224, 224)</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Создание</h3>
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">import torch
+
+a     = torch.tensor([[1., 2.], [3., 4.]])   # из готовых данных
+zeros = torch.zeros(2, 3)                    # нули заданной формы
+ones  = torch.ones_like(a)                   # единицы формы как у a
+rnd   = torch.randn(3, 4)                    # нормальное распределение
+seq   = torch.arange(0, 10, 2)               # tensor([0, 2, 4, 6, 8])
+lin   = torch.linspace(0, 1, 5)              # 5 точек от 0 до 1
+
+print(a.shape)   # torch.Size([2, 2]) — форма
+print(a.dtype)   # torch.float32     — тип элементов
+print(a.device)  # cpu               — где лежит
+print(a.ndim)    # 2                 — сколько осей</code></pre></div>
+
+  <div class="note">
+    <span class="note__t">запомнить</span>
+    Три атрибута — <code>shape</code>, <code>dtype</code>, <code>device</code> — отвечают за
+    девять из десяти ошибок в PyTorch. Когда что-то падает, печатайте их первым делом.
+  </div>
+
+  <h3>Арифметика и матричное умножение</h3>
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">x = torch.tensor([1., 2., 3.])
+y = torch.tensor([10., 20., 30.])
+
+x + y          # поэлементно: [11., 22., 33.]
+x * y          # поэлементно: [10., 40., 90.]  — это НЕ матричное умножение
+x @ y          # скалярное произведение: 140.
+
+A = torch.randn(2, 3)
+B = torch.randn(3, 5)
+A @ B          # матричное умножение -> форма (2, 5)
+
+x.sum(), x.mean(), x.max()        # свёртки по всему тензору
+A.sum(dim=0)                      # свернуть ось 0 -> форма (3,)
+A.sum(dim=1, keepdim=True)        # свернуть ось 1, сохранив её -> (2, 1)</code></pre></div>
+
+  <h3>Broadcasting — почему формы «сами» подходят</h3>
+  <p>
+    Если у тензоров разные формы, PyTorch пытается растянуть меньший вдоль недостающих осей.
+    Правило читается справа налево: оси совпадают, либо одна из них равна&nbsp;1, либо её нет вовсе.
+  </p>
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">batch = torch.randn(64, 3)      # 64 примера по 3 признака
+bias  = torch.tensor([1., 2., 3.])
+
+out = batch + bias              # bias растянут на все 64 строки -> (64, 3)
+
+col = torch.randn(64, 1)
+out = batch * col               # (64,3) * (64,1) -> (64,3): столбец растянут по признакам
+
+# А вот это упадёт: 3 и 4 несовместимы
+# torch.randn(64, 3) + torch.randn(4)</code></pre></div>
+
+  <h3>Изменение формы</h3>
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">t = torch.randn(64, 1, 28, 28)      # батч чёрно-белых картинок
+
+t.view(64, -1)        # -1 = «посчитай сам» -> (64, 784). Без копирования, но нужен непрерывный тензор
+t.reshape(64, -1)     # то же, но скопирует, если иначе нельзя. Безопаснее
+t.flatten(1)          # схлопнуть всё начиная с оси 1 -> (64, 784)
+t.squeeze(1)          # убрать ось размера 1 -> (64, 28, 28)
+t.unsqueeze(0)        # добавить ось -> (1, 64, 1, 28, 28)
+t.permute(0, 2, 3, 1) # переставить оси -> (64, 28, 28, 1)</code></pre></div>
+
+  <h3>Индексация и мост в NumPy</h3>
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">A = torch.randn(5, 4)
+
+A[0]           # первая строка -> (4,)
+A[:, 1]        # второй столбец -> (5,)
+A[1:3]         # строки 1 и 2 -> (2, 4)
+A[A &gt; 0]       # булева маска: все положительные элементы, одним вектором
+
+import numpy as np
+n = A.numpy()               # тензор -> массив, ПАМЯТЬ ОБЩАЯ (только для CPU)
+back = torch.from_numpy(n)  # массив -> тензор, память тоже общая
+copy = A.clone()            # честная копия, если нужна независимость</code></pre></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section class="sec" id="s3">
+  <p class="sec__num"><span>§ 03</span> · главная магия</p>
+  <h2>Autograd: как ошибка возвращается назад</h2>
+  <p>
+    Пометьте тензор как <code>requires_grad=True</code> — и PyTorch начнёт тихо записывать
+    каждую операцию с ним в граф: кто из кого получился. Когда вы вызовете
+    <code>.backward()</code> на итоговом числе, библиотека пройдёт по этому графу назад
+    и для каждого помеченного тензора посчитает производную. Это то самое,
+    что вручную для миллиона параметров не посчитает никто.
+  </p>
+
+  <div class="codewrap"><div class="cap">python · минимальный пример</div><pre><code class="py">w = torch.tensor(2.0, requires_grad=True)
+x = torch.tensor(3.0)
+
+y = w * x + 1        # граф записан: y &lt;- (+1) &lt;- (*) &lt;- w, x
+y.backward()         # идём назад
+
+print(w.grad)        # tensor(3.) — потому что dy/dw = x = 3
+print(x.grad)        # None — x не помечен, для него ничего не считалось</code></pre></div>
+
+  <!-- ИНТЕРАКТИВНЫЙ ГРАФ -->
+  <div class="lab">
+    <div class="lab__head">
+      <span class="lab__title">Граф вычислений вживую</span>
+      <span class="lab__dir" id="dir">граф собран</span>
+    </div>
+    <p class="lab__sub">
+      Один нейрон учится предсказывать <code>y = 5</code> по входу <code>x = 2</code>.
+      Двиньте ползунки, прогоните проход вперёд, затем назад — и сделайте шаг оптимизатора.
+      Синее — значения, идущие вперёд. Малиновое — градиенты, идущие назад.
+    </p>
+
+    <div class="svgscroll">
+    <svg viewBox="0 0 830 340" role="img" aria-label="Граф вычислений: w и x умножаются, прибавляется b, вычитается y, результат возводится в квадрат">
+      <g id="edges">
+        <path class="edge" d="M140,52 L200,90"/><path class="flow" id="f1" d="M140,52 L200,90"/>
+        <path class="edge" d="M140,126 L200,90"/><path class="flow" id="f2" d="M140,126 L200,90"/>
+        <path class="edge" d="M332,90 L370,144"/><path class="flow" id="f3" d="M332,90 L370,144"/>
+        <path class="edge" d="M140,216 L370,144"/><path class="flow" id="f4" d="M140,216 L370,144"/>
+        <path class="edge" d="M502,144 L530,204"/><path class="flow" id="f5" d="M502,144 L530,204"/>
+        <path class="edge" d="M140,290 L530,204"/><path class="flow" id="f6" d="M140,290 L530,204"/>
+        <path class="edge" d="M662,204 L690,274"/><path class="flow" id="f7" d="M662,204 L690,274"/>
+      </g>
+
+      <g class="nd leaf" id="n-w" transform="translate(8,24)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">w · вес</text>
+        <text class="val" x="12" y="42">0.50</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 0.00</text>
+      </g>
+      <g class="nd leaf" id="n-x" transform="translate(8,98)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">x · вход</text>
+        <text class="val" x="12" y="42">2.00</text>
+      </g>
+      <g class="nd leaf" id="n-b" transform="translate(8,188)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">b · сдвиг</text>
+        <text class="val" x="12" y="42">0.00</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 0.00</text>
+      </g>
+      <g class="nd leaf" id="n-y" transform="translate(8,262)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">y · ответ</text>
+        <text class="val" x="12" y="42">5.00</text>
+      </g>
+
+      <g class="nd" id="n-u" transform="translate(200,62)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">u = w · x</text>
+        <text class="val" x="12" y="42">—</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 0.00</text>
+      </g>
+      <g class="nd" id="n-z" transform="translate(370,116)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">z = u + b</text>
+        <text class="val" x="12" y="42">—</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 0.00</text>
+      </g>
+      <g class="nd" id="n-d" transform="translate(530,176)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">d = z − y</text>
+        <text class="val" x="12" y="42">—</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 0.00</text>
+      </g>
+      <g class="nd" id="n-L" transform="translate(690,246)">
+        <rect width="132" height="56" rx="3"/>
+        <text class="expr" x="12" y="22">L = d²</text>
+        <text class="val" x="12" y="42">—</text>
+        <text class="grad" x="120" y="42" text-anchor="end">g 1.00</text>
+      </g>
+    </svg>
+    </div>
+
+    <div class="ctrls">
+      <label class="slider">w <input type="range" id="sw" min="-3" max="5" step="0.1" value="0.5"><b id="vw">0.50</b></label>
+      <label class="slider">b <input type="range" id="sb" min="-3" max="5" step="0.1" value="0.0"><b id="vb">0.00</b></label>
+    </div>
+    <div class="btns">
+      <button class="btn btn--f" id="go-f">Прямой проход →</button>
+      <button class="btn btn--b" id="go-b">← loss.backward()</button>
+      <button class="btn" id="go-s">optimizer.step()</button>
+      <button class="btn btn--g" id="go-r">Сброс</button>
+    </div>
+    <div class="readout">
+      <div>потери L<b id="rl">—</b></div>
+      <div>предсказание z<b id="rz">—</b></div>
+      <div>шагов сделано<b id="rs">0</b></div>
+      <div style="margin-left:auto">
+        <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">история потерь</div>
+        <svg class="spark" id="spark" width="160" height="42" viewBox="0 0 160 42" aria-label="График убывания потерь"></svg>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    Тот же граф в коде — обратите внимание, что PyTorch считает ровно те же числа,
+    что вы видели в белых прямоугольниках:
+  </p>
+  <div class="codewrap"><div class="cap">python · тот же нейрон</div><pre><code class="py">x, y_true = torch.tensor(2.0), torch.tensor(5.0)
+w = torch.tensor(0.5, requires_grad=True)
+b = torch.tensor(0.0, requires_grad=True)
+
+for step in range(30):
+    z = w * x + b            # предсказание
+    loss = (z - y_true) ** 2 # потери
+
+    if w.grad is not None:   # градиенты НАКАПЛИВАЮТСЯ — чистим
+        w.grad.zero_(); b.grad.zero_()
+
+    loss.backward()          # считаем dL/dw и dL/db
+
+    with torch.no_grad():    # шаг руками, вне графа
+        w -= 0.05 * w.grad
+        b -= 0.05 * b.grad
+
+print(w.item(), b.item(), loss.item())</code></pre></div>
+
+  <h3>Четыре инструмента, которые нужны каждый день</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Что</th><th>Зачем</th></tr></thead>
+    <tbody>
+      <tr><td><code>requires_grad=True</code></td><td>Пометить тензор как обучаемый. У параметров модели включено автоматически.</td></tr>
+      <tr><td><code>.backward()</code></td><td>Пройти по графу назад. Вызывается на скаляре (одном числе), обычно на потерях.</td></tr>
+      <tr><td><code>with torch.no_grad():</code></td><td>Не строить граф вообще. Ускоряет и экономит память — используйте при валидации и инференсе.</td></tr>
+      <tr><td><code>.detach()</code></td><td>Вырезать тензор из графа: значение то же, история забыта. Удобно, когда сохраняете промежуточные результаты.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note note--bwd">
+    <span class="note__t">откуда берётся «нет графа»</span>
+    После <code>.backward()</code> граф освобождается. Второй вызов на том же результате
+    выдаст ошибку про <code>backward through the graph a second time</code> — почти всегда
+    это значит, что вы забыли пересчитать forward внутри цикла.
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section class="sec" id="s4">
+  <p class="sec__num"><span>§ 04</span> · сборка модели</p>
+  <h2>nn.Module — конструктор из готовых блоков</h2>
+  <p>
+    Модель в PyTorch — это класс, наследник <code>nn.Module</code>. В <code>__init__</code>
+    вы создаёте слои, в <code>forward</code> описываете, как данные через них проходят.
+    Всё остальное — сбор параметров, перенос на GPU, сохранение — вы получаете бесплатно.
+  </p>
+
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">import torch.nn as nn
+
+class MLP(nn.Module):
+    def __init__(self, in_dim=784, hidden=128, out_dim=10):
+        super().__init__()               # обязательно, иначе ничего не заработает
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, hidden),   # y = xW + b
+            nn.ReLU(),                   # нелинейность: max(0, x)
+            nn.Dropout(0.2),             # регуляризация: гасим 20% нейронов при обучении
+            nn.Linear(hidden, out_dim),
+        )
+
+    def forward(self, x):
+        x = x.flatten(1)                 # (B, 1, 28, 28) -> (B, 784)
+        return self.net(x)               # ЛОГИТЫ, без softmax — так надо для CrossEntropyLoss
+
+model = MLP()
+print(model)                                       # красивое дерево слоёв
+print(sum(p.numel() for p in model.parameters()))  # сколько всего «ручек»</code></pre></div>
+
+  <div class="note note--fwd">
+    <span class="note__t">важная привычка</span>
+    Вызывайте <code>model(x)</code>, а не <code>model.forward(x)</code>. Первый вариант
+    дополнительно запускает хуки PyTorch; второй молча их пропускает и однажды сломает вам отладку.
+  </div>
+
+  <h3>Слои, которые встречаются чаще всего</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Слой</th><th>Для чего</th></tr></thead>
+    <tbody>
+      <tr><td><code>nn.Linear(in, out)</code></td><td>Полносвязный слой. База всего.</td></tr>
+      <tr><td><code>nn.Conv2d(in_ch, out_ch, k)</code></td><td>Свёртка для изображений.</td></tr>
+      <tr><td><code>nn.ReLU()</code>, <code>nn.GELU()</code></td><td>Нелинейности. Без них стопка Linear схлопывается в один Linear.</td></tr>
+      <tr><td><code>nn.BatchNorm2d</code>, <code>nn.LayerNorm</code></td><td>Нормализация — стабилизирует и ускоряет обучение.</td></tr>
+      <tr><td><code>nn.Dropout(p)</code></td><td>Борьба с переобучением. Активен только в режиме <code>train()</code>.</td></tr>
+      <tr><td><code>nn.Embedding(n, dim)</code></td><td>Таблица векторов: индекс → вектор. Основа работы с текстом.</td></tr>
+      <tr><td><code>nn.Sequential(...)</code></td><td>Контейнер: пропускает вход через слои по очереди.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section class="sec" id="s5">
+  <p class="sec__num"><span>§ 05</span> · чему и как учить</p>
+  <h2>Функции потерь и оптимизаторы</h2>
+  <p>
+    Функция потерь отвечает на вопрос «насколько плохо», оптимизатор — на вопрос
+    «куда крутить». Выбор из обоих списков почти всегда очевиден по типу задачи.
+  </p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Задача</th><th>Функция потерь</th><th>Что подавать</th></tr></thead>
+    <tbody>
+      <tr><td>Регрессия</td><td><code>nn.MSELoss()</code></td><td>Предсказание и цель одинаковой формы</td></tr>
+      <tr><td>Классификация, N классов</td><td><code>nn.CrossEntropyLoss()</code></td><td>Логиты <code>(B, N)</code> и индексы классов <code>(B,)</code> типа long</td></tr>
+      <tr><td>Бинарная классификация</td><td><code>nn.BCEWithLogitsLoss()</code></td><td>Логиты и цели 0/1 одинаковой формы</td></tr>
+      <tr><td>Регрессия с выбросами</td><td><code>nn.SmoothL1Loss()</code></td><td>Как MSE, но менее чувствительна к выбросам</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <span class="note__t">ловушка №1 у новичков</span>
+    <code>CrossEntropyLoss</code> уже содержит внутри softmax. Если добавить
+    <code>nn.Softmax()</code> последним слоем модели, вы примените его дважды — модель
+    будет учиться, но заметно хуже, и вы долго не поймёте почему.
+  </div>
+
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">import torch.optim as optim
+
+loss_fn = nn.CrossEntropyLoss()
+
+# AdamW — разумный выбор по умолчанию почти для всего
+optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.01)
+
+# SGD с моментом — классика, часто даёт лучший финальный результат в CV
+# optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+
+# Планировщик постепенно снижает шаг обучения
+scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)</code></pre></div>
+
+  <p>
+    Скорость обучения (<code>lr</code>) — самая важная настройка из всех. Слишком большая —
+    потери прыгают или улетают в <code>nan</code>. Слишком маленькая — обучение ползёт.
+    Разумные стартовые значения: <code>1e-3</code> для Adam/AdamW, <code>0.1</code> для SGD с моментом.
+  </p>
+</section>
+
+<!-- ================= 06 ================= -->
+<section class="sec" id="s6">
+  <p class="sec__num"><span>§ 06</span> · конвейер</p>
+  <h2>Dataset и DataLoader</h2>
+  <p>
+    <code>Dataset</code> отвечает на вопрос «дай мне пример номер i». <code>DataLoader</code>
+    оборачивает его: собирает батчи, перемешивает, грузит в несколько потоков параллельно
+    с обучением. Свой датасет — это ровно три метода.
+  </p>
+
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">from torch.utils.data import Dataset, DataLoader
+
+class MyDataset(Dataset):
+    def __init__(self, X, y):
+        self.X, self.y = X, y
+
+    def __len__(self):
+        return len(self.X)              # сколько всего примеров
+
+    def __getitem__(self, i):
+        return self.X[i], self.y[i]     # один пример: вход и ответ
+
+ds = MyDataset(torch.randn(1000, 20), torch.randint(0, 2, (1000,)))
+
+loader = DataLoader(
+    ds,
+    batch_size=64,      # по сколько примеров за раз
+    shuffle=True,       # перемешивать каждую эпоху — для train ДА, для val НЕТ
+    num_workers=2,      # процессов на подготовку данных
+    drop_last=True,     # выбросить последний неполный батч
+)
+
+for xb, yb in loader:
+    print(xb.shape, yb.shape)   # torch.Size([64, 20]) torch.Size([64])
+    break</code></pre></div>
+
+  <p>Для стандартных задач датасет уже написан за вас:</p>
+  <div class="codewrap"><div class="cap">python · torchvision</div><pre><code class="py">from torchvision import datasets, transforms
+
+tf = transforms.Compose([
+    transforms.ToTensor(),                       # PIL -> тензор (C, H, W), значения 0..1
+    transforms.Normalize((0.1307,), (0.3081,)),  # вычесть среднее, поделить на std
+])
+
+train_ds = datasets.MNIST("./data", train=True,  download=True, transform=tf)
+test_ds  = datasets.MNIST("./data", train=False, download=True, transform=tf)</code></pre></div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section class="sec" id="s7">
+  <p class="sec__num"><span>§ 07</span> · всё вместе</p>
+  <h2>Полный рабочий пример</h2>
+  <p>
+    Классификация рукописных цифр MNIST. Этот файл можно скопировать целиком и запустить —
+    он скачает данные сам. Здесь собрано всё из предыдущих разделов; структуру этого
+    скрипта вы потом будете переиспользовать почти без изменений.
+  </p>
+
+  <div class="codewrap"><div class="cap">python · train.py</div><pre><code class="py">import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+# ---------- 1. Устройство ----------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+torch.manual_seed(0)                     # воспроизводимость
+
+# ---------- 2. Данные ----------
+tf = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,)),
+])
+train_ds = datasets.MNIST("./data", train=True,  download=True, transform=tf)
+test_ds  = datasets.MNIST("./data", train=False, download=True, transform=tf)
+
+train_loader = DataLoader(train_ds, batch_size=128, shuffle=True)
+test_loader  = DataLoader(test_ds,  batch_size=512, shuffle=False)
+
+# ---------- 3. Модель ----------
+class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(784, 256), nn.ReLU(), nn.Dropout(0.2),
+            nn.Linear(256, 10),
+        )
+    def forward(self, x):
+        return self.net(x)
+
+model = MLP().to(device)
+
+# ---------- 4. Потери и оптимизатор ----------
+loss_fn   = nn.CrossEntropyLoss()
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+
+# ---------- 5. Одна эпоха обучения ----------
+def train_epoch():
+    model.train()                        # включаем dropout и обновление batchnorm
+    total = 0.0
+    for x, y in train_loader:
+        x, y = x.to(device), y.to(device)
+
+        pred = model(x)
+        loss = loss_fn(pred, y)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        total += loss.item() * x.size(0) # .item() -> обычное число, граф не держим
+    return total / len(train_loader.dataset)
+
+# ---------- 6. Проверка ----------
+@torch.no_grad()                         # градиенты тут не нужны
+def evaluate():
+    model.eval()                         # выключаем dropout
+    correct = 0
+    for x, y in test_loader:
+        x, y = x.to(device), y.to(device)
+        pred = model(x)
+        correct += (pred.argmax(dim=1) == y).sum().item()
+    return correct / len(test_loader.dataset)
+
+# ---------- 7. Поехали ----------
+for epoch in range(1, 6):
+    loss = train_epoch()
+    acc  = evaluate()
+    print(f"эпоха {epoch}  потери {loss:.4f}  точность {acc:.2%}")
+
+torch.save(model.state_dict(), "mnist_mlp.pt")</code></pre></div>
+
+  <div class="note note--fwd">
+    <span class="note__t">чего ожидать</span>
+    После пяти эпох точность будет около 97–98%. Если на первой эпохе потери не падают —
+    почти наверняка дело в скорости обучения или в забытом <code>zero_grad()</code>.
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section class="sec" id="s8">
+  <p class="sec__num"><span>§ 08</span> · ускорение</p>
+  <h2>Видеокарта</h2>
+  <p>
+    GPU плох в чём угодно по отдельности, но умеет делать тысячи умножений одновременно —
+    именно поэтому глубокое обучение вообще возможно на практике. Правило простое:
+    <strong>модель и данные должны быть на одном устройстве</strong>.
+  </p>
+
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py">device = "cuda" if torch.cuda.is_available() else "cpu"   # NVIDIA
+# на Mac с Apple Silicon: device = "mps" if torch.backends.mps.is_available() else "cpu"
+
+model = model.to(device)          # модуль переносится НА МЕСТЕ, но так писать безопаснее
+x = x.to(device)                  # тензор НЕ на месте: без присваивания перенос пропадёт
+
+# Обратно на CPU — например, чтобы отдать в NumPy или matplotlib
+values = pred.detach().cpu().numpy()</code></pre></div>
+
+  <div class="note">
+    <span class="note__t">смешанная точность</span>
+    На современных картах обучение можно почти удвоить по скорости, считая часть операций
+    в float16. Это несколько строк вокруг обычного цикла — ищите <code>torch.amp.autocast</code>
+    и <code>GradScaler</code>, когда базовый цикл уже работает.
+  </div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section class="sec" id="s9">
+  <p class="sec__num"><span>§ 09</span> · после обучения</p>
+  <h2>Сохранение и загрузка</h2>
+  <p>
+    Сохраняйте <code>state_dict</code> — словарь весов, а не объект модели целиком.
+    Файл с целым объектом привязан к вашей структуре папок и версии кода, и рано или поздно
+    перестанет открываться.
+  </p>
+
+  <div class="codewrap"><div class="cap">python</div><pre><code class="py"># Сохранить
+torch.save(model.state_dict(), "model.pt")
+
+# Загрузить: сначала создаём такую же архитектуру, потом вливаем веса
+model = MLP()
+model.load_state_dict(torch.load("model.pt", map_location=device))
+model.eval()                       # для инференса — обязательно
+
+# Чекпоинт, чтобы продолжить обучение с того же места
+torch.save({
+    "epoch": epoch,
+    "model": model.state_dict(),
+    "optim": optimizer.state_dict(),
+}, "ckpt.pt")</code></pre></div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="sec" id="s10">
+  <p class="sec__num"><span>§ 10</span> · грабли</p>
+  <h2>Ошибки, на которых спотыкаются все</h2>
+  <div class="cards">
+    <div class="card">
+      <h4>Забыт optimizer.zero_grad()</h4>
+      <p>Градиенты накапливаются со всех прошлых батчей. Потери либо стоят на месте, либо взрываются. Проверяйте это первым.</p>
+    </div>
+    <div class="card">
+      <h4>Softmax перед CrossEntropyLoss</h4>
+      <p>Внутри функции потерь softmax уже есть. Модель должна возвращать сырые логиты.</p>
+    </div>
+    <div class="card">
+      <h4>Нет model.eval() при проверке</h4>
+      <p>Dropout продолжает гасить нейроны, BatchNorm обновляет статистику — метрики получаются хуже реальных и нестабильны.</p>
+    </div>
+    <div class="card">
+      <h4>Валидация без torch.no_grad()</h4>
+      <p>Строится ненужный граф: память течёт, всё работает вдвое медленнее.</p>
+    </div>
+    <div class="card">
+      <h4>Накопление тензора вместо .item()</h4>
+      <p><code>total += loss</code> держит весь граф в памяти. Пишите <code>total += loss.item()</code>.</p>
+    </div>
+    <div class="card">
+      <h4>Данные и модель на разных устройствах</h4>
+      <p>Ошибка вида «expected all tensors to be on the same device». Проверьте <code>.to(device)</code> и там, и там.</p>
+    </div>
+    <div class="card">
+      <h4>Неверный dtype для меток</h4>
+      <p><code>CrossEntropyLoss</code> ждёт целочисленные индексы классов (<code>long</code>), а не float и не one-hot.</p>
+    </div>
+    <div class="card">
+      <h4>view() на непрерывном тензоре</h4>
+      <p>После <code>permute</code> или <code>transpose</code> используйте <code>reshape</code> либо <code>.contiguous().view(...)</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section class="sec" id="s11">
+  <p class="sec__num"><span>§ 11</span> · дальше</p>
+  <h2>Куда двигаться, когда цикл заработал</h2>
+  <ul>
+    <li><strong>torch.compile(model)</strong> — одна строка, которая часто даёт заметное ускорение без изменений в коде.</li>
+    <li><strong>Смешанная точность</strong> (<code>torch.amp</code>) — быстрее и экономнее по памяти на современных GPU.</li>
+    <li><strong>Дообучение готовых моделей</strong> — <code>torchvision.models</code> для картинок, Hugging Face Transformers для текста. Учить с нуля почти никогда не нужно.</li>
+    <li><strong>Логирование</strong> — TensorBoard или Weights &amp; Biases вместо <code>print</code>: кривые обучения покажут проблему раньше, чем цифры.</li>
+    <li><strong>Несколько GPU</strong> — <code>DistributedDataParallel</code>, когда одна карта перестала помещать модель или данные.</li>
+    <li><strong>Меньше рутины</strong> — PyTorch Lightning или Hugging Face Accelerate убирают повторяющийся код цикла.</li>
+  </ul>
+</section>
+
+<!-- ================= 12 ================= -->
+<section class="sec" id="s12">
+  <p class="sec__num"><span>§ 12</span> · на одну страницу</p>
+  <h2>Шпаргалка</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Команда</th><th>Что делает</th></tr></thead>
+    <tbody>
+      <tr><td><code>torch.tensor(data)</code></td><td>Создать тензор из списка или массива</td></tr>
+      <tr><td><code>t.shape</code> · <code>t.dtype</code> · <code>t.device</code></td><td>Форма, тип, местоположение — первое, что печатать при ошибке</td></tr>
+      <tr><td><code>t.to(device)</code></td><td>Перенести на CPU/GPU (для тензора — с присваиванием!)</td></tr>
+      <tr><td><code>t.view(-1)</code> · <code>t.reshape(-1)</code></td><td>Изменить форму; <code>reshape</code> безопаснее</td></tr>
+      <tr><td><code>A @ B</code></td><td>Матричное умножение (<code>*</code> — поэлементное)</td></tr>
+      <tr><td><code>t.requires_grad_(True)</code></td><td>Включить отслеживание градиентов</td></tr>
+      <tr><td><code>loss.backward()</code></td><td>Посчитать градиенты по всему графу</td></tr>
+      <tr><td><code>optimizer.zero_grad()</code></td><td>Обнулить накопленные градиенты</td></tr>
+      <tr><td><code>optimizer.step()</code></td><td>Обновить параметры</td></tr>
+      <tr><td><code>with torch.no_grad():</code></td><td>Отключить граф — инференс и валидация</td></tr>
+      <tr><td><code>model.train()</code> / <code>model.eval()</code></td><td>Переключить режим (dropout, batchnorm)</td></tr>
+      <tr><td><code>loss.item()</code></td><td>Достать обычное число из тензора-скаляра</td></tr>
+      <tr><td><code>pred.argmax(dim=1)</code></td><td>Индекс самого вероятного класса</td></tr>
+      <tr><td><code>torch.save(m.state_dict(), p)</code></td><td>Сохранить веса</td></tr>
+      <tr><td><code>m.load_state_dict(torch.load(p))</code></td><td>Загрузить веса в такую же архитектуру</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<footer>
+  <p>
+    Учебная страница по PyTorch · весь код проверяем построчно и запускается как есть<br>
+    Официальная документация: <a href="https://pytorch.org/docs/stable/index.html">pytorch.org/docs</a> ·
+    туториалы: <a href="https://pytorch.org/tutorials/">pytorch.org/tutorials</a>
+  </p>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- подсветка Python ---------- */
+  var RX = /(#[^\n]*)|('''[\s\S]*?'''|"""[\s\S]*?"""|'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|\b(import|from|as|def|class|return|for|in|while|if|elif|else|with|try|except|finally|lambda|None|True|False|and|or|not|is|pass|break|continue|yield|global|assert|del|raise|print)\b|\b(self)\b|\b(\d+\.?\d*(?:e-?\d+)?)\b|\b([A-Za-z_]\w*)(?=\()/g;
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  document.querySelectorAll("pre code.py").forEach(function(el){
+    var html = esc(el.textContent).replace(RX, function(m,com,str,kw,slf,num,fn){
+      if(com) return '<span class="tok-com">'+com+'</span>';
+      if(str) return '<span class="tok-str">'+str+'</span>';
+      if(kw)  return '<span class="tok-kw">'+kw+'</span>';
+      if(slf) return '<span class="tok-self">'+slf+'</span>';
+      if(num) return '<span class="tok-num">'+num+'</span>';
+      if(fn)  return '<span class="tok-fn">'+fn+'</span>';
+      return m;
+    });
+    el.innerHTML = html;
+  });
+
+  /* ---------- кнопки «скопировать» ---------- */
+  document.querySelectorAll(".codewrap").forEach(function(w){
+    var b = document.createElement("button");
+    b.className = "copy"; b.type = "button"; b.textContent = "копировать";
+    b.addEventListener("click", function(){
+      var t = w.querySelector("code").textContent;
+      navigator.clipboard.writeText(t).then(function(){
+        b.textContent = "скопировано";
+        setTimeout(function(){ b.textContent = "копировать"; }, 1400);
+      }, function(){ b.textContent = "не вышло"; });
+    });
+    w.appendChild(b);
+  });
+
+  /* ---------- герой: подписи к строкам ---------- */
+  var note = document.getElementById("loopnote");
+  var lines = document.querySelectorAll(".loop__line");
+  lines.forEach(function(l){
+    l.addEventListener("click", function(){
+      lines.forEach(function(o){ o.classList.remove("on"); });
+      l.classList.add("on");
+      note.innerHTML = l.dataset.note;
+    });
+  });
+
+  /* ---------- прогресс чтения ---------- */
+  var bar = document.getElementById("progress");
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- активный пункт оглавления ---------- */
+  var links = document.querySelectorAll(".rail a");
+  if(links.length && "IntersectionObserver" in window){
+    var map = {};
+    links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(a){ a.classList.remove("active"); });
+          if(map[e.target.id]) map[e.target.id].classList.add("active");
+        }
+      });
+    }, {rootMargin:"-20% 0px -70% 0px"});
+    document.querySelectorAll(".sec").forEach(function(s){ io.observe(s); });
+  }
+
+  /* ---------- граф вычислений ---------- */
+  var G = {x:2, y:5, w:0.5, b:0, steps:0, hist:[]};
+  var LR = 0.05;
+  var el = {
+    dir: document.getElementById("dir"),
+    rl: document.getElementById("rl"), rz: document.getElementById("rz"), rs: document.getElementById("rs"),
+    sw: document.getElementById("sw"), sb: document.getElementById("sb"),
+    vw: document.getElementById("vw"), vb: document.getElementById("vb"),
+    spark: document.getElementById("spark")
+  };
+  function f(n){ return (Math.round(n*100)/100).toFixed(2); }
+  function calc(){
+    var u = G.w*G.x, z = u+G.b, d = z-G.y, L = d*d;
+    var gd = 2*d;
+    return {u:u, z:z, d:d, L:L, gL:1, gd:gd, gz:gd, gu:gd, gb:gd, gw:gd*G.x};
+  }
+  function node(id){ return document.getElementById("n-"+id); }
+  function setVal(id, v){ node(id).querySelector(".val").textContent = f(v); }
+  function setGrad(id, v){
+    var g = node(id).querySelector(".grad");
+    if(g) g.textContent = "g " + f(v);
+  }
+  function clearFlows(){
+    ["f1","f2","f3","f4","f5","f6","f7"].forEach(function(id){
+      var p = document.getElementById(id), len = p.getTotalLength();
+      p.style.transition = "none";
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+      p.classList.remove("bwd");
+    });
+  }
+  function flow(id, dir){
+    var p = document.getElementById(id), len = p.getTotalLength();
+    p.classList.toggle("bwd", dir === "b");
+    p.style.transition = "none";
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = (dir === "b" ? -len : len);
+    p.getBoundingClientRect();
+    p.style.transition = "stroke-dashoffset .4s ease";
+    p.style.strokeDashoffset = "0";
+  }
+  function reset(soft){
+    document.querySelectorAll(".nd").forEach(function(n){ n.classList.remove("lit","litb"); });
+    clearFlows();
+    ["u","z","d","L"].forEach(function(id){ node(id).querySelector(".val").textContent = "—"; });
+    setVal("w", G.w); setVal("b", G.b); setVal("x", G.x); setVal("y", G.y);
+    el.dir.textContent = "граф собран"; el.dir.className = "lab__dir";
+    if(!soft){ G.steps = 0; G.hist = []; el.rl.textContent = "—"; el.rz.textContent = "—"; el.rs.textContent = "0"; drawSpark(); }
+  }
+  function step(fn, ms){ if(reduce){ fn(); } else { setTimeout(fn, ms); } }
+
+  function forward(){
+    var c = calc();
+    reset(true);
+    el.dir.textContent = "прямой проход →"; el.dir.className = "lab__dir f";
+    ["w","x","b","y"].forEach(function(id){ node(id).classList.add("lit"); });
+    step(function(){ flow("f1","f"); flow("f2","f"); }, 120);
+    step(function(){ setVal("u", c.u); node("u").classList.add("lit"); }, 480);
+    step(function(){ flow("f3","f"); flow("f4","f"); }, 560);
+    step(function(){ setVal("z", c.z); node("z").classList.add("lit"); }, 920);
+    step(function(){ flow("f5","f"); flow("f6","f"); }, 1000);
+    step(function(){ setVal("d", c.d); node("d").classList.add("lit"); }, 1360);
+    step(function(){ flow("f7","f"); }, 1440);
+    step(function(){
+      setVal("L", c.L); node("L").classList.add("lit");
+      el.rl.textContent = f(c.L); el.rz.textContent = f(c.z);
+    }, 1800);
+  }
+  function backward(){
+    var c = calc();
+    forward();
+    var t0 = reduce ? 0 : 2000;
+    step(function(){
+      el.dir.textContent = "← обратный проход"; el.dir.className = "lab__dir b";
+      setGrad("L", c.gL); node("L").classList.add("litb");
+    }, t0);
+    step(function(){ flow("f7","b"); }, t0+160);
+    step(function(){ setGrad("d", c.gd); node("d").classList.add("litb"); }, t0+520);
+    step(function(){ flow("f5","b"); }, t0+600);
+    step(function(){ setGrad("z", c.gz); node("z").classList.add("litb"); }, t0+960);
+    step(function(){ flow("f3","b"); flow("f4","b"); }, t0+1040);
+    step(function(){
+      setGrad("u", c.gu); node("u").classList.add("litb");
+      setGrad("b", c.gb); node("b").classList.add("litb");
+    }, t0+1400);
+    step(function(){ flow("f1","b"); }, t0+1480);
+    step(function(){ setGrad("w", c.gw); node("w").classList.add("litb"); }, t0+1840);
+  }
+  function sgd(){
+    var c = calc();
+    G.w = G.w - LR*c.gw;
+    G.b = G.b - LR*c.gb;
+    G.steps += 1;
+    el.sw.value = G.w; el.sb.value = G.b;
+    el.vw.textContent = f(G.w); el.vb.textContent = f(G.b);
+    var n = calc();
+    G.hist.push(n.L); if(G.hist.length > 24) G.hist.shift();
+    el.rl.textContent = f(n.L); el.rz.textContent = f(n.z); el.rs.textContent = G.steps;
+    drawSpark();
+    reset(true);
+    ["w","x","b","y"].forEach(function(id){ node(id).classList.add("lit"); });
+    setVal("u", n.u); setVal("z", n.z); setVal("d", n.d); setVal("L", n.L);
+    ["u","z","d","L"].forEach(function(id){ node(id).classList.add("lit"); });
+    el.dir.textContent = "шаг " + G.steps + " сделан"; el.dir.className = "lab__dir f";
+  }
+  function drawSpark(){
+    var h = G.hist, W = 160, H = 42, pad = 4;
+    if(h.length < 2){ el.spark.innerHTML = ""; return; }
+    var max = Math.max.apply(null, h), min = 0;
+    var pts = h.map(function(v,i){
+      var x = pad + i*(W-2*pad)/(h.length-1);
+      var y = H-pad - (max > min ? (v-min)/(max-min) : 0)*(H-2*pad);
+      return x.toFixed(1)+","+y.toFixed(1);
+    }).join(" ");
+    el.spark.innerHTML = '<polyline points="'+pts+'" fill="none" stroke="#CE0F5E" stroke-width="1.8" stroke-linejoin="round"/>';
+  }
+
+  el.sw.addEventListener("input", function(){
+    G.w = parseFloat(el.sw.value); el.vw.textContent = f(G.w); reset(true); setVal("w", G.w);
+  });
+  el.sb.addEventListener("input", function(){
+    G.b = parseFloat(el.sb.value); el.vb.textContent = f(G.b); reset(true); setVal("b", G.b);
+  });
+  document.getElementById("go-f").addEventListener("click", forward);
+  document.getElementById("go-b").addEventListener("click", backward);
+  document.getElementById("go-s").addEventListener("click", sgd);
+  document.getElementById("go-r").addEventListener("click", function(){
+    G.w = 0.5; G.b = 0;
+    el.sw.value = 0.5; el.sb.value = 0;
+    el.vw.textContent = "0.50"; el.vb.textContent = "0.00";
+    reset(false);
+  });
+  reset(false);
+})();
+</script>
+</body>
+</html>
