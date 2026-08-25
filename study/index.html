@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Учебные материалы</title>
+
+  <style>
+    body {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 0 20px;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #222;
+    }
+
+    #pages {
+      display: grid;
+      gap: 12px;
+    }
+
+    .page-link {
+      display: block;
+      padding: 18px 20px;
+      color: #1358c8;
+      text-decoration: none;
+      background: white;
+      border: 1px solid #dfe3e8;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    .page-link:hover {
+      border-color: #1358c8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgb(0 0 0 / 8%);
+    }
+
+    .error {
+      color: #b42318;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Учебные материалы</h1>
+
+  <div id="pages">Загрузка страниц...</div>
+
+  <script>
+    const owner = "Fgeeha";
+    const repository = "fgeeha.github.io";
+    const directory = "study";
+
+    const container = document.getElementById("pages");
+
+    async function loadPages() {
+      try {
+        const apiUrl =
+          `https://api.github.com/repos/${owner}/${repository}/contents/${directory}`;
+
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+          throw new Error(`GitHub API вернул ошибку ${response.status}`);
+        }
+
+        const files = await response.json();
+
+        const htmlFiles = files
+          .filter(file =>
+            file.type === "file" &&
+            file.name.endsWith(".html") &&
+            file.name !== "index.html"
+          )
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        if (htmlFiles.length === 0) {
+          container.textContent = "HTML-страницы не найдены.";
+          return;
+        }
+
+        container.innerHTML = "";
+
+        for (const file of htmlFiles) {
+          const link = document.createElement("a");
+
+          link.className = "page-link";
+          link.href = encodeURIComponent(file.name);
+          link.textContent = formatTitle(file.name);
+
+          container.appendChild(link);
+        }
+      } catch (error) {
+        container.className = "error";
+        container.textContent =
+          "Не удалось загрузить список страниц: " + error.message;
+      }
+    }
+
+    function formatTitle(filename) {
+      return filename
+        .replace(/\.html$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    loadPages();
+  </script>
+</body>
+</html>
+
