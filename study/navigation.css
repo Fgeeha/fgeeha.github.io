@@ -1,0 +1,42 @@
+.home-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  color: inherit;
+  font: 600 14px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-decoration: none;
+  background: rgb(127 127 127 / 10%);
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  opacity: .78;
+  transition: opacity .2s, background-color .2s, transform .2s;
+  touch-action: manipulation;
+}
+
+.home-link:hover {
+  opacity: 1;
+  background: rgb(127 127 127 / 18%);
+  transform: translateY(-1px);
+}
+
+.home-link:focus-visible {
+  opacity: 1;
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+.home-link:active {
+  transform: translateY(0);
+}
+
+.home-link + .kicker {
+  margin-top: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-link {
+    transition: none;
+  }
+}
