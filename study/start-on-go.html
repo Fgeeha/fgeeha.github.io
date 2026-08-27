@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Go на пальцах — язык программирования простыми словами</title>
+<title>Go с нуля — большой учебник по языку программирования</title>
 
 <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="../images/favicon.webp" type="image/webp">
@@ -47,7 +47,7 @@
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.6;-webkit-font-smoothing:antialiased;
+    line-height:1.62;-webkit-font-smoothing:antialiased;
     font-feature-settings:"ss01","cv01"}
   ::selection{background:var(--gopher);color:#02121a}
 
@@ -56,119 +56,189 @@
       linear-gradient(var(--line) 1px,transparent 1px),
       linear-gradient(90deg,var(--line) 1px,transparent 1px);
     background-size:52px 52px;
-    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 20%,transparent 75%);}
-  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 24px}
+    mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 15%,transparent 70%);}
 
-  /* header */
-  header{padding:80px 0 48px;border-bottom:1px solid var(--line)}
-  .home-link{display:inline-block;font-family:var(--mono);font-size:12.5px;
-    color:var(--ink-dim);text-decoration:none;margin-bottom:26px;
-    padding:6px 12px;border:1px solid var(--line-bright);border-radius:5px;
-    background:var(--panel);transition:.15s}
-  .home-link:hover{color:var(--ink);border-color:var(--gopher)}
+  /* ---------- раскладка: боковое оглавление + контент ---------- */
+  .layout{position:relative;z-index:1;max-width:1240px;margin:0 auto;
+    display:grid;grid-template-columns:250px 1fr;gap:0;padding:0 24px}
+  .wrap{max-width:860px;width:100%}
+
+  /* боковое оглавление */
+  aside{position:sticky;top:0;height:100vh;overflow-y:auto;padding:28px 22px 40px 0;
+    border-right:1px solid var(--line);scrollbar-width:thin}
+  aside::-webkit-scrollbar{width:6px}
+  aside::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:3px}
+  aside .brand{font-family:var(--mono);font-weight:600;font-size:15px;
+    color:var(--gopher);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  aside .brand .sq{width:10px;height:10px;background:var(--gopher);border-radius:2px;
+    box-shadow:0 0 10px var(--gopher)}
+  aside .sub{font-size:11.5px;color:var(--ink-faint);margin-bottom:22px;
+    font-family:var(--mono)}
+  aside a.home{display:block;font-family:var(--mono);font-size:11.5px;
+    color:var(--ink-dim);text-decoration:none;margin-bottom:20px;padding:6px 10px;
+    border:1px solid var(--line-bright);border-radius:5px;background:var(--panel);
+    transition:.15s;text-align:center}
+  aside a.home:hover{color:var(--ink);border-color:var(--gopher)}
+  .toc-list{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .toc-list li{margin:0}
+  .toc-list a{display:flex;gap:10px;align-items:baseline;
+    font-size:13px;color:var(--ink-dim);text-decoration:none;padding:6px 10px;
+    border-radius:6px;transition:.13s;line-height:1.35}
+  .toc-list a .tn{font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+    flex-shrink:0;width:20px}
+  .toc-list a:hover{background:var(--panel);color:var(--ink)}
+  .toc-list a.active{background:var(--panel-2);color:var(--gopher)}
+  .toc-list a.active .tn{color:var(--gopher)}
+  .toc-group{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px 10px}
+
+  /* прогресс чтения */
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--gopher);
+    z-index:100;width:0;box-shadow:0 0 10px var(--gopher);transition:width .1s}
+
+  /* мобильное меню */
+  .menu-btn{display:none;position:fixed;top:14px;right:14px;z-index:60;
+    background:var(--panel);border:1px solid var(--line-bright);color:var(--ink);
+    font-family:var(--mono);font-size:13px;padding:9px 13px;border-radius:8px;
+    cursor:pointer}
+
+  /* ---------- контент ---------- */
+  main{padding:0 0 80px 40px;min-width:0}
+  header.hero{padding:70px 0 44px;border-bottom:1px solid var(--line);margin-bottom:8px}
   .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--gopher);margin-bottom:22px;
+    text-transform:uppercase;color:var(--gopher);margin-bottom:20px;
     display:flex;align-items:center;gap:10px}
   .kicker::before{content:"";width:8px;height:8px;background:var(--gopher);
     border-radius:50%;box-shadow:0 0 12px var(--gopher);animation:pulse 2.4s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  h1{font-size:clamp(36px,7vw,66px);line-height:.98;margin:0 0 20px;
+  h1{font-size:clamp(34px,5.5vw,58px);line-height:1;margin:0 0 20px;
     font-weight:800;letter-spacing:-.02em}
   h1 .go{font-family:var(--mono);font-weight:600;color:var(--gopher)}
-  .lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink-dim);max-width:640px}
-  .meta{margin-top:32px;display:flex;flex-wrap:wrap;gap:8px}
+  .lede{font-size:clamp(16px,2.1vw,19px);color:var(--ink-dim);max-width:620px}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:8px}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-dim);
     border:1px solid var(--line-bright);padding:5px 11px;border-radius:4px;
     background:var(--panel)}
   .tag b{color:var(--ink)}
 
-  /* nav */
-  nav.toc{position:sticky;top:0;z-index:20;background:rgba(13,16,23,.86);
-    backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
-    padding:12px 0;margin-bottom:56px}
-  nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-  nav.toc .wrap::-webkit-scrollbar{display:none}
-  nav.toc a{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);
-    text-decoration:none;white-space:nowrap;padding:6px 12px;border-radius:5px;
-    transition:.15s}
-  nav.toc a:hover{color:var(--ink);background:var(--panel)}
-  nav.toc a .n{color:var(--gopher);margin-right:6px}
-
-  section{margin-bottom:72px;scroll-margin-top:70px}
-  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  section{margin:64px 0;scroll-margin-top:24px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
   .sec-num{font-family:var(--mono);font-size:14px;color:var(--gopher);
     border:1px solid var(--line-bright);padding:3px 9px;border-radius:4px;flex-shrink:0}
-  h2{font-size:clamp(24px,3.8vw,34px);margin:0;font-weight:750;letter-spacing:-.01em}
-  .sec-sub{color:var(--ink-dim);margin:14px 0 32px;max-width:720px;font-size:16px}
-  p{margin:0 0 16px}
+  h2{font-size:clamp(23px,3.4vw,32px);margin:0;font-weight:750;letter-spacing:-.01em}
+  h3{font-size:19px;margin:36px 0 12px;font-weight:700;color:#fff}
+  h3 .mono{font-family:var(--mono);color:var(--gopher);font-weight:600;font-size:16px}
+  .sec-sub{color:var(--ink-dim);margin:14px 0 28px;font-size:16px;max-width:680px}
+  p{margin:0 0 15px}
   strong{color:#fff;font-weight:650}
-  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);
+  em{color:var(--acc-3);font-style:normal}
+  code{font-family:var(--mono);font-size:.87em;background:var(--panel-2);
     padding:2px 6px;border-radius:4px;color:var(--gopher);border:1px solid var(--line)}
+  ul,ol{margin:0 0 15px;padding-left:22px}
+  li{margin-bottom:7px;color:var(--ink-dim)}
+  li strong{color:#fff}
+  a.inline{color:var(--acc-2);text-decoration:none;border-bottom:1px solid var(--line-bright)}
+  a.inline:hover{border-color:var(--acc-2)}
 
-  /* метафора-блок */
-  .analogy{display:grid;grid-template-columns:52px 1fr;gap:18px;
+  /* аналогия */
+  .analogy{display:grid;grid-template-columns:48px 1fr;gap:16px;
     background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:22px 24px;margin:24px 0;position:relative;overflow:hidden}
+    padding:20px 22px;margin:22px 0;position:relative;overflow:hidden}
   .analogy::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
     background:var(--gopher)}
-  .analogy .em{font-size:26px;text-align:center;line-height:1.2}
-  .analogy h4{margin:0 0 6px;font-size:17px;color:var(--gopher)}
-  .analogy p{margin:0;color:var(--ink-dim);font-size:15px}
+  .analogy .em{font-size:24px;text-align:center;line-height:1.2}
+  .analogy h4{margin:0 0 5px;font-size:16px;color:var(--gopher)}
+  .analogy p{margin:0;color:var(--ink-dim);font-size:14.5px}
 
-  /* код */
+  /* ---------- блок кода / песочница ---------- */
   .code{background:#0a0d13;border:1px solid var(--line);border-radius:12px;
-    margin:20px 0;overflow:hidden}
-  .code .bar{display:flex;align-items:center;gap:7px;padding:11px 16px;
+    margin:18px 0;overflow:hidden}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;
     border-bottom:1px solid var(--line);background:var(--panel-2)}
   .code .bar .dot{width:11px;height:11px;border-radius:50%}
   .code .bar .fname{font-family:var(--mono);font-size:12px;color:var(--ink-faint);
-    margin-left:8px}
-  .code pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:var(--mono);
-    font-size:13.5px;line-height:1.7}
+    margin-left:8px;flex:1}
+  .code .bar .btns{display:flex;gap:6px}
+  .code .bar button{font-family:var(--mono);font-size:11px;padding:4px 10px;
+    border-radius:5px;border:1px solid var(--line-bright);background:var(--bg);
+    color:var(--ink-dim);cursor:pointer;transition:.13s;white-space:nowrap}
+  .code .bar button:hover{color:var(--ink);border-color:var(--gopher)}
+  .code .bar button.run{color:var(--gopher);border-color:#1c4a52}
+  .code .bar button.run:hover{background:rgba(0,173,216,.12)}
+  .code .bar button:disabled{opacity:.5;cursor:wait}
+  .code pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:var(--mono);
+    font-size:13.5px;line-height:1.65}
   .code pre::-webkit-scrollbar{height:8px}
   .code pre::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px}
-  .kw{color:#ff7b9c}      /* ключевые слова */
-  .fn{color:var(--acc-2)} /* функции */
-  .str{color:var(--acc)}  /* строки */
-  .cm{color:var(--ink-faint);font-style:italic} /* комменты */
-  .ty{color:var(--acc-3)} /* типы */
-  .nm{color:#c9a4ff}      /* числа */
+  .code textarea{width:100%;background:transparent;border:none;outline:none;
+    color:var(--ink);font-family:var(--mono);font-size:13.5px;line-height:1.65;
+    padding:16px 18px;resize:vertical;min-height:60px;display:block;
+    tab-size:4;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+  .code .out{border-top:1px solid var(--line);padding:12px 18px;
+    font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink-dim);
+    white-space:pre-wrap;max-height:280px;overflow:auto;display:none}
+  .code .out.show{display:block}
+  .code .out .ok{color:var(--acc)}
+  .code .out .err{color:var(--acc-4)}
+  .code .out .muted{color:var(--ink-faint)}
+  .kw{color:#ff7b9c}
+  .fn{color:var(--acc-2)}
+  .str{color:var(--acc)}
+  .cm{color:var(--ink-faint);font-style:italic}
+  .ty{color:var(--acc-3)}
+  .nm{color:#c9a4ff}
 
-  .note{font-size:14px;color:var(--ink-dim);margin:10px 0 0;
-    padding-left:16px;border-left:2px solid var(--line-bright)}
+  .note{font-size:14px;color:var(--ink-dim);margin:14px 0;
+    padding:10px 0 10px 16px;border-left:2px solid var(--line-bright)}
+  .note b{color:var(--ink)}
 
-  /* карточки-плитки */
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:14px;margin-top:8px}
+  /* плитки */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+    gap:13px;margin:18px 0}
   .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:20px 22px;transition:.2s}
+    padding:18px 20px;transition:.2s}
   .tile:hover{border-color:var(--line-bright);transform:translateY(-2px)}
-  .tile .ic{font-family:var(--mono);font-size:20px;color:var(--gopher);
-    margin-bottom:12px}
-  .tile h4{margin:0 0 8px;font-size:16.5px}
-  .tile p{margin:0;color:var(--ink-dim);font-size:14px}
+  .tile .ic{font-family:var(--mono);font-size:19px;color:var(--gopher);margin-bottom:10px}
+  .tile h4{margin:0 0 7px;font-size:15.5px}
+  .tile p{margin:0;color:var(--ink-dim);font-size:13.5px}
 
   /* callout */
-  .callout{display:grid;grid-template-columns:44px 1fr;gap:16px;
+  .callout{display:grid;grid-template-columns:42px 1fr;gap:15px;
     background:var(--panel);border:1px solid var(--line-bright);
-    border-radius:12px;padding:20px 22px;margin:28px 0}
-  .callout .ci{font-size:22px;text-align:center;color:var(--gopher)}
+    border-radius:12px;padding:18px 20px;margin:24px 0}
+  .callout .ci{font-size:21px;text-align:center;color:var(--gopher)}
   .callout.warn{border-color:#3d3320;
     background:linear-gradient(90deg,rgba(255,180,84,.05),var(--panel))}
   .callout.warn .ci{color:var(--acc-3)}
-  .callout h4{margin:0 0 6px;font-size:16px}
+  .callout.tip{border-color:#234034;
+    background:linear-gradient(90deg,rgba(94,230,168,.05),var(--panel))}
+  .callout.tip .ci{color:var(--acc)}
+  .callout h4{margin:0 0 5px;font-size:15.5px}
   .callout p{margin:0;color:var(--ink-dim);font-size:14.5px}
+  .callout p+p{margin-top:8px}
 
-  /* горутины визуал */
-  .lanes{display:grid;gap:10px;margin:22px 0}
-  .lane{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center}
-  .lane .who{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);
-    text-align:right}
-  .lane .track{height:26px;border-radius:6px;background:var(--panel-2);
+  /* таблица */
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;
+    margin:18px 0;scrollbar-width:thin}
+  table{border-collapse:collapse;width:100%;min-width:440px;font-size:13.5px}
+  th,td{padding:11px 15px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{background:var(--panel-2);font-family:var(--mono);font-size:11px;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-dim);font-weight:500}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--panel)}
+  tbody td:first-child{color:var(--ink)}
+  td .mono,th .mono{font-family:var(--mono)}
+  td code{font-size:12.5px}
+
+  /* лесенка горутин */
+  .lanes{display:grid;gap:9px;margin:20px 0}
+  .lane{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center}
+  .lane .who{font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-align:right}
+  .lane .track{height:24px;border-radius:6px;background:var(--panel-2);
     border:1px solid var(--line);position:relative;overflow:hidden}
   .lane .fill{position:absolute;top:0;bottom:0;left:0;border-radius:5px;
-    display:flex;align-items:center;padding:0 12px;font-family:var(--mono);
-    font-size:11px;color:#02121a;font-weight:600;white-space:nowrap}
+    display:flex;align-items:center;padding:0 11px;font-family:var(--mono);
+    font-size:10.5px;color:#02121a;font-weight:600;white-space:nowrap}
   .lane .a{background:var(--gopher);width:100%}
   .lane .b{background:var(--acc);width:100%}
   .lane .c{background:var(--acc-3);width:100%}
@@ -176,330 +246,1587 @@
   .lane.seq .s2{left:33%;background:var(--acc)}
   .lane.seq .s3{left:66%;background:var(--acc-3)}
 
-  /* когда брать */
-  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  /* verdict */
+  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:18px 0}
   @media(max-width:560px){.verdict{grid-template-columns:1fr}}
   .vbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:22px 24px}
+    padding:20px 22px}
   .vbox .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-    text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+    text-transform:uppercase;margin-bottom:11px;display:flex;align-items:center;gap:7px}
   .vbox.good .lbl{color:var(--acc)}
   .vbox.bad .lbl{color:var(--acc-4)}
   .vbox ul{margin:0;padding-left:18px}
-  .vbox li{font-size:14.5px;color:var(--ink-dim);margin-bottom:8px}
+  .vbox li{font-size:14px;color:var(--ink-dim);margin-bottom:7px}
 
-  footer{border-top:1px solid var(--line);padding:40px 0 60px;
+  /* мини-задание */
+  .task{background:linear-gradient(120deg,rgba(0,173,216,.06),var(--panel));
+    border:1px solid #1c3a44;border-radius:12px;padding:18px 20px;margin:22px 0}
+  .task .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--gopher);margin-bottom:8px;
+    display:flex;align-items:center;gap:7px}
+  .task p{margin:0;font-size:14.5px;color:var(--ink-dim)}
+  .task details{margin-top:10px}
+  .task summary{font-family:var(--mono);font-size:12.5px;color:var(--acc);
+    cursor:pointer;user-select:none}
+  .task summary:hover{color:#fff}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 60px;margin-top:40px;
     color:var(--ink-faint);font-size:13px}
-  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  footer .fwrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    max-width:860px}
 
   h2,h3,h4{text-wrap:balance}
+
+  /* ---------- адаптив ---------- */
+  @media(max-width:920px){
+    .layout{grid-template-columns:1fr;padding:0 18px}
+    aside{position:fixed;top:0;left:0;bottom:0;width:270px;background:var(--bg);
+      z-index:50;border-right:1px solid var(--line-bright);padding:24px 20px;
+      transform:translateX(-100%);transition:transform .25s;
+      box-shadow:20px 0 40px rgba(0,0,0,.4)}
+    aside.open{transform:translateX(0)}
+    main{padding:0 0 60px 0}
+    .menu-btn{display:block}
+  }
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
+<div class="progress" id="progress"></div>
+<button class="menu-btn" id="menuBtn">☰ Разделы</button>
 
-<header>
+<div class="layout">
+
+  <!-- ======= БОКОВОЕ ОГЛАВЛЕНИЕ ======= -->
+  <aside id="aside">
+    <div class="brand"><span class="sq"></span>Go с нуля</div>
+    <div class="sub">большой учебник · 2026</div>
+    <a class="home" href="/" aria-label="Вернуться на главную страницу">← На главную</a>
+    <nav>
+      <div class="toc-group">Старт</div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#intro"><span class="tn">00</span>Что такое Go</a></li>
+        <li><a href="#install"><span class="tn">01</span>Установка и запуск</a></li>
+        <li><a href="#hello"><span class="tn">02</span>Первая программа</a></li>
+        <div class="toc-group">Основы</div>
+        <li><a href="#vars"><span class="tn">03</span>Переменные и типы</a></li>
+        <li><a href="#operators"><span class="tn">04</span>Операторы</a></li>
+        <li><a href="#conditions"><span class="tn">05</span>Условия</a></li>
+        <li><a href="#loops"><span class="tn">06</span>Циклы</a></li>
+        <li><a href="#functions"><span class="tn">07</span>Функции</a></li>
+        <div class="toc-group">Данные</div>
+        <li><a href="#collections"><span class="tn">08</span>Срезы и карты</a></li>
+        <li><a href="#structs"><span class="tn">09</span>Структуры</a></li>
+        <li><a href="#methods"><span class="tn">10</span>Методы и интерфейсы</a></li>
+        <li><a href="#pointers"><span class="tn">11</span>Указатели</a></li>
+        <div class="toc-group">Продвинутое</div>
+        <li><a href="#errors"><span class="tn">12</span>Обработка ошибок</a></li>
+        <li><a href="#goroutines"><span class="tn">13</span>Горутины и каналы</a></li>
+        <li><a href="#packages"><span class="tn">14</span>Пакеты и модули</a></li>
+        <li><a href="#stdlib"><span class="tn">15</span>Стандартная библиотека</a></li>
+        <div class="toc-group">Дальше</div>
+        <li><a href="#project"><span class="tn">16</span>Мини-проект</a></li>
+        <li><a href="#next"><span class="tn">17</span>Куда двигаться</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ======= КОНТЕНТ ======= -->
+  <main>
   <div class="wrap">
-    <a class="home-link" href="/" aria-label="Вернуться на главную страницу">← На главную</a>
-    <div class="kicker">на пальцах · язык программирования</div>
-    <h1><span class="go">Go</span> без<br>заумных слов</h1>
-    <p class="lede">Язык, который придумали в Google, чтобы большие программы писались быстро, работали шустро и не превращались в кашу. Разбираем по кусочкам — как для новичка.</p>
+
+  <header class="hero">
+    <div class="kicker">полный курс · с песочницей</div>
+    <h1><span class="go">Go</span> с нуля<br>до первого проекта</h1>
+    <p class="lede">Пошаговый учебник по языку Go: от установки до горутин, интерфейсов и рабочего мини-проекта. С разбором синтаксиса, живыми примерами, которые можно запускать прямо здесь, и заданиями для практики.</p>
     <div class="meta">
-      <span class="tag">создан в <b>Google</b></span>
-      <span class="tag">первый релиз <b>2009</b></span>
-      <span class="tag">талисман — <b>суслик</b> 🐹</span>
-      <span class="tag">он же <b>Golang</b></span>
+      <span class="tag"><b>18</b> разделов</span>
+      <span class="tag">код <b>запускается</b> в браузере</span>
+      <span class="tag">задания с <b>решениями</b></span>
+      <span class="tag">для <b>начинающих</b></span>
     </div>
-  </div>
-</header>
+  </header>
 
-<nav class="toc">
-  <div class="wrap">
-    <a href="#what"><span class="n">00</span>Что это</a>
-    <a href="#why"><span class="n">01</span>Зачем придумали</a>
-    <a href="#hello"><span class="n">02</span>Первая программа</a>
-    <a href="#traits"><span class="n">03</span>Характер</a>
-    <a href="#goroutines"><span class="n">04</span>Суперсила</a>
-    <a href="#errors"><span class="n">05</span>Ошибки</a>
-    <a href="#when"><span class="n">06</span>Когда брать</a>
-  </div>
-</nav>
+  <!-- 00 ЧТО ТАКОЕ GO -->
+  <section id="intro">
+    <div class="sec-head"><span class="sec-num">00</span><h2>Что такое Go и почему он такой</h2></div>
+    <p class="sec-sub">Go (он же Golang) — язык программирования, который создали в Google в 2009 году. Задача была прикладная: писать большие серверные программы так, чтобы код оставался простым, быстро собирался и легко работал с тысячами задач одновременно.</p>
 
-<div class="wrap">
-
-<!-- 00 ЧТО ЭТО -->
-<section id="what">
-  <div class="sec-head">
-    <span class="sec-num">00</span>
-    <h2>Что такое Go в одном абзаце</h2>
-  </div>
-  <p class="sec-sub">Представь язык как способ давать компьютеру инструкции. Одни языки — как болтливый друг, который объясняет долго и с деталями. Go — как немногословный мастер: говорит коротко, по делу, и всё сразу работает.</p>
-
-  <div class="analogy">
-    <div class="em">🔧</div>
-    <div>
-      <h4>Аналогия: набор инструментов IKEA</h4>
-      <p>Go — это как мебель IKEA с одним шестигранным ключом. Инструментов немного, они простые, но ими можно собрать почти что угодно. Не нужно держать в голове сотню деталей — набор маленький, а результат крепкий.</p>
+    <div class="analogy">
+      <div class="em">🔧</div>
+      <div>
+        <h4>Go — это мебель IKEA с одним ключом</h4>
+        <p>Инструментов в языке нарочно немного, и они простые. Но из этого небольшого набора собирается почти что угодно. Меньше деталей в голове — меньше способов ошибиться, легче читать чужой код.</p>
+      </div>
     </div>
-  </div>
 
-  <p>Технически Go — <strong>компилируемый</strong> язык. Это значит, что твой текст программы заранее переводится в машинный код (один готовый файл-программу), а не разбирается построчно на ходу. Поэтому программы на Go запускаются быстро — как готовое блюдо из микроволновки против готовки с нуля каждый раз.</p>
-</section>
-
-<!-- 01 ЗАЧЕМ -->
-<section id="why">
-  <div class="sec-head">
-    <span class="sec-num">01</span>
-    <h2>Зачем его вообще придумали</h2>
-  </div>
-  <p class="sec-sub">В Google работают огромные программы, над которыми трудятся тысячи людей. Старые языки создавали три проблемы — Go придумали, чтобы решить именно их.</p>
-
-  <div class="tiles">
-    <div class="tile">
-      <div class="ic">⏳</div>
-      <h4>Долгая сборка</h4>
-      <p>Большие программы на старых языках собирались минутами. Разработчик менял строчку — и шёл пить кофе. Go компилируется очень быстро, почти мгновенно.</p>
+    <p>Три вещи, которые стоит знать про характер Go с самого начала:</p>
+    <div class="tiles">
+      <div class="tile">
+        <div class="ic">⚙</div>
+        <h4>Компилируемый</h4>
+        <p>Твой код заранее переводится в один готовый исполняемый файл. Он запускается быстро и не требует ничего доустанавливать на целевой машине.</p>
+      </div>
+      <div class="tile">
+        <div class="ic">🎯</div>
+        <h4>Строго типизированный</h4>
+        <p>У каждого значения есть тип. Нельзя случайно сложить число со строкой — компилятор поймает это до запуска, а не когда программой уже пользуются.</p>
+      </div>
+      <div class="tile">
+        <div class="ic">⚡</div>
+        <h4>Заточен под многозадачность</h4>
+        <p>Умение делать тысячи дел одновременно (горутины) встроено прямо в язык. Это его главная суперсила — до неё дойдём в разделе 13.</p>
+      </div>
     </div>
-    <div class="tile">
-      <div class="ic">🌀</div>
-      <h4>Слишком сложно</h4>
-      <p>Другие языки обросли таким количеством возможностей, что новый человек тонул. Go специально сделали маленьким: меньше правил — легче читать чужой код.</p>
+
+    <div class="callout">
+      <div class="ci">◆</div>
+      <div>
+        <h4>Философия «меньше — значит лучше»</h4>
+        <p>Создатели сознательно <strong>не добавляли</strong> модные возможности, если без них можно обойтись. Отсюда фирменная черта: в Go часто есть ровно один очевидный способ сделать что-то. Это скучно — и в этом вся сила: код предсказуем, потому что его читают в сто раз чаще, чем пишут.</p>
+      </div>
     </div>
-    <div class="tile">
-      <div class="ic">⚡</div>
-      <h4>Много дел разом</h4>
-      <p>Современным серверам надо делать тысячи дел одновременно (отвечать тысячам пользователей). В Go это встроено в самое сердце языка и делается легко.</p>
+
+    <p>На Go написаны Docker и Kubernetes — фундамент, на котором держится современная облачная инфраструктура. Если ты хочешь писать быстрые сервисы, сетевые утилиты или инструменты командной строки — это очень удачный выбор языка.</p>
+  </section>
+
+  <!-- 01 УСТАНОВКА -->
+  <section id="install">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Установка и первый запуск</h2></div>
+    <p class="sec-sub">Чтобы писать на Go на своём компьютере, нужен сам Go — набор из компилятора и инструментов. Но чтобы попробовать язык прямо сейчас, устанавливать ничего не нужно: примеры в этом учебнике запускаются кнопкой.</p>
+
+    <h3>Вариант A — <span class="mono">попробовать без установки</span></h3>
+    <p>Прямо на этой странице у примеров кода есть кнопка <strong>▶ Запустить</strong>. Код уходит на официальный сервер Go, компилируется и возвращает результат. Идеально, чтобы пощупать язык, ничего не ставя. Есть и официальная песочница — <a class="inline" href="https://go.dev/play/" target="_blank" rel="noopener">go.dev/play</a>.</p>
+
+    <h3>Вариант B — <span class="mono">поставить Go к себе</span></h3>
+    <p>Когда захочешь писать всерьёз — скачай установщик с <a class="inline" href="https://go.dev/dl/" target="_blank" rel="noopener">go.dev/dl</a> под свою систему (Windows, macOS, Linux) и пройди мастер установки. Проверить, что всё встало, можно одной командой в терминале:</p>
+
+    <div class="code">
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">терминал</span>
+      </div>
+<pre><span class="cm"># проверяем, что Go установлен, и смотрим версию</span>
+go version
+<span class="cm"># → go version go1.23.0 darwin/arm64  (цифры могут отличаться)</span>
+</pre>
     </div>
-  </div>
 
-  <div class="callout">
-    <div class="ci">◆</div>
-    <div>
-      <h4>Философия в одной фразе</h4>
-      <p>«Меньше — это лучше». Создатели сознательно <strong>не добавляли</strong> модные фишки, если без них можно обойтись. Идея: код должен быть скучным и понятным, потому что его читают в сто раз чаще, чем пишут.</p>
+    <h3>Как устроен проект на Go</h3>
+    <p>Программа на Go живёт в <em>модуле</em>. Создать его — три команды. Не пугайся, разберём каждую в разделе 14, а пока просто общая картина:</p>
+    <div class="code">
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">терминал</span>
+      </div>
+<pre>mkdir myapp <span class="kw">&&</span> cd myapp   <span class="cm"># создали папку и вошли в неё</span>
+go mod init myapp        <span class="cm"># завели модуль — появится файл go.mod</span>
+<span class="cm"># ...пишем код в файле main.go...</span>
+go run .                 <span class="cm"># собрать и сразу запустить</span>
+go build                 <span class="cm"># собрать готовый исполняемый файл</span>
+</pre>
     </div>
-  </div>
-</section>
 
-<!-- 02 HELLO -->
-<section id="hello">
-  <div class="sec-head">
-    <span class="sec-num">02</span>
-    <h2>Первая программа</h2>
-  </div>
-  <p class="sec-sub">Классика — заставить компьютер поздороваться. Вот как это выглядит на Go. Не пугайся, разберём каждую строчку.</p>
-
-  <div class="code">
-    <div class="bar">
-      <span class="dot" style="background:var(--acc-4)"></span>
-      <span class="dot" style="background:var(--acc-3)"></span>
-      <span class="dot" style="background:var(--acc)"></span>
-      <span class="fname">hello.go</span>
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Что запомнить из этого раздела</h4>
+        <p><code>go run .</code> — запустить проект сразу, <code>go build</code> — собрать готовую программу-файл. Для учёбы по этой странице достаточно кнопки «Запустить» под примерами.</p>
+      </div>
     </div>
-<pre><span class="kw">package</span> main                     <span class="cm">// это главный пакет — точка входа</span>
+  </section>
 
-<span class="kw">import</span> <span class="str">"fmt"</span>                     <span class="cm">// подключаем инструмент для печати</span>
+  <!-- 02 HELLO -->
+  <section id="hello">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Первая программа</h2></div>
+    <p class="sec-sub">Традиция — заставить компьютер поздороваться. Нажми «Запустить» под кодом и увидишь результат. Потом разберём каждую строчку.</p>
 
-<span class="kw">func</span> <span class="fn">main</span>() {                   <span class="cm">// главная функция — с неё всё стартует</span>
-    fmt.<span class="fn">Println</span>(<span class="str">"Привет, мир!"</span>) <span class="cm">// печатаем строчку на экран</span>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">hello.go</span>
+        <span class="btns">
+          <button class="copy">копировать</button>
+          <button class="run">▶ Запустить</button>
+        </span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="str">"Привет, мир!"</span>)
 }
 </pre>
-  </div>
-
-  <p>Что здесь происходит, по-человечески:</p>
-  <div class="tiles">
-    <div class="tile">
-      <div class="ic">📦</div>
-      <h4>package main</h4>
-      <p>«Это главная коробка программы». С неё компьютер понимает, что тут запускаемое приложение, а не просто кусок кода для других.</p>
+      <div class="out"></div>
     </div>
-    <div class="tile">
-      <div class="ic">🔌</div>
-      <h4>import "fmt"</h4>
-      <p>«Возьми готовый инструмент». <code>fmt</code> умеет печатать текст. Не нужно писать печать с нуля — берём готовое.</p>
+
+    <p>Разберём построчно, что здесь написано:</p>
+    <div class="tiles">
+      <div class="tile">
+        <div class="ic">📦</div>
+        <h4>package main</h4>
+        <p>Объявляет пакет. Имя <code>main</code> — особое: так помечается запускаемая программа. Другие имена — это библиотеки для переиспользования.</p>
+      </div>
+      <div class="tile">
+        <div class="ic">🔌</div>
+        <h4>import "fmt"</h4>
+        <p>Подключает пакет <code>fmt</code> из стандартной библиотеки — он умеет форматировать и печатать текст. Готовый инструмент, не пишем печать сами.</p>
+      </div>
+      <div class="tile">
+        <div class="ic">▶</div>
+        <h4>func main()</h4>
+        <p>Функция с именем <code>main</code> — точка входа. Программа стартует отсюда. Всё в фигурных скобках выполняется по порядку сверху вниз.</p>
+      </div>
     </div>
-    <div class="tile">
-      <div class="ic">▶</div>
-      <h4>func main()</h4>
-      <p>«Отсюда начинай». Всё, что внутри фигурных скобок — это шаги, которые компьютер выполнит по порядку.</p>
-    </div>
-  </div>
 
-  <p class="note">Запускается это одной командой в терминале: <code>go run hello.go</code> — и на экране появится «Привет, мир!».</p>
-</section>
+    <p>Обрати внимание: <code>Println</code> с <strong>большой буквы</strong>. В Go это не случайность — имя с большой буквы означает «доступно снаружи пакета» (экспортировано). С этим правилом встретимся ещё не раз.</p>
 
-<!-- 03 ХАРАКТЕР -->
-<section id="traits">
-  <div class="sec-head">
-    <span class="sec-num">03</span>
-    <h2>Характер языка</h2>
-  </div>
-  <p class="sec-sub">У каждого языка свой нрав. Go — аккуратный педант, который любит порядок и не терпит лишнего. Три главные черты.</p>
+    <div class="task">
+      <div class="lbl">✎ задание 1</div>
+      <p>Измени текст в кавычках на своё имя и запусти снова. Затем добавь вторую строку <code>fmt.Println(...)</code> с любым текстом — программа напечатает обе.</p>
+      <details>
+        <summary>Показать решение</summary>
+        <div class="code" data-run style="margin-top:12px">
+          <div class="bar">
+            <span class="dot" style="background:var(--acc-4)"></span>
+            <span class="dot" style="background:var(--acc-3)"></span>
+            <span class="dot" style="background:var(--acc)"></span>
+            <span class="fname">solution.go</span>
+            <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+          </div>
+<pre><span class="kw">package</span> main
 
-  <div class="analogy">
-    <div class="em">🧹</div>
-    <div>
-      <h4>Убирает за собой сам</h4>
-      <p>В программах постоянно создаются данные, которые потом не нужны — как грязная посуда. В некоторых языках мыть её надо вручную (легко забыть и устроить бардак). В Go есть встроенный «уборщик» (garbage collector), который сам выкидывает ненужное. Ты просто пишешь код, о мусоре не думаешь.</p>
-    </div>
-  </div>
+<span class="kw">import</span> <span class="str">"fmt"</span>
 
-  <div class="analogy">
-    <div class="em">📐</div>
-    <div>
-      <h4>Один правильный способ форматирования</h4>
-      <p>В большинстве языков программисты вечно спорят, где ставить пробелы и переносы. В Go спор невозможен: есть команда <code>gofmt</code>, которая причёсывает код по единому образцу. Любой код на Go выглядит одинаково — читать чужой становится легко.</p>
-    </div>
-  </div>
-
-  <div class="analogy">
-    <div class="em">🚦</div>
-    <div>
-      <h4>Строгий, но честный</h4>
-      <p>Go заранее проверяет типы данных: нельзя случайно сложить число со словом. Если написал что-то неправильно — программа просто не соберётся и сразу скажет, где ошибка. Лучше поймать проблему сейчас, чем когда ей уже пользуются люди.</p>
-    </div>
-  </div>
-
-  <div class="callout warn">
-    <div class="ci">⚠</div>
-    <div>
-      <h4>Строгость, которая удивляет новичков</h4>
-      <p>Go не разрешит оставить <strong>неиспользованную переменную</strong> или лишний <strong>import</strong>. Объявил и не применил — код не соберётся. Поначалу бесит, потом понимаешь: так в программе не копится забытый хлам.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 04 ГОРУТИНЫ -->
-<section id="goroutines">
-  <div class="sec-head">
-    <span class="sec-num">04</span>
-    <h2>Суперсила: делать всё разом</h2>
-  </div>
-  <p class="sec-sub">Это главная причина, по которой люди выбирают Go. Представь повара на кухне. Обычный язык — повар готовит блюда по очереди: сначала суп, потом салат, потом десерт. Go — повар, который поставил суп вариться, тут же режет салат, а десерт уже в духовке. Всё одновременно.</p>
-
-  <p style="color:var(--ink-dim);font-size:14px;margin-bottom:8px">Обычный подход — по очереди, одно за другим:</p>
-  <div class="lanes">
-    <div class="lane seq"><div class="who">повар</div><div class="track"><div class="fill a s1">суп</div><div class="fill s2">салат</div><div class="fill s3">десерт</div></div></div>
-  </div>
-
-  <p style="color:var(--ink-dim);font-size:14px;margin:22px 0 8px">Подход Go — три дела параллельно, готово втрое быстрее:</p>
-  <div class="lanes">
-    <div class="lane"><div class="who">горутина 1</div><div class="track"><div class="fill a">суп 🍲</div></div></div>
-    <div class="lane"><div class="who">горутина 2</div><div class="track"><div class="fill b">салат 🥗</div></div></div>
-    <div class="lane"><div class="who">горутина 3</div><div class="track"><div class="fill c">десерт 🍰</div></div></div>
-  </div>
-
-  <p>Эти параллельные «помощники» называются <strong>горутины</strong> (goroutines). Запустить помощника — это одно слово <code>go</code> перед действием. Вот и всё волшебство:</p>
-
-  <div class="code">
-    <div class="bar">
-      <span class="dot" style="background:var(--acc-4)"></span>
-      <span class="dot" style="background:var(--acc-3)"></span>
-      <span class="dot" style="background:var(--acc)"></span>
-      <span class="fname">kitchen.go</span>
-    </div>
-<pre><span class="fn">cook</span>(<span class="str">"суп"</span>)          <span class="cm">// обычно: ждём, пока сварится суп...</span>
-
-<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"суп"</span>)       <span class="cm">// а с "go" — запустили и пошли дальше!</span>
-<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"салат"</span>)     <span class="cm">// ещё помощник — режет салат</span>
-<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"десерт"</span>)    <span class="cm">// и третий — печёт десерт</span>
-<span class="cm">// все три готовятся одновременно</span>
-</pre>
-  </div>
-
-  <div class="analogy">
-    <div class="em">📮</div>
-    <div>
-      <h4>А как помощники общаются? Через каналы</h4>
-      <p>Чтобы повара не мешали друг другу, у них есть «окошко выдачи» — <strong>канал</strong> (channel). Один помощник кладёт туда готовое блюдо, другой забирает. Никакой толкотни и путаницы: данные аккуратно передаются из рук в руки. В Go это записывается стрелочкой <code>&lt;-</code>.</p>
-    </div>
-  </div>
-
-  <p class="note">Горутины настолько лёгкие, что их можно запускать тысячами одновременно — обычному компьютеру это по силам. Именно поэтому на Go пишут серверы, которые держат огромную нагрузку.</p>
-</section>
-
-<!-- 05 ОШИБКИ -->
-<section id="errors">
-  <div class="sec-head">
-    <span class="sec-num">05</span>
-    <h2>Как Go относится к ошибкам</h2>
-  </div>
-  <p class="sec-sub">Тут у Go необычный, узнаваемый стиль. Многие языки прячут ошибку и «выкидывают» её куда-то вверх. Go заставляет проверять ошибку прямо на месте — честно и в открытую.</p>
-
-  <div class="analogy">
-    <div class="em">📋</div>
-    <div>
-      <h4>Аналогия: расписка о результате</h4>
-      <p>Каждое рискованное действие в Go возвращает две вещи: <strong>результат</strong> и <strong>записку об ошибке</strong>. Как курьер, который отдаёт посылку и говорит: «вот заказ, а вот бумажка — всё ли ок». Ты обязан заглянуть в бумажку, прежде чем радоваться посылке.</p>
-    </div>
-  </div>
-
-  <div class="code">
-    <div class="bar">
-      <span class="dot" style="background:var(--acc-4)"></span>
-      <span class="dot" style="background:var(--acc-3)"></span>
-      <span class="dot" style="background:var(--acc)"></span>
-      <span class="fname">errors.go</span>
-    </div>
-<pre>file, err := <span class="fn">Open</span>(<span class="str">"data.txt"</span>)  <span class="cm">// получаем файл И записку об ошибке</span>
-
-<span class="kw">if</span> err != <span class="kw">nil</span> {                   <span class="cm">// заглянули в записку: что-то не так?</span>
-    fmt.<span class="fn">Println</span>(<span class="str">"не вышло:"</span>, err) <span class="cm">// честно сообщаем о проблеме</span>
-    <span class="kw">return</span>                        <span class="cm">// и не идём дальше</span>
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="str">"Меня зовут Алекс"</span>)
+    fmt.<span class="fn">Println</span>(<span class="str">"Я учу Go"</span>)
 }
-<span class="cm">// сюда попадём только если всё хорошо</span>
 </pre>
-  </div>
-
-  <p>Этот приём <code>if err != nil</code> встречается в Go-коде повсюду. Кто-то ворчит, что это многословно. Но плюс в том, что <strong>ни одна ошибка не проскочит незамеченной</strong> — с каждой ты разбираешься прямо там, где она случилась.</p>
-</section>
-
-<!-- 06 КОГДА -->
-<section id="when">
-  <div class="sec-head">
-    <span class="sec-num">06</span>
-    <h2>Когда Go — хороший выбор</h2>
-  </div>
-  <p class="sec-sub">Никакой язык не идеален для всего. Вот где Go сияет, а где лучше взять другой инструмент.</p>
-
-  <div class="verdict">
-    <div class="vbox good">
-      <div class="lbl">✓ отлично подходит</div>
-      <ul>
-        <li><strong>Серверы и веб-сервисы</strong> — то, что держит нагрузку от тысяч пользователей</li>
-        <li><strong>Инструменты командной строки</strong> — один файл-программа, запускается везде</li>
-        <li><strong>Облако и сети</strong> — на Go написаны Docker и Kubernetes, основа современных серверов</li>
-        <li><strong>Всё, где важна скорость</strong> и одновременная обработка многих задач</li>
-      </ul>
+          <div class="out"></div>
+        </div>
+      </details>
     </div>
-    <div class="vbox bad">
-      <div class="lbl">✕ есть выбор получше</div>
-      <ul>
-        <li><strong>Сайты в браузере</strong> (кнопки, анимации) — там правит JavaScript</li>
-        <li><strong>Мобильные приложения</strong> — обычно Swift или Kotlin</li>
-        <li><strong>Наука и ИИ</strong> — экосистема богаче у Python</li>
-        <li><strong>Крошечные скрипты на минуту</strong> — Python быстрее набросать</li>
-      </ul>
-    </div>
-  </div>
+  </section>
 
-  <div class="callout">
-    <div class="ci">🐹</div>
-    <div>
-      <h4>Итог одной строкой</h4>
-      <p>Go — <strong>простой, быстрый и надёжный</strong> язык для программ, которые должны много работать без сбоев. Если старые языки — это швейцарский нож с сотней лезвий, то Go — крепкий молоток: делает меньше, но то, что делает — делает превосходно.</p>
+  <!-- 03 ПЕРЕМЕННЫЕ -->
+  <section id="vars">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Переменные и типы</h2></div>
+    <p class="sec-sub">Переменная — это подписанная коробка, в которой лежит значение. В Go у каждой коробки есть тип: она знает, что именно в ней хранится — число, строка или что-то ещё.</p>
+
+    <h3>Три способа объявить переменную</h3>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">vars.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// 1. полная форма: имя, тип, значение</span>
+    <span class="kw">var</span> age <span class="ty">int</span> = <span class="nm">25</span>
+
+    <span class="cm">// 2. без типа — Go сам догадается по значению</span>
+    <span class="kw">var</span> name = <span class="str">"Алекс"</span>
+
+    <span class="cm">// 3. короткая форма := (только внутри функций) — так пишут чаще всего</span>
+    city := <span class="str">"Москва"</span>
+
+    fmt.<span class="fn">Println</span>(name, <span class="str">"из"</span>, city, <span class="str">"—"</span>, age, <span class="str">"лет"</span>)
+}
+</pre>
+      <div class="out"></div>
     </div>
-  </div>
-</section>
+    <p class="note"><b>Оператор <code>:=</code></b> — самый популярный в Go. Он одновременно создаёт переменную и кладёт в неё значение, выводя тип автоматически. Работает только внутри функций.</p>
+
+    <h3>Основные типы</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Тип</th><th>Что хранит</th><th>Пример</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code></td><td>целые числа</td><td class="mono">42, -7, 0</td></tr>
+          <tr><td><code>float64</code></td><td>дробные числа</td><td class="mono">3.14, -0.5</td></tr>
+          <tr><td><code>string</code></td><td>текст</td><td class="mono">"привет"</td></tr>
+          <tr><td><code>bool</code></td><td>да / нет</td><td class="mono">true, false</td></tr>
+          <tr><td><code>byte</code></td><td>один байт (0–255)</td><td class="mono">65</td></tr>
+          <tr><td><code>rune</code></td><td>один символ Unicode</td><td class="mono">'Я', 'a'</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Константы и нулевые значения</h3>
+    <p>Если значение не должно меняться — это <em>константа</em>, объявляется через <code>const</code>. А если объявить переменную без значения, Go положит туда <strong>нулевое значение</strong>: <code>0</code> для чисел, <code>""</code> (пустая строка) для строк, <code>false</code> для булевых. В Go нет «мусора» в неинициализированных переменных — всегда предсказуемый ноль.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">const.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">const</span> pi = <span class="nm">3.14159</span>   <span class="cm">// не изменить после объявления</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="kw">var</span> count <span class="ty">int</span>       <span class="cm">// значение не задали → будет 0</span>
+    <span class="kw">var</span> label <span class="ty">string</span>    <span class="cm">// → пустая строка ""</span>
+    <span class="kw">var</span> ready <span class="ty">bool</span>      <span class="cm">// → false</span>
+
+    fmt.<span class="fn">Println</span>(pi, count, label, ready)
+    <span class="cm">// → 3.14159 0  false</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout warn">
+      <div class="ci">⚠</div>
+      <div>
+        <h4>Go не терпит лишнего</h4>
+        <p>Объявил переменную и не использовал — программа <strong>не соберётся</strong>. То же с ненужным <code>import</code>. Поначалу раздражает, но так в коде не копится забытый хлам. Если переменная временно не нужна, её имя заменяют на <code>_</code> (нижнее подчёркивание).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 ОПЕРАТОРЫ -->
+  <section id="operators">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Операторы</h2></div>
+    <p class="sec-sub">Операторы — это действия над значениями: сложить, сравнить, объединить условия. В Go они привычные и без сюрпризов.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Группа</th><th>Операторы</th><th>Что делают</th></tr></thead>
+        <tbody>
+          <tr><td>Арифметика</td><td class="mono">+ &nbsp; - &nbsp; * &nbsp; / &nbsp; %</td><td>сложить, вычесть, умножить, делить, остаток</td></tr>
+          <tr><td>Сравнение</td><td class="mono">== &nbsp; != &nbsp; &lt; &nbsp; &gt; &nbsp; &lt;= &nbsp; &gt;=</td><td>равно, не равно, меньше, больше…</td></tr>
+          <tr><td>Логика</td><td class="mono">&amp;&amp; &nbsp; || &nbsp; !</td><td>И, ИЛИ, НЕ</td></tr>
+          <tr><td>Присваивание</td><td class="mono">= &nbsp; += &nbsp; -= &nbsp; *= &nbsp; /=</td><td>задать, прибавить-и-задать…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">operators.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    a, b := <span class="nm">17</span>, <span class="nm">5</span>
+
+    fmt.<span class="fn">Println</span>(<span class="str">"сумма:"</span>, a+b)        <span class="cm">// 22</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"остаток:"</span>, a%b)      <span class="cm">// 2  (17 = 5*3 + 2)</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"больше ли:"</span>, a &gt; b)   <span class="cm">// true</span>
+
+    <span class="cm">// строки объединяются тем же плюсом</span>
+    hello := <span class="str">"Go"</span> + <span class="str">"lang"</span>
+    fmt.<span class="fn">Println</span>(hello)               <span class="cm">// Golang</span>
+
+    <span class="cm">// += прибавляет к тому, что уже есть</span>
+    score := <span class="nm">10</span>
+    score += <span class="nm">5</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"счёт:"</span>, score)      <span class="cm">// 15</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout warn">
+      <div class="ci">⚠</div>
+      <div>
+        <h4>Целочисленное деление — частая ловушка</h4>
+        <p><code>7 / 2</code> для целых чисел даст <code>3</code>, а не <code>3.5</code> — дробная часть отбрасывается. Чтобы получить <code>3.5</code>, хотя бы одно число должно быть дробным: <code>7.0 / 2</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 УСЛОВИЯ -->
+  <section id="conditions">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Условия: if / switch</h2></div>
+    <p class="sec-sub">Условие — это развилка. «Если выполнилось — делаем одно, иначе — другое». В Go у <code>if</code> есть приятная особенность: скобки вокруг условия не нужны, а фигурные — обязательны.</p>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">if.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    temp := <span class="nm">18</span>
+
+    <span class="kw">if</span> temp &gt; <span class="nm">25</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"жарко"</span>)
+    } <span class="kw">else if</span> temp &gt;= <span class="nm">15</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"комфортно"</span>)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"прохладно"</span>)
+    }
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <h3>if с «коротким» объявлением</h3>
+    <p>Очень характерный для Go приём: можно объявить переменную прямо в <code>if</code>, и она будет жить только внутри этой развилки. Часто так проверяют результат вместе с ошибкой (об этом — раздел 12).</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">if-short.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// n живёт только внутри if/else</span>
+    <span class="kw">if</span> n := <span class="nm">42</span> % <span class="nm">2</span>; n == <span class="nm">0</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"чётное"</span>)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"нечётное, остаток"</span>, n)
+    }
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <h3>switch — когда веток много</h3>
+    <p>Если развилок несколько, вместо лесенки <code>if-else</code> удобнее <code>switch</code>. В Go он умнее, чем в других языках: <strong>не проваливается</strong> в следующую ветку сам (не нужен <code>break</code>), и в <code>case</code> можно писать условия.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">switch.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    day := <span class="nm">6</span>
+
+    <span class="kw">switch</span> day {
+    <span class="kw">case</span> <span class="nm">6</span>, <span class="nm">7</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"выходной"</span>)
+    <span class="kw">default</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"рабочий день"</span>)
+    }
+
+    <span class="cm">// switch без значения = красивая замена длинному if-else</span>
+    score := <span class="nm">78</span>
+    <span class="kw">switch</span> {
+    <span class="kw">case</span> score &gt;= <span class="nm">90</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"отлично"</span>)
+    <span class="kw">case</span> score &gt;= <span class="nm">60</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"неплохо"</span>)
+    <span class="kw">default</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"надо подтянуть"</span>)
+    }
+}
+</pre>
+      <div class="out"></div>
+    </div>
+  </section>
+
+  <!-- 06 ЦИКЛЫ -->
+  <section id="loops">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Циклы: только for</h2></div>
+    <p class="sec-sub">Здесь Go доводит идею «меньше — лучше» до предела: в языке <strong>один-единственный цикл</strong> — <code>for</code>. Но он умеет прикидываться всеми остальными. Никаких <code>while</code> и <code>do-while</code> — всё это делает <code>for</code>.</p>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">for.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// 1. классический счётчик: старт; условие; шаг</span>
+    <span class="kw">for</span> i := <span class="nm">1</span>; i &lt;= <span class="nm">3</span>; i++ {
+        fmt.<span class="fn">Println</span>(<span class="str">"шаг"</span>, i)
+    }
+
+    <span class="cm">// 2. как while — только условие</span>
+    n := <span class="nm">3</span>
+    <span class="kw">for</span> n &gt; <span class="nm">0</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"осталось"</span>, n)
+        n--
+    }
+
+    <span class="cm">// 3. бесконечный — с выходом через break</span>
+    count := <span class="nm">0</span>
+    <span class="kw">for</span> {
+        count++
+        <span class="kw">if</span> count == <span class="nm">2</span> {
+            <span class="kw">break</span> <span class="cm">// выходим из цикла</span>
+        }
+    }
+    fmt.<span class="fn">Println</span>(<span class="str">"вышли на"</span>, count)
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <h3>range — пройтись по коллекции</h3>
+    <p>Чтобы перебрать список элементов, используют <code>for ... range</code>. Он выдаёт сразу две вещи: <em>индекс</em> (порядковый номер) и <em>значение</em>. Если индекс не нужен — заменяем его на <code>_</code>.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">range.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fruits := []<span class="ty">string</span>{<span class="str">"яблоко"</span>, <span class="str">"груша"</span>, <span class="str">"слива"</span>}
+
+    <span class="kw">for</span> i, fruit := <span class="kw">range</span> fruits {
+        fmt.<span class="fn">Println</span>(i, <span class="str">"→"</span>, fruit)
+    }
+
+    <span class="cm">// индекс не нужен — заменяем на _</span>
+    total := <span class="nm">0</span>
+    <span class="kw">for</span> _, price := <span class="kw">range</span> []<span class="ty">int</span>{<span class="nm">100</span>, <span class="nm">250</span>, <span class="nm">80</span>} {
+        total += price
+    }
+    fmt.<span class="fn">Println</span>(<span class="str">"итого:"</span>, total)
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="task">
+      <div class="lbl">✎ задание 2</div>
+      <p>Напиши цикл, который печатает числа от 1 до 10, но вместо чисел, делящихся на 3, печатает слово «Go». Подсказка: пригодится оператор остатка <code>%</code>.</p>
+      <details>
+        <summary>Показать решение</summary>
+        <div class="code" data-run style="margin-top:12px">
+          <div class="bar">
+            <span class="dot" style="background:var(--acc-4)"></span>
+            <span class="dot" style="background:var(--acc-3)"></span>
+            <span class="dot" style="background:var(--acc)"></span>
+            <span class="fname">solution.go</span>
+            <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+          </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="kw">for</span> i := <span class="nm">1</span>; i &lt;= <span class="nm">10</span>; i++ {
+        <span class="kw">if</span> i%<span class="nm">3</span> == <span class="nm">0</span> {
+            fmt.<span class="fn">Println</span>(<span class="str">"Go"</span>)
+        } <span class="kw">else</span> {
+            fmt.<span class="fn">Println</span>(i)
+        }
+    }
+}
+</pre>
+          <div class="out"></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 07 ФУНКЦИИ -->
+  <section id="functions">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Функции</h2></div>
+    <p class="sec-sub">Функция — это именованный кусок кода, который можно вызывать сколько угодно раз. Даёшь ей входные данные (аргументы) — получаешь результат. В Go есть одна редкая приятность: функция может вернуть <strong>несколько значений сразу</strong>.</p>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">functions.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// принимает два int, возвращает один int</span>
+<span class="kw">func</span> <span class="fn">add</span>(a <span class="ty">int</span>, b <span class="ty">int</span>) <span class="ty">int</span> {
+    <span class="kw">return</span> a + b
+}
+
+<span class="cm">// возвращает СРАЗУ ДВА значения: частное и остаток</span>
+<span class="kw">func</span> <span class="fn">divmod</span>(a, b <span class="ty">int</span>) (<span class="ty">int</span>, <span class="ty">int</span>) {
+    <span class="kw">return</span> a / b, a % b
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>))        <span class="cm">// 7</span>
+
+    q, r := <span class="fn">divmod</span>(<span class="nm">17</span>, <span class="nm">5</span>)      <span class="cm">// забираем оба результата</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"частное"</span>, q, <span class="str">"остаток"</span>, r) <span class="cm">// 3, 2</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+    <p class="note">Когда несколько аргументов подряд одного типа, тип можно указать один раз: <code>func divmod(a, b int)</code> вместо <code>a int, b int</code>.</p>
+
+    <h3>Именованные результаты и несколько возвратов</h3>
+    <p>Результатам можно дать имена — тогда <code>return</code> без аргументов вернёт их текущие значения. Часто так возвращают пару «значение и ошибка».</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">named.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// area и perimeter — именованные результаты</span>
+<span class="kw">func</span> <span class="fn">rect</span>(w, h <span class="ty">int</span>) (area <span class="ty">int</span>, perimeter <span class="ty">int</span>) {
+    area = w * h
+    perimeter = <span class="nm">2</span> * (w + h)
+    <span class="kw">return</span> <span class="cm">// вернёт area и perimeter</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    a, p := <span class="fn">rect</span>(<span class="nm">4</span>, <span class="nm">3</span>)
+    fmt.<span class="fn">Println</span>(<span class="str">"площадь"</span>, a, <span class="str">"периметр"</span>, p)
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Функции — «граждане первого класса»</h4>
+        <p>Функцию в Go можно положить в переменную, передать в другую функцию как аргумент и вернуть из функции. Это открывает дверь к гибким приёмам — но на старте достаточно уметь объявлять и вызывать.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 КОЛЛЕКЦИИ -->
+  <section id="collections">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Срезы и карты</h2></div>
+    <p class="sec-sub">Пока мы хранили по одному значению в переменной. Но чаще нужно хранить <em>наборы</em>: список покупок, таблицу цен. Для этого в Go два главных инструмента — срезы и карты.</p>
+
+    <h3><span class="mono">slice</span> — список, который умеет расти</h3>
+    <div class="analogy">
+      <div class="em">📋</div>
+      <div>
+        <h4>Срез — это список дел на бумажке</h4>
+        <p>Элементы идут по порядку, у каждого есть номер (индекс), нумерация с нуля. В любой момент можно дописать пункт в конец. Это самая ходовая структура данных в Go.</p>
+      </div>
+    </div>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">slices.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    nums := []<span class="ty">int</span>{<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>}
+
+    fmt.<span class="fn">Println</span>(nums[<span class="nm">0</span>])       <span class="cm">// 10 — первый элемент (счёт с нуля!)</span>
+    fmt.<span class="fn">Println</span>(<span class="fn">len</span>(nums))     <span class="cm">// 3 — сколько элементов</span>
+
+    <span class="cm">// append дописывает в конец и возвращает новый срез</span>
+    nums = <span class="fn">append</span>(nums, <span class="nm">40</span>)
+    fmt.<span class="fn">Println</span>(nums)          <span class="cm">// [10 20 30 40]</span>
+
+    <span class="cm">// срез среза: элементы с 1-го по 3-й (3-й не включая)</span>
+    fmt.<span class="fn">Println</span>(nums[<span class="nm">1</span>:<span class="nm">3</span>])     <span class="cm">// [20 30]</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+    <p class="note"><b>Индексация с нуля:</b> первый элемент — <code>nums[0]</code>, а не <code>nums[1]</code>. Это стандарт почти всех языков, но новичков сбивает. <code>len()</code> говорит длину, <code>append()</code> добавляет.</p>
+
+    <h3><span class="mono">map</span> — словарь «ключ → значение»</h3>
+    <div class="analogy">
+      <div class="em">📖</div>
+      <div>
+        <h4>Карта — это телефонная книжка</h4>
+        <p>Ищешь не по номеру строки, а по имени: «дай телефон Ани». Каждому <em>ключу</em> соответствует <em>значение</em>. Порядок не гарантирован — карта заточена под мгновенный поиск по ключу.</p>
+      </div>
+    </div>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">maps.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// ключи-строки, значения-числа</span>
+    prices := <span class="kw">map</span>[<span class="ty">string</span>]<span class="ty">int</span>{
+        <span class="str">"хлеб"</span>:  <span class="nm">40</span>,
+        <span class="str">"молоко"</span>: <span class="nm">80</span>,
+    }
+
+    fmt.<span class="fn">Println</span>(prices[<span class="str">"молоко"</span>])  <span class="cm">// 80</span>
+
+    prices[<span class="str">"сыр"</span>] = <span class="nm">300</span>          <span class="cm">// добавили пару</span>
+
+    <span class="cm">// проверка «есть ли ключ»: второе значение ok</span>
+    price, ok := prices[<span class="str">"масло"</span>]
+    <span class="kw">if</span> !ok {
+        fmt.<span class="fn">Println</span>(<span class="str">"масла нет в списке"</span>)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"масло:"</span>, price)
+    }
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Приём «comma ok»</h4>
+        <p>Запись <code>value, ok := m[key]</code> — фирменный способ Go спросить «есть ли такой ключ?». <code>ok</code> будет <code>true</code>, если ключ найден. Без него отсутствующий ключ просто вернёт нулевое значение, и не отличишь «ноль» от «нет ключа».</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 СТРУКТУРЫ -->
+  <section id="structs">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Структуры</h2></div>
+    <p class="sec-sub">Срез хранит однотипные элементы. Но что, если нужно описать один сложный объект — например, пользователя с именем, возрастом и городом? Для этого есть <em>структура</em>: свой составной тип из нескольких полей.</p>
+
+    <div class="analogy">
+      <div class="em">🪪</div>
+      <div>
+        <h4>Структура — это анкета</h4>
+        <p>Ты заранее описываешь, какие поля в анкете есть (имя, возраст, город) и какого они типа. Потом заполняешь сколько угодно таких анкет — каждая со своими данными, но по одному шаблону.</p>
+      </div>
+    </div>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">structs.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// описываем шаблон: какие поля и какого типа</span>
+<span class="kw">type</span> User <span class="kw">struct</span> {
+    Name <span class="ty">string</span>
+    Age  <span class="ty">int</span>
+    City <span class="ty">string</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// создаём экземпляр, заполняя поля по именам</span>
+    u := User{Name: <span class="str">"Аня"</span>, Age: <span class="nm">28</span>, City: <span class="str">"Казань"</span>}
+
+    fmt.<span class="fn">Println</span>(u.Name)   <span class="cm">// доступ к полю через точку → Аня</span>
+    u.Age = <span class="nm">29</span>            <span class="cm">// поля можно менять</span>
+    fmt.<span class="fn">Println</span>(u)        <span class="cm">// {Аня 29 Казань}</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+    <p class="note">Поля с <b>большой буквы</b> (<code>Name</code>, <code>Age</code>) видны из других пакетов, с маленькой — только внутри своего. То же правило экспорта, что и у функций.</p>
+  </section>
+
+  <!-- 10 МЕТОДЫ И ИНТЕРФЕЙСЫ -->
+  <section id="methods">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Методы и интерфейсы</h2></div>
+    <p class="sec-sub">В Go нет классов, как в других языках. Вместо этого — структуры с <em>методами</em> (функциями, привязанными к типу) и <em>интерфейсы</em> (описание того, что тип умеет). Это сердце того, как в Go организуют код.</p>
+
+    <h3>Метод — функция, привязанная к типу</h3>
+    <p>Метод пишется почти как функция, только перед именем в скобках указывают <em>получателя</em> — тип, к которому метод относится. Дальше метод вызывается через точку, как поле.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">methods.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">type</span> Rectangle <span class="kw">struct</span> {
+    Width, Height <span class="ty">int</span>
+}
+
+<span class="cm">// метод Area у типа Rectangle. (r Rectangle) — получатель</span>
+<span class="kw">func</span> (r Rectangle) <span class="fn">Area</span>() <span class="ty">int</span> {
+    <span class="kw">return</span> r.Width * r.Height
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    r := Rectangle{Width: <span class="nm">4</span>, Height: <span class="nm">3</span>}
+    fmt.<span class="fn">Println</span>(<span class="str">"площадь:"</span>, r.<span class="fn">Area</span>()) <span class="cm">// 12</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <h3>Интерфейс — «умею делать то-то»</h3>
+    <div class="analogy">
+      <div class="em">🔌</div>
+      <div>
+        <h4>Интерфейс — это розетка</h4>
+        <p>Розетке всё равно, что ты воткнёшь — чайник, лампу или зарядку. Ей важно одно: у вилки есть нужные штырьки. Интерфейс описывает <em>какие методы</em> должен иметь тип. Любой тип с этими методами автоматически «подходит» — объявлять это явно не нужно.</p>
+      </div>
+    </div>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">interfaces.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// интерфейс: «любой, у кого есть метод Sound() string»</span>
+<span class="kw">type</span> Animal <span class="kw">interface</span> {
+    <span class="fn">Sound</span>() <span class="ty">string</span>
+}
+
+<span class="kw">type</span> Dog <span class="kw">struct</span>{}
+<span class="kw">func</span> (d Dog) <span class="fn">Sound</span>() <span class="ty">string</span> { <span class="kw">return</span> <span class="str">"Гав"</span> }
+
+<span class="kw">type</span> Cat <span class="kw">struct</span>{}
+<span class="kw">func</span> (c Cat) <span class="fn">Sound</span>() <span class="ty">string</span> { <span class="kw">return</span> <span class="str">"Мяу"</span> }
+
+<span class="cm">// функция принимает ЛЮБОГО, кто подходит под Animal</span>
+<span class="kw">func</span> <span class="fn">describe</span>(a Animal) {
+    fmt.<span class="fn">Println</span>(<span class="str">"звук:"</span>, a.<span class="fn">Sound</span>())
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="fn">describe</span>(Dog{}) <span class="cm">// звук: Гав</span>
+    <span class="fn">describe</span>(Cat{}) <span class="cm">// звук: Мяу</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout">
+      <div class="ci">◆</div>
+      <div>
+        <h4>«Утиная типизация» по-госвски</h4>
+        <p>Если нечто крякает как утка — это утка. <code>Dog</code> нигде не пишет «я реализую Animal» — Go сам видит, что у него есть метод <code>Sound()</code>, и считает его подходящим. Это делает код гибким и слабосвязанным: типы и интерфейсы не привязаны друг к другу жёстко.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 УКАЗАТЕЛИ -->
+  <section id="pointers">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Указатели</h2></div>
+    <p class="sec-sub">Тема, которая пугает новичков зря. Указатель — это просто <em>адрес</em>, где лежит значение, а не само значение. Нужен он, когда хочешь, чтобы функция меняла оригинал, а не его копию.</p>
+
+    <div class="analogy">
+      <div class="em">🏠</div>
+      <div>
+        <h4>Указатель — это адрес дома, а не сам дом</h4>
+        <p>Можно дать другу копию своего дома (значение) — он поменяет копию, твой дом цел. А можно дать адрес (указатель) — тогда друг придёт и поменяет именно твой дом. По умолчанию Go передаёт в функции копии; указатель нужен, чтобы дотянуться до оригинала.</p>
+      </div>
+    </div>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">pointers.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// принимает КОПИЮ — оригинал не изменится</span>
+<span class="kw">func</span> <span class="fn">addCopy</span>(x <span class="ty">int</span>) { x = x + <span class="nm">100</span> }
+
+<span class="cm">// принимает АДРЕС (*int) — меняет оригинал</span>
+<span class="kw">func</span> <span class="fn">addReal</span>(x *<span class="ty">int</span>) { *x = *x + <span class="nm">100</span> }
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    n := <span class="nm">5</span>
+
+    <span class="fn">addCopy</span>(n)         <span class="cm">// работала с копией</span>
+    fmt.<span class="fn">Println</span>(n)     <span class="cm">// 5 — не изменилось</span>
+
+    <span class="fn">addReal</span>(&amp;n)        <span class="cm">// &amp;n — «адрес переменной n»</span>
+    fmt.<span class="fn">Println</span>(n)     <span class="cm">// 105 — изменилось!</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+    <p class="note">Два значка, и всё встаёт на места: <code>&amp;n</code> — «взять адрес переменной n», <code>*x</code> — «пойти по адресу и взять значение». Больше про указатели на старте знать не нужно.</p>
+
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Хорошая новость про память</h4>
+        <p>В отличие от C, в Go нет ручного управления памятью и «висячих указателей». За очисткой следит встроенный сборщик мусора (garbage collector). Указатели тут — только про «менять оригинал», а не про опасное жонглирование памятью.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 ОШИБКИ -->
+  <section id="errors">
+    <div class="sec-head"><span class="sec-num">12</span><h2>Обработка ошибок</h2></div>
+    <p class="sec-sub">У Go узнаваемый стиль работы с ошибками. Многие языки «выбрасывают» ошибку куда-то вверх (исключения). Go делает иначе: функция <em>возвращает</em> ошибку как обычное значение, а ты проверяешь её прямо на месте.</p>
+
+    <div class="analogy">
+      <div class="em">📋</div>
+      <div>
+        <h4>Ошибка — это записка вместе с результатом</h4>
+        <p>Рискованная функция отдаёт две вещи: результат и записку об ошибке. Как курьер: «вот посылка, а вот бумажка — всё ли ок». Ты обязан заглянуть в бумажку, прежде чем радоваться посылке. Если ошибки нет — в записке лежит <code>nil</code> (пусто).</p>
+      </div>
+    </div>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">errors.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="str">"errors"</span>
+    <span class="str">"fmt"</span>
+)
+
+<span class="cm">// возвращает результат И ошибку</span>
+<span class="kw">func</span> <span class="fn">divide</span>(a, b <span class="ty">int</span>) (<span class="ty">int</span>, <span class="ty">error</span>) {
+    <span class="kw">if</span> b == <span class="nm">0</span> {
+        <span class="kw">return</span> <span class="nm">0</span>, errors.<span class="fn">New</span>(<span class="str">"деление на ноль"</span>)
+    }
+    <span class="kw">return</span> a / b, <span class="kw">nil</span> <span class="cm">// nil = ошибки нет</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    result, err := <span class="fn">divide</span>(<span class="nm">10</span>, <span class="nm">2</span>)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {                 <span class="cm">// сразу проверяем записку</span>
+        fmt.<span class="fn">Println</span>(<span class="str">"ошибка:"</span>, err)
+        <span class="kw">return</span>
+    }
+    fmt.<span class="fn">Println</span>(<span class="str">"результат:"</span>, result) <span class="cm">// 5</span>
+
+    <span class="cm">// а теперь с делением на ноль</span>
+    _, err = <span class="fn">divide</span>(<span class="nm">10</span>, <span class="nm">0</span>)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"ошибка:"</span>, err) <span class="cm">// ошибка: деление на ноль</span>
+    }
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <p>Связка <code>if err != nil { ... }</code> встречается в Go-коде повсюду. Кто-то ворчит, что это многословно. Но плюс огромен: <strong>ни одна ошибка не проскользнёт незамеченной</strong> — с каждой ты разбираешься там, где она возникла, а не ловишь непонятный сбой где-то далеко.</p>
+
+    <div class="callout warn">
+      <div class="ci">⚠</div>
+      <div>
+        <h4>panic — крайняя мера, не замена ошибкам</h4>
+        <p>В Go есть <code>panic</code> — аварийная остановка программы. Но это <strong>не</strong> способ обрабатывать обычные ошибки. Паника — для ситуаций «дальше жить нельзя, всё сломано». Обычные, ожидаемые проблемы (файла нет, число не распарсилось) возвращают <code>error</code>, а не паникуют.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 ГОРУТИНЫ -->
+  <section id="goroutines">
+    <div class="sec-head"><span class="sec-num">13</span><h2>Горутины и каналы</h2></div>
+    <p class="sec-sub">Вот и главная суперсила Go. Представь повара. Обычный код — готовит по очереди: суп, потом салат, потом десерт. Go — ставит суп вариться, тут же режет салат, а десерт уже в духовке. Всё разом.</p>
+
+    <p style="color:var(--ink-dim);font-size:14px;margin-bottom:8px">Обычный подход — одно за другим:</p>
+    <div class="lanes">
+      <div class="lane seq"><div class="who">повар</div><div class="track"><div class="fill a s1">суп</div><div class="fill s2">салат</div><div class="fill s3">десерт</div></div></div>
+    </div>
+    <p style="color:var(--ink-dim);font-size:14px;margin:20px 0 8px">Подход Go — три дела параллельно, втрое быстрее:</p>
+    <div class="lanes">
+      <div class="lane"><div class="who">горутина 1</div><div class="track"><div class="fill a">суп 🍲</div></div></div>
+      <div class="lane"><div class="who">горутина 2</div><div class="track"><div class="fill b">салат 🥗</div></div></div>
+      <div class="lane"><div class="who">горутина 3</div><div class="track"><div class="fill c">десерт 🍰</div></div></div>
+    </div>
+
+    <h3>Горутина — помощник по слову <span class="mono">go</span></h3>
+    <p>Чтобы запустить параллельного «помощника», достаточно написать <code>go</code> перед вызовом функции. Всё волшебство. Но есть нюанс: программа не станет ждать помощников сама — нужно её попросить.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">goroutines.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="str">"fmt"</span>
+    <span class="str">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">cook</span>(dish <span class="ty">string</span>) {
+    fmt.<span class="fn">Println</span>(<span class="str">"готовлю:"</span>, dish)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"суп"</span>)     <span class="cm">// запустили помощника и пошли дальше</span>
+    <span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"салат"</span>)   <span class="cm">// ещё один</span>
+    <span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"десерт"</span>)  <span class="cm">// и третий</span>
+
+    <span class="cm">// даём помощникам время доделать (упрощённо)</span>
+    time.<span class="fn">Sleep</span>(<span class="nm">100</span> * time.Millisecond)
+    fmt.<span class="fn">Println</span>(<span class="str">"кухня закрывается"</span>)
+}
+</pre>
+      <div class="out"></div>
+    </div>
+    <p class="note">Порядок строк «готовлю: ...» может меняться от запуска к запуску — помощники работают независимо. Это нормально и есть суть параллельности.</p>
+
+    <h3>Канал — окошко выдачи между горутинами</h3>
+    <div class="analogy">
+      <div class="em">📮</div>
+      <div>
+        <h4>Канал — это конвейер выдачи заказов</h4>
+        <p>Чтобы горутины обменивались данными без путаницы, есть <em>канал</em>. Один кладёт значение в канал стрелкой <code>ch &lt;- x</code>, другой забирает <code>x := &lt;-ch</code>. Если забирать нечего — горутина вежливо ждёт. Так Go синхронизирует работу без ручных блокировок.</p>
+      </div>
+    </div>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">channels.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// создаём канал для передачи строк</span>
+    ch := <span class="fn">make</span>(<span class="kw">chan</span> <span class="ty">string</span>)
+
+    <span class="cm">// горутина кладёт результат в канал, когда готово</span>
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        ch &lt;- <span class="str">"готово!"</span> <span class="cm">// отправить в канал</span>
+    }()
+
+    msg := &lt;-ch          <span class="cm">// забрать из канала (тут main ждёт)</span>
+    fmt.<span class="fn">Println</span>(msg)      <span class="cm">// готово!</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <div class="callout">
+      <div class="ci">◆</div>
+      <div>
+        <h4>Девиз конкурентности в Go</h4>
+        <p>«Не общайтесь через общую память — делите память через общение». То есть вместо того чтобы горутины лезли в одну переменную и мешали друг другу, они передают данные через каналы. Горутины настолько лёгкие, что их запускают тысячами — на этом и держатся высоконагруженные серверы на Go.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 ПАКЕТЫ -->
+  <section id="packages">
+    <div class="sec-head"><span class="sec-num">14</span><h2>Пакеты и модули</h2></div>
+    <p class="sec-sub">Реальные программы не живут в одном файле. Код разбивают на <em>пакеты</em> (папки со связанным кодом), а весь проект — это <em>модуль</em>. Разберёмся, как это устроено и как подключать чужие библиотеки.</p>
+
+    <h3>Модуль — это весь твой проект</h3>
+    <p>Один раз в начале проекта создаётся файл <code>go.mod</code> — паспорт модуля. Он хранит имя проекта и список зависимостей (чужих библиотек, которые ты используешь).</p>
+    <div class="code">
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">терминал</span>
+      </div>
+<pre>go mod init github.com/me/myapp  <span class="cm"># создать модуль</span>
+go get github.com/some/lib        <span class="cm"># скачать и добавить чужую библиотеку</span>
+go mod tidy                       <span class="cm"># навести порядок в зависимостях</span>
+</pre>
+    </div>
+
+    <h3>Пакет — папка со связанным кодом</h3>
+    <p>Каждый файл начинается со строки <code>package имя</code>. Файлы в одной папке — один пакет, они видят функции и типы друг друга без импортов. А вот код из <em>другого</em> пакета нужно импортировать — и видны только имена с большой буквы.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Имя</th><th>Видимость</th><th>Смысл</th></tr></thead>
+        <tbody>
+          <tr><td><code>CalcTotal</code></td><td><span class="mono" style="color:var(--acc)">экспортировано</span></td><td>с большой буквы → видно из других пакетов</td></tr>
+          <tr><td><code>calcTotal</code></td><td><span class="mono" style="color:var(--ink-faint)">приватно</span></td><td>с маленькой → только внутри своего пакета</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Экосистема из коробки</h4>
+        <p>Команда <code>go get</code> тянет библиотеки прямо из их git-репозиториев — отдельного «магазина пакетов» не нужно. Искать готовые библиотеки удобно на <a class="inline" href="https://pkg.go.dev" target="_blank" rel="noopener">pkg.go.dev</a> — это официальный каталог документации по всем публичным пакетам Go.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 СТДЛИБ -->
+  <section id="stdlib">
+    <div class="sec-head"><span class="sec-num">15</span><h2>Стандартная библиотека</h2></div>
+    <p class="sec-sub">Одна из причин любить Go — богатая встроенная библиотека. Веб-сервер, работа с JSON, строки, время — всё это уже есть, ставить ничего не надо. Вот пакеты, которые пригодятся первыми.</p>
+
+    <div class="tiles">
+      <div class="tile"><div class="ic">📤</div><h4>fmt</h4><p>Печать и форматирование текста. Уже используем: <code>Println</code>, <code>Printf</code>, <code>Sprintf</code>.</p></div>
+      <div class="tile"><div class="ic">🔤</div><h4>strings</h4><p>Всё про строки: поиск, замена, разбиение, регистр. <code>Split</code>, <code>Contains</code>, <code>ToUpper</code>.</p></div>
+      <div class="tile"><div class="ic">🔢</div><h4>strconv</h4><p>Превращение строк в числа и обратно. <code>Atoi</code> (строка→int), <code>Itoa</code> (int→строка).</p></div>
+      <div class="tile"><div class="ic">⏰</div><h4>time</h4><p>Дата, время, задержки, таймеры. <code>Now</code>, <code>Sleep</code>, форматирование дат.</p></div>
+      <div class="tile"><div class="ic">🌐</div><h4>net/http</h4><p>Полноценный веб-сервер и HTTP-клиент прямо из коробки. На нём пишут API.</p></div>
+      <div class="tile"><div class="ic">📦</div><h4>encoding/json</h4><p>Превращение структур в JSON и обратно. <code>Marshal</code>, <code>Unmarshal</code>.</p></div>
+    </div>
+
+    <h3>Пример: строки и числа вместе</h3>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">stdlib.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="str">"fmt"</span>
+    <span class="str">"strings"</span>
+    <span class="str">"strconv"</span>
+)
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    text := <span class="str">"go,rust,python"</span>
+
+    <span class="cm">// разбить строку по запятой → срез строк</span>
+    langs := strings.<span class="fn">Split</span>(text, <span class="str">","</span>)
+    fmt.<span class="fn">Println</span>(langs)                 <span class="cm">// [go rust python]</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"всего:"</span>, <span class="fn">len</span>(langs))   <span class="cm">// всего: 3</span>
+
+    <span class="cm">// строку с числом превратить в int</span>
+    n, _ := strconv.<span class="fn">Atoi</span>(<span class="str">"42"</span>)
+    fmt.<span class="fn">Println</span>(n + <span class="nm">8</span>)                  <span class="cm">// 50</span>
+
+    <span class="cm">// сделать текст заглавными</span>
+    fmt.<span class="fn">Println</span>(strings.<span class="fn">ToUpper</span>(<span class="str">"golang"</span>)) <span class="cm">// GOLANG</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <h3>Печать с форматированием: <span class="mono">Printf</span></h3>
+    <p>Когда нужно вставить значения в текст, удобен <code>Printf</code> с «глаголами»: <code>%d</code> — число, <code>%s</code> — строка, <code>%v</code> — что угодно, <code>\n</code> — перенос строки.</p>
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">printf.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    name := <span class="str">"Аня"</span>
+    age := <span class="nm">28</span>
+
+    <span class="cm">// %s подставит строку, %d — число</span>
+    fmt.<span class="fn">Printf</span>(<span class="str">"%s, %d лет\n"</span>, name, age)
+    <span class="cm">// → Аня, 28 лет</span>
+}
+</pre>
+      <div class="out"></div>
+    </div>
+  </section>
+
+  <!-- 16 МИНИ-ПРОЕКТ -->
+  <section id="project">
+    <div class="sec-head"><span class="sec-num">16</span><h2>Мини-проект: собираем всё вместе</h2></div>
+    <p class="sec-sub">Пора соединить пройденное в одну живую программу. Сделаем маленький анализатор списка задач: структуры, срезы, методы, циклы, условия и форматированная печать — всё в одном месте. Запусти и поиграй с данными.</p>
+
+    <div class="code" data-run>
+      <div class="bar">
+        <span class="dot" style="background:var(--acc-4)"></span>
+        <span class="dot" style="background:var(--acc-3)"></span>
+        <span class="dot" style="background:var(--acc)"></span>
+        <span class="fname">todo.go</span>
+        <span class="btns"><button class="copy">копировать</button><button class="run">▶ Запустить</button></span>
+      </div>
+<pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cm">// одна задача: текст и статус выполнения</span>
+<span class="kw">type</span> Task <span class="kw">struct</span> {
+    Title string
+    Done  <span class="ty">bool</span>
+}
+
+<span class="cm">// метод: красиво показать задачу</span>
+<span class="kw">func</span> (t Task) <span class="fn">String</span>() <span class="ty">string</span> {
+    mark := <span class="str">"[ ]"</span>
+    <span class="kw">if</span> t.Done {
+        mark = <span class="str">"[x]"</span>
+    }
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="str">"%s %s"</span>, mark, t.Title)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// срез задач</span>
+    tasks := []Task{
+        {Title: <span class="str">"Выучить синтаксис Go"</span>, Done: <span class="kw">true</span>},
+        {Title: <span class="str">"Написать первую программу"</span>, Done: <span class="kw">true</span>},
+        {Title: <span class="str">"Разобраться с горутинами"</span>, Done: <span class="kw">false</span>},
+        {Title: <span class="str">"Собрать свой проект"</span>, Done: <span class="kw">false</span>},
+    }
+
+    done := <span class="nm">0</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"— Мои задачи —"</span>)
+    <span class="kw">for</span> _, t := <span class="kw">range</span> tasks {
+        fmt.<span class="fn">Println</span>(t) <span class="cm">// сработает метод String()</span>
+        <span class="kw">if</span> t.Done {
+            done++
+        }
+    }
+
+    <span class="cm">// подводим итог</span>
+    percent := done * <span class="nm">100</span> / <span class="fn">len</span>(tasks)
+    fmt.<span class="fn">Printf</span>(<span class="str">"\nГотово: %d из %d (%d%%)\n"</span>,
+        done, <span class="fn">len</span>(tasks), percent)
+}
+</pre>
+      <div class="out"></div>
+    </div>
+
+    <p>Разбери, что здесь работает вместе: <strong>структура</strong> <code>Task</code> описывает задачу, <strong>метод</strong> <code>String()</code> красиво её печатает, <strong>срез</strong> хранит список, <strong>цикл</strong> <code>range</code> его обходит, <strong>условие</strong> считает выполненные, а <code>Printf</code> выводит итог. Это уже настоящая маленькая программа.</p>
+
+    <div class="task">
+      <div class="lbl">✎ финальное задание</div>
+      <p>Добавь в список свою задачу, помести пару из них в статус «выполнено», запусти и проверь, что процент готовности пересчитался правильно. Затем попробуй добавить метод, который считает только невыполненные задачи.</p>
+      <details>
+        <summary>Показать подсказку</summary>
+        <p style="margin-top:10px;font-size:14px;color:var(--ink-dim)">Метод на срезе не повесить напрямую, но можно написать обычную функцию <code>func countPending(tasks []Task) int</code>, которая проходит <code>range</code>-циклом и увеличивает счётчик, когда <code>!t.Done</code>. Вызови её в <code>main</code> и напечатай результат.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 17 КУДА ДАЛЬШЕ -->
+  <section id="next">
+    <div class="sec-head"><span class="sec-num">17</span><h2>Куда двигаться дальше</h2></div>
+    <p class="sec-sub">Ты прошёл основы Go: от переменных до горутин и первого проекта. Этого достаточно, чтобы писать реальные программы. Вот честная карта — что учить дальше и где практиковаться.</p>
+
+    <div class="verdict">
+      <div class="vbox good">
+        <div class="lbl">↗ что учить следующим</div>
+        <ul>
+          <li><strong>net/http</strong> — написать свой веб-сервер и REST API</li>
+          <li><strong>Дженерики</strong> — функции, работающие с любыми типами</li>
+          <li><strong>Тестирование</strong> — пакет <code>testing</code>, команда <code>go test</code></li>
+          <li><strong>sync и context</strong> — управление горутинами всерьёз</li>
+          <li><strong>Работа с JSON и базами данных</strong> — для реальных сервисов</li>
+        </ul>
+      </div>
+      <div class="vbox bad">
+        <div class="lbl">📚 где практиковаться</div>
+        <ul>
+          <li><a class="inline" href="https://go.dev/tour/" target="_blank" rel="noopener">A Tour of Go</a> — официальный интерактивный тур</li>
+          <li><a class="inline" href="https://gobyexample.com" target="_blank" rel="noopener">Go by Example</a> — примеры на каждую тему</li>
+          <li><a class="inline" href="https://go.dev/doc/effective_go" target="_blank" rel="noopener">Effective Go</a> — как писать идиоматично</li>
+          <li><a class="inline" href="https://go.dev/play/" target="_blank" rel="noopener">Go Playground</a> — пробовать код онлайн</li>
+          <li><a class="inline" href="https://pkg.go.dev" target="_blank" rel="noopener">pkg.go.dev</a> — каталог всех библиотек</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="ci">🐹</div>
+      <div>
+        <h4>Главный совет напоследок</h4>
+        <p>Язык учится не чтением, а руками. Возьми любую маленькую идею — конвертер валют, счётчик слов в тексте, погодную утилиту — и напиши её на Go целиком. Спотыкаясь и гугля, ты за один такой проект усвоишь больше, чем за десять прочитанных страниц. У тебя уже есть для этого всё нужное.</p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="ci">✓</div>
+      <div>
+        <h4>Что ты теперь умеешь</h4>
+        <p>Объявлять переменные и типы, ветвить логику через if и switch, гонять циклы, писать функции с несколькими возвратами, хранить данные в срезах и картах, описывать объекты структурами, добавлять им методы и интерфейсы, работать с указателями, обрабатывать ошибки по-госвски, запускать горутины и обмениваться через каналы, а также собирать всё это в проект. Это крепкий фундамент — дальше только практика.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="fwrap">
+      <div>Go с нуля · большой учебник для начинающих · код запускается через официальный Go Playground</div>
+      <div><span style="font-family:var(--mono);color:var(--gopher)">🐹</span> меньше — значит лучше</div>
+    </div>
+  </footer>
 
 </div>
+</main>
+</div>
 
-<footer>
-  <div class="wrap">
-    <div>На пальцах · язык программирования Go (Golang) · объяснялка для начинающих</div>
-    <div><span style="font-family:var(--mono);color:var(--gopher)">🐹</span> меньше — значит лучше</div>
-  </div>
-</footer>
+<script>
+(function(){
+  "use strict";
+
+  // ---------- прогресс чтения ----------
+  var progress = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (scrolled * 100) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // ---------- подсветка активного раздела в оглавлении ----------
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocList a'));
+  var map = {};
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if(sec) map[id] = a;
+  });
+  var sections = Object.keys(map).map(function(id){ return document.getElementById(id); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        var a = map[e.target.id];
+        if(a){
+          a.classList.add('active');
+          // подскроллить оглавление к активному пункту
+          a.scrollIntoView({block:'nearest'});
+        }
+      }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px', threshold:0});
+  sections.forEach(function(s){ io.observe(s); });
+
+  // ---------- мобильное меню ----------
+  var aside = document.getElementById('aside');
+  var menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', function(){ aside.classList.toggle('open'); });
+  aside.addEventListener('click', function(e){
+    if(e.target.tagName === 'A') aside.classList.remove('open');
+  });
+
+  // ---------- достаём чистый код из блока ----------
+  function extractCode(block){
+    var pre = block.querySelector('pre');
+    var ta = block.querySelector('textarea');
+    if(ta) return ta.value;
+    // берём textContent из pre — он уже без HTML-тегов подсветки
+    return pre ? pre.textContent : '';
+  }
+
+  // ---------- кнопка «копировать» ----------
+  document.querySelectorAll('.code .copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var block = btn.closest('.code');
+      var code = extractCode(block);
+      var done = function(){
+        var old = btn.textContent;
+        btn.textContent = '✓ скопировано';
+        setTimeout(function(){ btn.textContent = old; }, 1500);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(done, function(){ fallbackCopy(code); done(); });
+      } else { fallbackCopy(code); done(); }
+    });
+  });
+  function fallbackCopy(text){
+    var t = document.createElement('textarea');
+    t.value = text; t.style.position='fixed'; t.style.left='-9999px';
+    document.body.appendChild(t); t.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(t);
+  }
+
+  // ---------- делаем pre редактируемым при первом клике «запустить» уже готов ----------
+  // (код остаётся в pre; для запуска берём textContent, редактирование — по желанию)
+  // Превращаем pre в textarea, чтобы можно было править код прямо на месте.
+  function makeEditable(block){
+    if(block._editable) return;
+    var pre = block.querySelector('pre');
+    if(!pre) return;
+    var ta = document.createElement('textarea');
+    ta.value = pre.textContent.replace(/\n$/,'');
+    ta.spellcheck = false;
+    ta.rows = Math.min(24, ta.value.split('\n').length + 1);
+    pre.replaceWith(ta);
+    block._editable = true;
+  }
+  // по клику в область кода включаем редактирование
+  document.querySelectorAll('.code[data-run] pre').forEach(function(pre){
+    pre.style.cursor = 'text';
+    pre.addEventListener('click', function(){ makeEditable(pre.closest('.code')); });
+  });
+
+  // ---------- запуск кода через Go Playground ----------
+  // Пытаемся достучаться до play.golang.org через CORS-прокси.
+  // Если сети нет — показываем плашку и всегда даём кнопку «открыть в Playground».
+  var PROXIES = [
+    'https://corsproxy.io/?url=',
+    'https://api.allorigins.win/raw?url='
+  ];
+  var PLAY = 'https://play.golang.org/compile';
+
+  function setOut(block, html){
+    var out = block.querySelector('.out');
+    out.classList.add('show');
+    out.innerHTML = html;
+  }
+  function esc(s){
+    return String(s).replace(/[&<>]/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];
+    });
+  }
+
+  function openInPlayground(code){
+    // form-POST на go.dev/play/share для получения ссылки — но проще открыть страницу
+    // Открываем официальный playground; пользователь вставит код (уже в буфере).
+    var w = window.open('https://go.dev/play/', '_blank');
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code);
+    }
+    return w;
+  }
+
+  function runCode(block, btn){
+    var code = extractCode(block);
+    var out = block.querySelector('.out');
+    out.classList.add('show');
+    out.innerHTML = '<span class="muted">Компилирую на сервере Go…</span>';
+    btn.disabled = true;
+
+    var body = 'version=2&body=' + encodeURIComponent(code) + '&withVet=true';
+    var attempt = 0;
+
+    function tryNext(){
+      if(attempt >= PROXIES.length){
+        setOut(block,
+          '<span class="err">Не удалось связаться с сервером Go напрямую из этой страницы.</span>\n' +
+          '<span class="muted">Код скопирован в буфер — нажми кнопку ниже, вставь его (Ctrl+V) и запусти на официальном сайте.</span>');
+        var b = document.createElement('button');
+        b.textContent = '↗ Открыть в Go Playground';
+        b.style.cssText='margin-top:10px;font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:6px;border:1px solid #1c4a52;background:rgba(0,173,216,.12);color:var(--gopher);cursor:pointer';
+        b.onclick=function(){ openInPlayground(code); };
+        out.appendChild(document.createElement('br'));
+        out.appendChild(b);
+        btn.disabled = false;
+        return;
+      }
+      var url = PROXIES[attempt] + encodeURIComponent(PLAY);
+      attempt++;
+      fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body: body
+      }).then(function(r){
+        if(!r.ok) throw new Error('http '+r.status);
+        return r.json();
+      }).then(function(data){
+        btn.disabled = false;
+        renderResult(block, data, code);
+      }).catch(function(){
+        tryNext();
+      });
+    }
+    tryNext();
+  }
+
+  function renderResult(block, data, code){
+    if(data.Errors){
+      setOut(block, '<span class="err">' + esc(data.Errors) + '</span>');
+      return;
+    }
+    var events = data.Events || [];
+    if(events.length === 0){
+      setOut(block, '<span class="muted">(программа отработала, но ничего не вывела)</span>');
+      return;
+    }
+    var text = events.map(function(e){ return e.Message || ''; }).join('');
+    setOut(block, '<span class="ok">' + esc(text) + '</span>');
+  }
+
+  document.querySelectorAll('.code[data-run] .run').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      runCode(btn.closest('.code'), btn);
+    });
+  });
+
+})();
+</script>
 
 </body>
 </html>
