@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go на пальцах — язык программирования простыми словами</title>
+
+<link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="../images/favicon.webp" type="image/webp">
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(95333846, "init", {
+      clickmap:true,
+      trackLinks:true,
+      accurateTrackBounce:true,
+      webvisor:true
+    });
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+
+<style>
+  :root{
+    --bg:#0d1017;
+    --panel:#141922;
+    --panel-2:#1a2029;
+    --ink:#e6ebf1;
+    --ink-dim:#9aa7b8;
+    --ink-faint:#5f6d7e;
+    --line:#242c38;
+    --line-bright:#33404f;
+    --acc:#5ee6a8;       /* сигнальный зелёный */
+    --acc-2:#4aa8ff;     /* холодный синий */
+    --acc-3:#ffb454;     /* янтарь */
+    --acc-4:#ff6b6b;     /* красный */
+    --gopher:#00add8;    /* фирменный голубой Go */
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+    font-feature-settings:"ss01","cv01"}
+  ::selection{background:var(--gopher);color:#02121a}
+
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:52px 52px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 20%,transparent 75%);}
+  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 24px}
+
+  /* header */
+  header{padding:80px 0 48px;border-bottom:1px solid var(--line)}
+  .home-link{display:inline-block;font-family:var(--mono);font-size:12.5px;
+    color:var(--ink-dim);text-decoration:none;margin-bottom:26px;
+    padding:6px 12px;border:1px solid var(--line-bright);border-radius:5px;
+    background:var(--panel);transition:.15s}
+  .home-link:hover{color:var(--ink);border-color:var(--gopher)}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--gopher);margin-bottom:22px;
+    display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:8px;height:8px;background:var(--gopher);
+    border-radius:50%;box-shadow:0 0 12px var(--gopher);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:clamp(36px,7vw,66px);line-height:.98;margin:0 0 20px;
+    font-weight:800;letter-spacing:-.02em}
+  h1 .go{font-family:var(--mono);font-weight:600;color:var(--gopher)}
+  .lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink-dim);max-width:640px}
+  .meta{margin-top:32px;display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-family:var(--mono);font-size:12px;color:var(--ink-dim);
+    border:1px solid var(--line-bright);padding:5px 11px;border-radius:4px;
+    background:var(--panel)}
+  .tag b{color:var(--ink)}
+
+  /* nav */
+  nav.toc{position:sticky;top:0;z-index:20;background:rgba(13,16,23,.86);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+    padding:12px 0;margin-bottom:56px}
+  nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+  nav.toc .wrap::-webkit-scrollbar{display:none}
+  nav.toc a{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);
+    text-decoration:none;white-space:nowrap;padding:6px 12px;border-radius:5px;
+    transition:.15s}
+  nav.toc a:hover{color:var(--ink);background:var(--panel)}
+  nav.toc a .n{color:var(--gopher);margin-right:6px}
+
+  section{margin-bottom:72px;scroll-margin-top:70px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  .sec-num{font-family:var(--mono);font-size:14px;color:var(--gopher);
+    border:1px solid var(--line-bright);padding:3px 9px;border-radius:4px;flex-shrink:0}
+  h2{font-size:clamp(24px,3.8vw,34px);margin:0;font-weight:750;letter-spacing:-.01em}
+  .sec-sub{color:var(--ink-dim);margin:14px 0 32px;max-width:720px;font-size:16px}
+  p{margin:0 0 16px}
+  strong{color:#fff;font-weight:650}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);
+    padding:2px 6px;border-radius:4px;color:var(--gopher);border:1px solid var(--line)}
+
+  /* метафора-блок */
+  .analogy{display:grid;grid-template-columns:52px 1fr;gap:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:22px 24px;margin:24px 0;position:relative;overflow:hidden}
+  .analogy::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--gopher)}
+  .analogy .em{font-size:26px;text-align:center;line-height:1.2}
+  .analogy h4{margin:0 0 6px;font-size:17px;color:var(--gopher)}
+  .analogy p{margin:0;color:var(--ink-dim);font-size:15px}
+
+  /* код */
+  .code{background:#0a0d13;border:1px solid var(--line);border-radius:12px;
+    margin:20px 0;overflow:hidden}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:11px 16px;
+    border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .code .bar .dot{width:11px;height:11px;border-radius:50%}
+  .code .bar .fname{font-family:var(--mono);font-size:12px;color:var(--ink-faint);
+    margin-left:8px}
+  .code pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:var(--mono);
+    font-size:13.5px;line-height:1.7}
+  .code pre::-webkit-scrollbar{height:8px}
+  .code pre::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:4px}
+  .kw{color:#ff7b9c}      /* ключевые слова */
+  .fn{color:var(--acc-2)} /* функции */
+  .str{color:var(--acc)}  /* строки */
+  .cm{color:var(--ink-faint);font-style:italic} /* комменты */
+  .ty{color:var(--acc-3)} /* типы */
+  .nm{color:#c9a4ff}      /* числа */
+
+  .note{font-size:14px;color:var(--ink-dim);margin:10px 0 0;
+    padding-left:16px;border-left:2px solid var(--line-bright)}
+
+  /* карточки-плитки */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;margin-top:8px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px 22px;transition:.2s}
+  .tile:hover{border-color:var(--line-bright);transform:translateY(-2px)}
+  .tile .ic{font-family:var(--mono);font-size:20px;color:var(--gopher);
+    margin-bottom:12px}
+  .tile h4{margin:0 0 8px;font-size:16.5px}
+  .tile p{margin:0;color:var(--ink-dim);font-size:14px}
+
+  /* callout */
+  .callout{display:grid;grid-template-columns:44px 1fr;gap:16px;
+    background:var(--panel);border:1px solid var(--line-bright);
+    border-radius:12px;padding:20px 22px;margin:28px 0}
+  .callout .ci{font-size:22px;text-align:center;color:var(--gopher)}
+  .callout.warn{border-color:#3d3320;
+    background:linear-gradient(90deg,rgba(255,180,84,.05),var(--panel))}
+  .callout.warn .ci{color:var(--acc-3)}
+  .callout h4{margin:0 0 6px;font-size:16px}
+  .callout p{margin:0;color:var(--ink-dim);font-size:14.5px}
+
+  /* горутины визуал */
+  .lanes{display:grid;gap:10px;margin:22px 0}
+  .lane{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center}
+  .lane .who{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);
+    text-align:right}
+  .lane .track{height:26px;border-radius:6px;background:var(--panel-2);
+    border:1px solid var(--line);position:relative;overflow:hidden}
+  .lane .fill{position:absolute;top:0;bottom:0;left:0;border-radius:5px;
+    display:flex;align-items:center;padding:0 12px;font-family:var(--mono);
+    font-size:11px;color:#02121a;font-weight:600;white-space:nowrap}
+  .lane .a{background:var(--gopher);width:100%}
+  .lane .b{background:var(--acc);width:100%}
+  .lane .c{background:var(--acc-3);width:100%}
+  .lane.seq .fill{width:33%}
+  .lane.seq .s2{left:33%;background:var(--acc)}
+  .lane.seq .s3{left:66%;background:var(--acc-3)}
+
+  /* когда брать */
+  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  @media(max-width:560px){.verdict{grid-template-columns:1fr}}
+  .vbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:22px 24px}
+  .vbox .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+  .vbox.good .lbl{color:var(--acc)}
+  .vbox.bad .lbl{color:var(--acc-4)}
+  .vbox ul{margin:0;padding-left:18px}
+  .vbox li{font-size:14.5px;color:var(--ink-dim);margin-bottom:8px}
+
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;
+    color:var(--ink-faint);font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+  h2,h3,h4{text-wrap:balance}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="wrap">
+    <a class="home-link" href="/" aria-label="Вернуться на главную страницу">← На главную</a>
+    <div class="kicker">на пальцах · язык программирования</div>
+    <h1><span class="go">Go</span> без<br>заумных слов</h1>
+    <p class="lede">Язык, который придумали в Google, чтобы большие программы писались быстро, работали шустро и не превращались в кашу. Разбираем по кусочкам — как для новичка.</p>
+    <div class="meta">
+      <span class="tag">создан в <b>Google</b></span>
+      <span class="tag">первый релиз <b>2009</b></span>
+      <span class="tag">талисман — <b>суслик</b> 🐹</span>
+      <span class="tag">он же <b>Golang</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#what"><span class="n">00</span>Что это</a>
+    <a href="#why"><span class="n">01</span>Зачем придумали</a>
+    <a href="#hello"><span class="n">02</span>Первая программа</a>
+    <a href="#traits"><span class="n">03</span>Характер</a>
+    <a href="#goroutines"><span class="n">04</span>Суперсила</a>
+    <a href="#errors"><span class="n">05</span>Ошибки</a>
+    <a href="#when"><span class="n">06</span>Когда брать</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- 00 ЧТО ЭТО -->
+<section id="what">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <h2>Что такое Go в одном абзаце</h2>
+  </div>
+  <p class="sec-sub">Представь язык как способ давать компьютеру инструкции. Одни языки — как болтливый друг, который объясняет долго и с деталями. Go — как немногословный мастер: говорит коротко, по делу, и всё сразу работает.</p>
+
+  <div class="analogy">
+    <div class="em">🔧</div>
+    <div>
+      <h4>Аналогия: набор инструментов IKEA</h4>
+      <p>Go — это как мебель IKEA с одним шестигранным ключом. Инструментов немного, они простые, но ими можно собрать почти что угодно. Не нужно держать в голове сотню деталей — набор маленький, а результат крепкий.</p>
+    </div>
+  </div>
+
+  <p>Технически Go — <strong>компилируемый</strong> язык. Это значит, что твой текст программы заранее переводится в машинный код (один готовый файл-программу), а не разбирается построчно на ходу. Поэтому программы на Go запускаются быстро — как готовое блюдо из микроволновки против готовки с нуля каждый раз.</p>
+</section>
+
+<!-- 01 ЗАЧЕМ -->
+<section id="why">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>Зачем его вообще придумали</h2>
+  </div>
+  <p class="sec-sub">В Google работают огромные программы, над которыми трудятся тысячи людей. Старые языки создавали три проблемы — Go придумали, чтобы решить именно их.</p>
+
+  <div class="tiles">
+    <div class="tile">
+      <div class="ic">⏳</div>
+      <h4>Долгая сборка</h4>
+      <p>Большие программы на старых языках собирались минутами. Разработчик менял строчку — и шёл пить кофе. Go компилируется очень быстро, почти мгновенно.</p>
+    </div>
+    <div class="tile">
+      <div class="ic">🌀</div>
+      <h4>Слишком сложно</h4>
+      <p>Другие языки обросли таким количеством возможностей, что новый человек тонул. Go специально сделали маленьким: меньше правил — легче читать чужой код.</p>
+    </div>
+    <div class="tile">
+      <div class="ic">⚡</div>
+      <h4>Много дел разом</h4>
+      <p>Современным серверам надо делать тысячи дел одновременно (отвечать тысячам пользователей). В Go это встроено в самое сердце языка и делается легко.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ci">◆</div>
+    <div>
+      <h4>Философия в одной фразе</h4>
+      <p>«Меньше — это лучше». Создатели сознательно <strong>не добавляли</strong> модные фишки, если без них можно обойтись. Идея: код должен быть скучным и понятным, потому что его читают в сто раз чаще, чем пишут.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 HELLO -->
+<section id="hello">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Первая программа</h2>
+  </div>
+  <p class="sec-sub">Классика — заставить компьютер поздороваться. Вот как это выглядит на Go. Не пугайся, разберём каждую строчку.</p>
+
+  <div class="code">
+    <div class="bar">
+      <span class="dot" style="background:var(--acc-4)"></span>
+      <span class="dot" style="background:var(--acc-3)"></span>
+      <span class="dot" style="background:var(--acc)"></span>
+      <span class="fname">hello.go</span>
+    </div>
+<pre><span class="kw">package</span> main                     <span class="cm">// это главный пакет — точка входа</span>
+
+<span class="kw">import</span> <span class="str">"fmt"</span>                     <span class="cm">// подключаем инструмент для печати</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {                   <span class="cm">// главная функция — с неё всё стартует</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"Привет, мир!"</span>) <span class="cm">// печатаем строчку на экран</span>
+}
+</pre>
+  </div>
+
+  <p>Что здесь происходит, по-человечески:</p>
+  <div class="tiles">
+    <div class="tile">
+      <div class="ic">📦</div>
+      <h4>package main</h4>
+      <p>«Это главная коробка программы». С неё компьютер понимает, что тут запускаемое приложение, а не просто кусок кода для других.</p>
+    </div>
+    <div class="tile">
+      <div class="ic">🔌</div>
+      <h4>import "fmt"</h4>
+      <p>«Возьми готовый инструмент». <code>fmt</code> умеет печатать текст. Не нужно писать печать с нуля — берём готовое.</p>
+    </div>
+    <div class="tile">
+      <div class="ic">▶</div>
+      <h4>func main()</h4>
+      <p>«Отсюда начинай». Всё, что внутри фигурных скобок — это шаги, которые компьютер выполнит по порядку.</p>
+    </div>
+  </div>
+
+  <p class="note">Запускается это одной командой в терминале: <code>go run hello.go</code> — и на экране появится «Привет, мир!».</p>
+</section>
+
+<!-- 03 ХАРАКТЕР -->
+<section id="traits">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Характер языка</h2>
+  </div>
+  <p class="sec-sub">У каждого языка свой нрав. Go — аккуратный педант, который любит порядок и не терпит лишнего. Три главные черты.</p>
+
+  <div class="analogy">
+    <div class="em">🧹</div>
+    <div>
+      <h4>Убирает за собой сам</h4>
+      <p>В программах постоянно создаются данные, которые потом не нужны — как грязная посуда. В некоторых языках мыть её надо вручную (легко забыть и устроить бардак). В Go есть встроенный «уборщик» (garbage collector), который сам выкидывает ненужное. Ты просто пишешь код, о мусоре не думаешь.</p>
+    </div>
+  </div>
+
+  <div class="analogy">
+    <div class="em">📐</div>
+    <div>
+      <h4>Один правильный способ форматирования</h4>
+      <p>В большинстве языков программисты вечно спорят, где ставить пробелы и переносы. В Go спор невозможен: есть команда <code>gofmt</code>, которая причёсывает код по единому образцу. Любой код на Go выглядит одинаково — читать чужой становится легко.</p>
+    </div>
+  </div>
+
+  <div class="analogy">
+    <div class="em">🚦</div>
+    <div>
+      <h4>Строгий, но честный</h4>
+      <p>Go заранее проверяет типы данных: нельзя случайно сложить число со словом. Если написал что-то неправильно — программа просто не соберётся и сразу скажет, где ошибка. Лучше поймать проблему сейчас, чем когда ей уже пользуются люди.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="ci">⚠</div>
+    <div>
+      <h4>Строгость, которая удивляет новичков</h4>
+      <p>Go не разрешит оставить <strong>неиспользованную переменную</strong> или лишний <strong>import</strong>. Объявил и не применил — код не соберётся. Поначалу бесит, потом понимаешь: так в программе не копится забытый хлам.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 ГОРУТИНЫ -->
+<section id="goroutines">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Суперсила: делать всё разом</h2>
+  </div>
+  <p class="sec-sub">Это главная причина, по которой люди выбирают Go. Представь повара на кухне. Обычный язык — повар готовит блюда по очереди: сначала суп, потом салат, потом десерт. Go — повар, который поставил суп вариться, тут же режет салат, а десерт уже в духовке. Всё одновременно.</p>
+
+  <p style="color:var(--ink-dim);font-size:14px;margin-bottom:8px">Обычный подход — по очереди, одно за другим:</p>
+  <div class="lanes">
+    <div class="lane seq"><div class="who">повар</div><div class="track"><div class="fill a s1">суп</div><div class="fill s2">салат</div><div class="fill s3">десерт</div></div></div>
+  </div>
+
+  <p style="color:var(--ink-dim);font-size:14px;margin:22px 0 8px">Подход Go — три дела параллельно, готово втрое быстрее:</p>
+  <div class="lanes">
+    <div class="lane"><div class="who">горутина 1</div><div class="track"><div class="fill a">суп 🍲</div></div></div>
+    <div class="lane"><div class="who">горутина 2</div><div class="track"><div class="fill b">салат 🥗</div></div></div>
+    <div class="lane"><div class="who">горутина 3</div><div class="track"><div class="fill c">десерт 🍰</div></div></div>
+  </div>
+
+  <p>Эти параллельные «помощники» называются <strong>горутины</strong> (goroutines). Запустить помощника — это одно слово <code>go</code> перед действием. Вот и всё волшебство:</p>
+
+  <div class="code">
+    <div class="bar">
+      <span class="dot" style="background:var(--acc-4)"></span>
+      <span class="dot" style="background:var(--acc-3)"></span>
+      <span class="dot" style="background:var(--acc)"></span>
+      <span class="fname">kitchen.go</span>
+    </div>
+<pre><span class="fn">cook</span>(<span class="str">"суп"</span>)          <span class="cm">// обычно: ждём, пока сварится суп...</span>
+
+<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"суп"</span>)       <span class="cm">// а с "go" — запустили и пошли дальше!</span>
+<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"салат"</span>)     <span class="cm">// ещё помощник — режет салат</span>
+<span class="kw">go</span> <span class="fn">cook</span>(<span class="str">"десерт"</span>)    <span class="cm">// и третий — печёт десерт</span>
+<span class="cm">// все три готовятся одновременно</span>
+</pre>
+  </div>
+
+  <div class="analogy">
+    <div class="em">📮</div>
+    <div>
+      <h4>А как помощники общаются? Через каналы</h4>
+      <p>Чтобы повара не мешали друг другу, у них есть «окошко выдачи» — <strong>канал</strong> (channel). Один помощник кладёт туда готовое блюдо, другой забирает. Никакой толкотни и путаницы: данные аккуратно передаются из рук в руки. В Go это записывается стрелочкой <code>&lt;-</code>.</p>
+    </div>
+  </div>
+
+  <p class="note">Горутины настолько лёгкие, что их можно запускать тысячами одновременно — обычному компьютеру это по силам. Именно поэтому на Go пишут серверы, которые держат огромную нагрузку.</p>
+</section>
+
+<!-- 05 ОШИБКИ -->
+<section id="errors">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>Как Go относится к ошибкам</h2>
+  </div>
+  <p class="sec-sub">Тут у Go необычный, узнаваемый стиль. Многие языки прячут ошибку и «выкидывают» её куда-то вверх. Go заставляет проверять ошибку прямо на месте — честно и в открытую.</p>
+
+  <div class="analogy">
+    <div class="em">📋</div>
+    <div>
+      <h4>Аналогия: расписка о результате</h4>
+      <p>Каждое рискованное действие в Go возвращает две вещи: <strong>результат</strong> и <strong>записку об ошибке</strong>. Как курьер, который отдаёт посылку и говорит: «вот заказ, а вот бумажка — всё ли ок». Ты обязан заглянуть в бумажку, прежде чем радоваться посылке.</p>
+    </div>
+  </div>
+
+  <div class="code">
+    <div class="bar">
+      <span class="dot" style="background:var(--acc-4)"></span>
+      <span class="dot" style="background:var(--acc-3)"></span>
+      <span class="dot" style="background:var(--acc)"></span>
+      <span class="fname">errors.go</span>
+    </div>
+<pre>file, err := <span class="fn">Open</span>(<span class="str">"data.txt"</span>)  <span class="cm">// получаем файл И записку об ошибке</span>
+
+<span class="kw">if</span> err != <span class="kw">nil</span> {                   <span class="cm">// заглянули в записку: что-то не так?</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"не вышло:"</span>, err) <span class="cm">// честно сообщаем о проблеме</span>
+    <span class="kw">return</span>                        <span class="cm">// и не идём дальше</span>
+}
+<span class="cm">// сюда попадём только если всё хорошо</span>
+</pre>
+  </div>
+
+  <p>Этот приём <code>if err != nil</code> встречается в Go-коде повсюду. Кто-то ворчит, что это многословно. Но плюс в том, что <strong>ни одна ошибка не проскочит незамеченной</strong> — с каждой ты разбираешься прямо там, где она случилась.</p>
+</section>
+
+<!-- 06 КОГДА -->
+<section id="when">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>Когда Go — хороший выбор</h2>
+  </div>
+  <p class="sec-sub">Никакой язык не идеален для всего. Вот где Go сияет, а где лучше взять другой инструмент.</p>
+
+  <div class="verdict">
+    <div class="vbox good">
+      <div class="lbl">✓ отлично подходит</div>
+      <ul>
+        <li><strong>Серверы и веб-сервисы</strong> — то, что держит нагрузку от тысяч пользователей</li>
+        <li><strong>Инструменты командной строки</strong> — один файл-программа, запускается везде</li>
+        <li><strong>Облако и сети</strong> — на Go написаны Docker и Kubernetes, основа современных серверов</li>
+        <li><strong>Всё, где важна скорость</strong> и одновременная обработка многих задач</li>
+      </ul>
+    </div>
+    <div class="vbox bad">
+      <div class="lbl">✕ есть выбор получше</div>
+      <ul>
+        <li><strong>Сайты в браузере</strong> (кнопки, анимации) — там правит JavaScript</li>
+        <li><strong>Мобильные приложения</strong> — обычно Swift или Kotlin</li>
+        <li><strong>Наука и ИИ</strong> — экосистема богаче у Python</li>
+        <li><strong>Крошечные скрипты на минуту</strong> — Python быстрее набросать</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ci">🐹</div>
+    <div>
+      <h4>Итог одной строкой</h4>
+      <p>Go — <strong>простой, быстрый и надёжный</strong> язык для программ, которые должны много работать без сбоев. Если старые языки — это швейцарский нож с сотней лезвий, то Go — крепкий молоток: делает меньше, но то, что делает — делает превосходно.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>На пальцах · язык программирования Go (Golang) · объяснялка для начинающих</div>
+    <div><span style="font-family:var(--mono);color:var(--gopher)">🐹</span> меньше — значит лучше</div>
+  </div>
+</footer>
+
+</body>
+</html>
