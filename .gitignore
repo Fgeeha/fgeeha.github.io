@@ -1,0 +1,11 @@
+# Конфиги Claude
+.claude/
+**/.claude/
+
+# Артефакты ruflo/swarm
+.claude-flow/
+.swarm/
+ruvector.db
+
+# Конфиг JetBrains
+.idea/
