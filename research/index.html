@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nikita S. Kolesnikov — Research | AI for Plant Disease Diagnosis</title>
+  <meta name="description" content="Nikita S. Kolesnikov (Колесников Никита Сергеевич) — PhD student at Volgograd State Technical University. AI methods for plant disease diagnosis: domain adaptation, model compression, edge computing, explainable AI.">
+  <meta name="author" content="Nikita Kolesnikov">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fgeeha.github.io/research/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Nikita S. Kolesnikov — Research">
+  <meta property="og:description" content="PhD student at Volgograd State Technical University. AI methods for plant disease diagnosis: domain adaptation, edge deployment, model compression, XAI.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/33605615">
+  <meta property="og:url" content="https://fgeeha.github.io/research/">
+  <meta property="og:type" content="profile">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Nikita S. Kolesnikov",
+    "alternateName": "Колесников Никита Сергеевич",
+    "url": "https://fgeeha.github.io/research/",
+    "identifier": "https://orcid.org/0009-0008-5480-6137",
+    "affiliation": {
+      "@type": "CollegeOrUniversity",
+      "name": "Volgograd State Technical University"
+    },
+    "jobTitle": "PhD Student",
+    "knowsAbout": ["plant disease diagnosis", "domain adaptation", "model compression", "edge computing", "explainable AI", "computer vision"]
+  }
+  </script>
+
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --ink: #22301f;
+      --ink-soft: #4c5a49;
+      --green: #2d5a3d;
+      --green-deep: #1c3a27;
+      --accent: #b7541f;
+      --rule: #d8d1c0;
+      --card: #fffdf7;
+      --serif-display: "Fraunces", Georgia, serif;
+      --serif-body: "Spectral", Georgia, serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif-body);
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      background-image:
+        radial-gradient(ellipse 90% 50% at 50% -10%, rgba(45, 90, 61, 0.07), transparent),
+        repeating-linear-gradient(0deg, transparent 0 27px, rgba(34, 48, 31, 0.025) 27px 28px);
+    }
+
+    .wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 72px 0 48px;
+      border-bottom: 3px double var(--rule);
+      animation: rise 0.7s ease both;
+    }
+
+    .kicker {
+      font-family: var(--serif-body);
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-family: var(--serif-display);
+      font-weight: 300;
+      font-size: clamp(38px, 7vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    h1 strong { font-weight: 600; color: var(--green-deep); }
+
+    .name-ru {
+      margin-top: 10px;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+
+    .lede {
+      margin-top: 26px;
+      font-size: 19px;
+      max-width: 620px;
+      color: var(--ink-soft);
+    }
+
+    .id-row {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+    }
+
+    .id-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      padding: 7px 15px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink);
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .id-chip:hover { border-color: var(--green); transform: translateY(-1px); }
+
+    .id-chip .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      flex: none;
+    }
+    .id-chip.orcid .dot { background: #a6ce39; }
+
+    /* ── Sections ── */
+    section { padding: 46px 0 8px; animation: rise 0.7s ease both; }
+    section:nth-of-type(2) { animation-delay: 0.08s; }
+    section:nth-of-type(3) { animation-delay: 0.16s; }
+    section:nth-of-type(4) { animation-delay: 0.24s; }
+
+    h2 {
+      font-family: var(--serif-display);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green-deep);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    h2::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* research topics */
+    .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 640px) { .topics { grid-template-columns: 1fr; } }
+
+    .topic {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--green);
+      padding: 18px 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .topic:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 48, 31, 0.08);
+    }
+
+    .topic h3 {
+      font-family: var(--serif-display);
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .topic p { font-size: 15px; color: var(--ink-soft); }
+
+    /* publications */
+    .pub {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      padding: 24px 26px;
+      position: relative;
+    }
+
+    .pub + .pub { margin-top: 14px; }
+
+    .pub .status {
+      position: absolute;
+      top: -11px;
+      right: 18px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--green-deep);
+      color: var(--paper);
+      padding: 3px 12px;
+      border-radius: 999px;
+    }
+
+    .pub .authors { font-size: 15px; color: var(--ink-soft); margin-bottom: 6px; }
+    .pub .authors b { color: var(--ink); font-weight: 600; }
+
+    .pub .title-en {
+      font-family: var(--serif-display);
+      font-weight: 600;
+      font-size: 19px;
+      line-height: 1.35;
+    }
+
+    .pub .title-ru {
+      margin-top: 6px;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink-soft);
+    }
+
+    .pub .venue { margin-top: 10px; font-size: 14.5px; color: var(--ink-soft); }
+
+    /* affiliations */
+    .aff { border-top: 1px solid var(--rule); padding: 16px 2px; display: flex; gap: 18px; }
+    .aff:last-child { border-bottom: 1px solid var(--rule); }
+    .aff .years { flex: none; width: 110px; font-size: 14px; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .aff .what b { font-weight: 600; }
+    .aff .what .sub { font-size: 14.5px; color: var(--ink-soft); }
+
+    /* footer */
+    footer {
+      margin-top: 56px;
+      padding: 30px 0 60px;
+      border-top: 3px double var(--rule);
+      font-size: 14.5px;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a { color: var(--green-deep); }
+
+    a { color: var(--green-deep); text-decoration-color: rgba(45, 90, 61, 0.35); text-underline-offset: 3px; }
+    a:hover { text-decoration-color: var(--green); }
+
+    .leaf {
+      display: inline-block;
+      color: var(--green);
+      transform: rotate(-8deg);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      header, section { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <p class="kicker">Research profile <span class="leaf">❧</span> AI × Plant Pathology</p>
+      <h1>Nikita S. <strong>Kolesnikov</strong></h1>
+      <p class="name-ru">Колесников Никита Сергеевич</p>
+      <p class="lede">
+        PhD student at Volgograd State Technical University. I work on AI methods
+        for plant disease diagnosis that survive the journey from the lab to the
+        field — and fit on a device you can hold in one hand.
+      </p>
+      <div class="id-row">
+        <a class="id-chip orcid" href="https://orcid.org/0009-0008-5480-6137" rel="me"><span class="dot"></span>ORCID 0009-0008-5480-6137</a>
+        <a class="id-chip" href="https://github.com/ml-nskolesnikov" rel="me"><span class="dot"></span>GitHub (research)</a>
+        <a class="id-chip" href="https://github.com/Fgeeha" rel="me"><span class="dot"></span>GitHub (dev)</a>
+        <a class="id-chip" href="mailto:kolesnikov.nikitavlg@gmail.com"><span class="dot"></span>kolesnikov.nikitavlg@gmail.com</a>
+      </div>
+    </header>
+
+    <section id="research">
+      <h2>Research</h2>
+      <div class="topics">
+        <div class="topic">
+          <h3>Lab-to-field domain adaptation</h3>
+          <p>CORAL, CW-CORAL, DANN and CDAN for plant disease recognition when training images come from the lab and real leaves come from the field.</p>
+        </div>
+        <div class="topic">
+          <h3>Model compression &amp; quantization</h3>
+          <p>Stage-wise attribution of accuracy loss in compression pipelines; INT8 post-training quantization; ~10× feature database compression without retrieval loss.</p>
+        </div>
+        <div class="topic">
+          <h3>Edge deployment</h3>
+          <p>Running diagnosis on Raspberry Pi-class hardware: latency budgets, hardware benchmarking infrastructure, deployable models under 3 MB.</p>
+        </div>
+        <div class="topic">
+          <h3>Explainable AI</h3>
+          <p>Grad-CAM and SHAP explanations for diagnosis models, aimed at decisions an agronomist can actually check.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="publications">
+      <h2>Publications</h2>
+      <div class="pub">
+        <span class="status">In press</span>
+        <p class="authors"><b>Kolesnikov N.&nbsp;S.</b>, Kravets A.&nbsp;G.</p>
+        <p class="title-en">A System Model of Edge Plant Disease Diagnosis: 10× Feature Database Compression Without Loss of Retrieval Accuracy</p>
+        <p class="title-ru">Системная модель edge-диагностики заболеваний растений: 10-кратное сжатие базы признаков без потери точности поиска</p>
+        <p class="venue">SEDM-2026 conference proceedings · accepted, in press, 2026</p>
+      </div>
+    </section>
+
+    <section id="affiliations">
+      <h2>Affiliations</h2>
+      <div class="aff">
+        <div class="years">2024 — now</div>
+        <div class="what">
+          <b>PhD student</b>, Department of System Analysis and Control<br>
+          <span class="sub">Volgograd State Technical University · specialty 1.2.1 · advisor: Prof. Alla G. Kravets, Dr. Sc.</span>
+        </div>
+      </div>
+      <div class="aff">
+        <div class="years">2021 — now</div>
+        <div class="what">
+          <b>Specialist</b>, Department of Development and Implementation of the University System<br>
+          <span class="sub">Volgograd State Agrarian University</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Nikita S. Kolesnikov</span>
+      <span><a href="/">← main site</a> · <a href="/cv/">CV</a></span>
+    </footer>
+
+  </div>
+</body>
+</html>
