@@ -121,6 +121,9 @@
                         <a class="nav-link active" aria-current="page" href="/" id="head_nav_home">Home</a>
                       </li>
                       <li class="nav-item">
+                        <a class="nav-link" href="/projects/" id="head_nav_projects">Проекты</a>
+                      </li>
+                      <li class="nav-item">
                         <a class="nav-link" href="/study/" id="head_nav_study">Учеба</a>
                       </li>
                       <li class="nav-item dropdown">
@@ -213,6 +216,22 @@
                             <h2 id="projectsTitle">Избранные проекты</h2>
                             <p class="section-desc" id="projectsDesc">Open-source проекты на GitHub и GitVerse</p>
                             <div class="row g-3 mt-1 mb-4" id="projectsContainer">
+                                <div class="col-md-6">
+                                    <div class="card h-100 project-card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Cat Is Not Helper 🐾</h4>
+                                            <p class="card-text" id="proj_cat">Котик поверх всех окон, который тапает лапками в такт нажатиям клавиш, ведёт статистику и держит скриншоты. Нативная версия на SwiftUI для macOS и кросс-платформенная на Tauri 2 (Rust) для macOS, Windows 10/11 и Linux (RedOS). Автообновление, релизы для всех платформ через GitHub Actions</p>
+                                            <span class="badge bg-warning text-dark">Swift</span>
+                                            <span class="badge bg-danger">Rust</span>
+                                            <span class="badge bg-secondary">Tauri</span>
+                                            <span class="badge bg-secondary">Desktop</span>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <a href="https://github.com/Fgeeha/cat-is-not-helper" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
+                                            <a href="/projects/cat-is-not-helper/" class="btn btn-sm btn-outline-primary ms-1" id="proj_cat_page">Страница</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="card h-100 project-card">
                                         <div class="card-body">
@@ -683,6 +702,7 @@
                 ru: {
                     head_nav_home: 'Home',
                     head_nav_lang: 'ru',
+                    head_nav_projects: 'Проекты',
                     head_nav_study: 'Учеба',
                     head_nav_mini_projects: 'Мои мини HTML-проекты',
                     head_nav_link: 'Ссылки',
@@ -700,6 +720,8 @@
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
                     projectsTitle: 'Избранные проекты',
                     projectsDesc: 'Open-source проекты на GitHub и GitVerse',
+                    proj_cat: 'Котик поверх всех окон, который тапает лапками в такт нажатиям клавиш, ведёт статистику и держит скриншоты. Нативная версия на SwiftUI для macOS и кросс-платформенная на Tauri 2 (Rust) для macOS, Windows 10/11 и Linux (RedOS). Автообновление, релизы для всех платформ через GitHub Actions',
+                    proj_cat_page: 'Страница',
                     proj_maxaction: 'GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.0 под MIT',
                     proj_roop: 'RAG-Ollama-On-Premises -- ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте',
                     proj_sedm: 'Код к статье для SEDM-2026: диагностика болезней растений на edge-устройствах. CORAL-адаптация домена, INT8-квантизация и PolarQuant-3bit дают сжатие 10.6x при macro-F1 0.700 и 246 мс на Raspberry Pi 4B',
@@ -727,6 +749,7 @@
                 en: {
                     head_nav_home: 'Home',
                     head_nav_lang: 'en',
+                    head_nav_projects: 'Projects',
                     head_nav_study: 'Study',
                     head_nav_mini_projects: 'My mini HTML projects',
                     head_nav_link: 'Links',
@@ -744,6 +767,8 @@
                     skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
                     projectsTitle: 'Featured Projects',
                     projectsDesc: 'Open-source projects on GitHub and GitVerse',
+                    proj_cat: 'A desktop cat that sits above all windows and taps its paws along with your keystrokes, keeps stats and holds screenshots. Native SwiftUI build for macOS plus a cross-platform Tauri 2 (Rust) build for macOS, Windows 10/11 and Linux (RedOS). Auto-updates, releases for every platform via GitHub Actions',
+                    proj_cat_page: 'Page',
                     proj_maxaction: 'A GitHub Action that sends notifications to the MAX messenger straight from a workflow: pushes, pull requests, deployments and failed builds reach a chat, channel or direct message through the official MAX Bot API. Written in Go with no third-party dependencies: the token is masked in logs, redirects are refused, retries honour Retry-After. Released as v1.0.0 under MIT',
                     proj_roop: 'RAG-Ollama-On-Premises -- an assistant over internal documents (PDF, DOCX, TXT, MD) that never leaves your network: chunking, embeddings, vector search in ChromaDB, Ollama answers with source references. CI/CD included',
                     proj_sedm: 'Code for the SEDM-2026 paper on plant disease diagnostics at the edge. CORAL domain adaptation, INT8 quantization and PolarQuant-3bit give 10.6x compression at 0.700 macro-F1 and 246 ms on a Raspberry Pi 4B',
