@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MAX Action -- уведомления в MAX из GitHub Actions | FgeeHa</title>
+  <meta name="description" content="MAX Action -- GitHub Action для отправки уведомлений в мессенджер MAX через официальный MAX Bot API: пуши, пул-реквесты, деплои и упавшие сборки в чат, канал или личные сообщения. Go, Docker, open source.">
+  <meta name="keywords" content="MAX Action, max-action, GitHub Action, MAX Bot API, мессенджер MAX, уведомления CI, GitHub Actions уведомления, Go, Docker, FgeeHa, Nikita Kolesnikov">
+  <meta name="author" content="Nikita Kolesnikov">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fgeeha.github.io/projects/max-action/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="MAX Action -- уведомления в MAX из GitHub Actions">
+  <meta property="og:description" content="Пуши, пул-реквесты, деплои и упавшие сборки приходят в чат MAX. Один шаг в workflow, официальный MAX Bot API. Open source.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/33605615">
+  <meta property="og:url" content="https://fgeeha.github.io/projects/max-action/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Nikita Kolesnikov Portfolio">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MAX Action">
+  <meta name="twitter:description" content="GitHub Action для отправки уведомлений в мессенджер MAX.">
+
+  <link rel="icon" href="images/icon.svg" type="image/svg+xml">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MAX Action",
+    "description": "GitHub Action для отправки уведомлений в мессенджер MAX через официальный MAX Bot API.",
+    "url": "https://fgeeha.github.io/projects/max-action/",
+    "downloadUrl": "https://github.com/marketplace/actions/max-message-notify",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Linux (GitHub Actions runner)",
+    "softwareVersion": "1.0.1",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" },
+    "author": { "@type": "Person", "name": "Nikita Kolesnikov", "url": "https://fgeeha.github.io/" },
+    "codeRepository": "https://github.com/Fgeeha/max-action"
+  }
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/CSS/style.css">
+  <style>
+    .main a:not(.btn) { color: #0d6efd; }
+    .main a:not(.btn):hover { color: #0a58ca; text-decoration: underline; }
+    .feature-emoji { font-size: 1.6rem; line-height: 1; }
+    .chat-mock { max-width: 340px; margin: 0 auto; background: #eef3fb; border-radius: 18px; padding: 16px; box-shadow: 0 6px 20px rgba(0,0,0,.12); text-align: left; }
+    .chat-mock .bot { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem; margin-bottom: 8px; }
+    .chat-mock .bot img { width: 28px; height: 28px; }
+    .chat-mock .bubble { background: #fff; border-radius: 4px 14px 14px 14px; padding: 10px 12px; font-size: .85rem; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+    .chat-mock .bubble b { display: block; margin-bottom: 6px; }
+    .chat-mock .time { text-align: right; font-size: .7rem; color: #6c757d; margin-top: 4px; }
+    .code-wrap { position: relative; }
+    .code-wrap pre { background: #1e1e1e; color: #e6e6e6; border-radius: 10px; padding: 44px 16px 14px; font-size: .82rem; overflow-x: auto; text-align: left; }
+    .table-inputs { text-align: left; }
+    .code-wrap .copy-btn { position: absolute; top: 8px; right: 8px; }
+    .table-inputs td:first-child, .table-inputs td:nth-child(2) { white-space: nowrap; }
+  </style>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    ym(95333846, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg portfolio-navbar sticky-top shadow-sm" aria-label="Main navigation">
+      <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand fw-semibold" href="/">Nikita &quot;FgeeHa&quot; Kolesnikov</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav ms-lg-3 me-auto mb-2 mb-lg-0 gap-lg-1">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/projects/">Проекты</a></li>
+            <li class="nav-item"><a class="nav-link" href="/study/">Учеба</a></li>
+            <li class="nav-item"><a class="nav-link" href="/social/">Ссылки</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11 col-12">
+          <article class="main">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb small mb-3">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/projects/">Проекты</a></li>
+                <li class="breadcrumb-item active" aria-current="page">MAX Action</li>
+              </ol>
+            </nav>
+
+            <!-- Герой -->
+            <div class="row align-items-center g-4 mb-4">
+              <div class="col-md-5">
+                <div class="chat-mock" aria-label="Пример уведомления в MAX">
+                  <div class="bot"><img src="images/icon.svg" alt="">CI-бот</div>
+                  <div class="bubble"><b>octocat triggered CI</b>Repository: Fgeeha/max-action
+Event: push
+Ref: refs/heads/Master
+Commit: 0123456
+Run: github.com/…/actions/runs/42</div>
+                  <div class="time">12:04</div>
+                </div>
+              </div>
+              <div class="col-md-7">
+                <p class="greeting mb-1">💬 Open source · GitHub Actions · MIT</p>
+                <h1>MAX Action</h1>
+                <p class="lead">Уведомления в мессенджер MAX прямо из workflow. Пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения.</p>
+                <p class="mb-3">
+                  <span class="badge bg-info text-dark">Go</span>
+                  <span class="badge bg-secondary">Docker</span>
+                  <span class="badge bg-secondary">MAX Bot API</span>
+                  <span class="badge bg-secondary">GitHub Actions</span>
+                  <span class="badge bg-success" id="releaseBadge">v1</span>
+                </p>
+                <a href="https://github.com/Fgeeha/max-action" class="btn btn-dark me-2 mb-2" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://github.com/marketplace/actions/max-message-notify" class="btn btn-outline-primary me-2 mb-2" target="_blank" rel="noopener noreferrer">Marketplace</a>
+                <a href="https://github.com/Fgeeha/max-action/releases/latest" class="btn btn-outline-secondary mb-2" target="_blank" rel="noopener noreferrer">Релизы</a>
+              </div>
+            </div>
+
+            <!-- Быстрый старт -->
+            <h2 id="quick-start">Быстрый старт</h2>
+            <p class="section-desc">Добавьте секреты <code>MAX_TOKEN</code> и <code>MAX_CHAT_ID</code> в настройках репозитория (Settings → Secrets and variables → Actions) и один шаг в workflow.</p>
+            <div class="code-wrap mb-2">
+              <button class="btn btn-sm btn-outline-light copy-btn" type="button">Копировать</button>
+<pre><code>name: MAX notification
+
+on:
+  push:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send MAX message
+        uses: Fgeeha/max-action@v1
+        with:
+          token: ${{ secrets.MAX_TOKEN }}
+          chat_id: ${{ secrets.MAX_CHAT_ID }}
+          message: |
+            ${{ github.actor }} pushed a commit
+
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.sha }}</code></pre>
+            </div>
+            <p class="text-muted small mb-4" id="releaseNote">Тег <code>@v1</code> всегда указывает на последний совместимый релиз.</p>
+
+            <div class="accordion mb-4" id="setup">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#setupBody">Где взять токен и ID чата</button>
+                </h2>
+                <div id="setupBody" class="accordion-collapse collapse" data-bs-parent="#setup">
+                  <div class="accordion-body small">
+                    <p><b>Токен</b> выдаётся при создании бота на платформе MAX для партнёров. Храните его только в GitHub Secrets.</p>
+                    <p><b>chat_id</b> — ID группового чата или канала, куда добавлен бот. ID групп и каналов бывают отрицательными, это нормально.</p>
+                    <p class="mb-0"><b>user_id</b> — ID пользователя для личного сообщения. Передаётся вместо <code>chat_id</code>: action требует ровно одного получателя. Способы узнать ID описаны в <a href="https://dev.max.ru/docs-api" target="_blank" rel="noopener noreferrer">документации MAX</a>.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Возможности -->
+            <h2>Что умеет</h2>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">📨</div><h5 class="card-title mt-2">Чат, канал или личка</h5><p class="card-text">Одно сообщение за запуск через официальный <code>POST /messages</code>. Получатель — <code>chat_id</code> или <code>user_id</code>, текст до 4000 символов.</p></div></div></div>
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">📝</div><h5 class="card-title mt-2">Текст из любого источника</h5><p class="card-text">Строка в <code>message</code>, файл из репозитория через <code>message_file</code> или готовая сводка о запуске, если текст не задан. Форматирование Markdown или HTML.</p></div></div></div>
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">🔐</div><h5 class="card-title mt-2">Токен не утекает</h5><p class="card-text">Токен маскируется до первой строки лога, идёт только в заголовке <code>Authorization</code>, вычищается из текстов ошибок. Редиректы запрещены, TLS не отключается.</p></div></div></div>
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">🔁</div><h5 class="card-title mt-2">Повторы без спама</h5><p class="card-text">Сетевые сбои, 429 и 502–504 повторяются с экспоненциальной задержкой и учётом <code>Retry-After</code>. Ошибки 400/401/403/404 не повторяются.</p></div></div></div>
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">📤</div><h5 class="card-title mt-2">Outputs для следующих шагов</h5><p class="card-text"><code>message_id</code>, <code>recipient_type</code> и <code>recipient_id</code> доступны через <code>steps.&lt;id&gt;.outputs</code>.</p></div></div></div>
+              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">⚡</div><h5 class="card-title mt-2">Быстрый старт шага</h5><p class="card-text">Готовый образ в GHCR на основе <code>scratch</code>, около 6 МБ. Ничего не компилируется в вашем workflow.</p></div></div></div>
+            </div>
+
+            <!-- Примеры -->
+            <h2>Примеры</h2>
+            <h5 class="mt-3">Только при падении сборки</h5>
+            <div class="code-wrap mb-3">
+              <button class="btn btn-sm btn-outline-light copy-btn" type="button">Копировать</button>
+<pre><code>- name: Send failure notification
+  if: ${{ failure() }}
+  uses: Fgeeha/max-action@v1
+  with:
+    token: ${{ secrets.MAX_TOKEN }}
+    chat_id: ${{ secrets.MAX_CHAT_ID }}
+    format: markdown
+    message: |
+      ❌ Workflow failed
+
+      Repository: ${{ github.repository }}
+      Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}</code></pre>
+            </div>
+            <h5>Текст из файла</h5>
+            <div class="code-wrap mb-3">
+              <button class="btn btn-sm btn-outline-light copy-btn" type="button">Копировать</button>
+<pre><code>- uses: actions/checkout@v4
+- run: git log -1 --pretty=%B &gt; notes.txt
+- uses: Fgeeha/max-action@v1
+  with:
+    token: ${{ secrets.MAX_TOKEN }}
+    chat_id: ${{ secrets.MAX_CHAT_ID }}
+    message_file: notes.txt</code></pre>
+            </div>
+            <h5>Сводка о запуске без текста</h5>
+            <p class="small">Если <code>message</code> и <code>message_file</code> не заданы, action соберёт сообщение сам: кто запустил, репозиторий, событие, ветка, короткий SHA и ссылка на запуск — как в примере вверху страницы.</p>
+            <div class="code-wrap mb-4">
+              <button class="btn btn-sm btn-outline-light copy-btn" type="button">Копировать</button>
+<pre><code>- uses: Fgeeha/max-action@v1
+  with:
+    token: ${{ secrets.MAX_TOKEN }}
+    chat_id: ${{ secrets.MAX_CHAT_ID }}</code></pre>
+            </div>
+
+            <!-- Параметры -->
+            <h2>Параметры</h2>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-inputs">
+                <thead><tr><th>Input</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+                <tbody>
+                  <tr><td><code>token</code></td><td>—</td><td>Токен бота MAX, обязателен</td></tr>
+                  <tr><td><code>chat_id</code></td><td>—</td><td>ID чата или канала</td></tr>
+                  <tr><td><code>user_id</code></td><td>—</td><td>ID пользователя для личного сообщения</td></tr>
+                  <tr><td><code>message</code></td><td>сводка о запуске</td><td>Текст, поддерживает многострочный ввод</td></tr>
+                  <tr><td><code>message_file</code></td><td>—</td><td>UTF-8 файл, приоритетнее <code>message</code></td></tr>
+                  <tr><td><code>format</code></td><td>пусто</td><td><code>markdown</code>, <code>html</code> или пусто</td></tr>
+                  <tr><td><code>notify</code></td><td><code>true</code></td><td>Уведомлять получателей</td></tr>
+                  <tr><td><code>disable_link_preview</code></td><td><code>false</code></td><td>Не строить превью ссылок</td></tr>
+                  <tr><td><code>timeout</code></td><td><code>15</code></td><td>Таймаут запроса, 1–120 секунд</td></tr>
+                  <tr><td><code>retries</code></td><td><code>2</code></td><td>Повторы после первой попытки, 0–5</td></tr>
+                  <tr><td><code>debug</code></td><td><code>false</code></td><td>Безопасный отладочный лог без токена и текста</td></tr>
+                  <tr><td><code>api_base_url</code></td><td><code>platform-api2.max.ru</code></td><td>Базовый URL API, для тестов и миграций</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mb-4">
+              <table class="table table-sm table-inputs">
+                <thead><tr><th>Output</th><th colspan="2">Описание</th></tr></thead>
+                <tbody>
+                  <tr><td><code>message_id</code></td><td colspan="2">ID отправленного сообщения, если API его вернул</td></tr>
+                  <tr><td><code>recipient_type</code></td><td colspan="2"><code>chat</code> или <code>user</code></td></tr>
+                  <tr><td><code>recipient_id</code></td><td colspan="2">Фактически использованный ID получателя</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Под капотом -->
+            <h2>Под капотом</h2>
+            <ul class="mb-3">
+              <li class="mb-2"><b>Go без сторонних зависимостей.</b> HTTP-клиент на стандартной библиотеке, ответ API читается с лимитом 1 МиБ, неизвестные поля JSON игнорируются.</li>
+              <li class="mb-2"><b>Docker Action.</b> Статический бинарник в образе <code>scratch</code>, публикуется в GHCR при релизе. Работает на Linux-раннерах.</li>
+              <li class="mb-2"><b>Цепочка сертификатов MAX.</b> <code>platform-api2.max.ru</code> использует сертификат Russian Trusted CA, которого нет в стандартных хранилищах. Официальный бандл Минцифры вшит в бинарник и добавляется только в пул этого клиента; CI предупреждает за 90 дней до истечения срока.</li>
+              <li class="mb-2"><b>Проверки.</b> Unit-тесты с race detector, прогон action против заглушки API в CI, actions закреплены по SHA. Живой тест с настоящим токеном вынесен в отдельный ручной workflow.</li>
+            </ul>
+            <p class="mb-4">
+              <a href="https://github.com/Fgeeha/max-action#readme" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">README</a>
+              <a href="https://github.com/Fgeeha/max-action/blob/Master/README.ru.md" class="btn btn-sm btn-outline-dark ms-1" target="_blank" rel="noopener noreferrer">README на русском</a>
+              <a href="https://github.com/Fgeeha/max-action/issues" class="btn btn-sm btn-outline-secondary ms-1" target="_blank" rel="noopener noreferrer">Сообщить о проблеме</a>
+            </p>
+
+            <p class="text-center"><a href="/projects/" class="btn btn-outline-primary">← Все проекты</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container text-center">
+      <div class="row align-items-center">
+        <div>&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
+  <script>
+    // Копирование примеров в буфер обмена.
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.nextElementSibling.innerText);
+          btn.textContent = 'Скопировано';
+        } catch (e) {
+          btn.textContent = 'Не удалось';
+        }
+        setTimeout(() => { btn.textContent = 'Копировать'; }, 1500);
+      });
+    });
+
+    // Подставляем версию последнего релиза.
+    (async function () {
+      try {
+        const res = await fetch('https://api.github.com/repos/Fgeeha/max-action/releases/latest', { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) return;
+        const rel = await res.json();
+        if (!rel.tag_name) return;
+        document.getElementById('releaseBadge').textContent = rel.tag_name;
+        document.getElementById('releaseNote').innerHTML = `Последний релиз: <code>${rel.tag_name}</code> от ${new Date(rel.published_at).toLocaleDateString('ru-RU')}. Тег <code>@v1</code> всегда указывает на последний совместимый релиз.`;
+      } catch (e) { /* остаётся статичный текст */ }
+    })();
+  </script>
+</body>
+</html>
