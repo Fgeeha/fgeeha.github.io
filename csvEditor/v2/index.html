@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор CSV файлов -- онлайн-инструмент</title>
+    <meta name="description" content="Онлайн-редактор CSV файлов. Загружайте, редактируйте и сохраняйте CSV прямо в браузере. Бесплатный инструмент от FgeeHa.">
+    <link rel="shortcut icon" href="../favicon.webp" type="image/webp">
+    <!-- Yandex.Metrika counter -->
+      <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        
+          ym(95333846, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+              webvisor:true
+          });
+        </script>
+        <meta name="yandex-verification" content="005c79e96def42bf" />
+        <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+    <!-- Подключаем библиотеку SheetJS для работы с Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;top:12px;left:12px;z-index:9999;color:#fff;background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:8px;font-size:.85rem;text-decoration:none;backdrop-filter:blur(4px);">← Home</a>
+    <div class="container">
+        <h1><a href="https://fgeeha.github.io/" style="text-decoration: none">📊</a> Редактор CSV файлов</h1>
+        <p class="subtitle">Таблица торговых точек → CSV или Excel. Данные никуда не отправляются и хранятся только в вашем браузере.</p>
+
+        <details class="help" id="helpBlock">
+            <summary>ℹ️ Как заполнять — коротко</summary>
+            <ul>
+                <li><b>Обязательные поля</b> отмечены <span class="req">*</span>: наименование, ИНН, название и адрес точки, координаты, телефон.</li>
+                <li><b>ИНН</b> — 10 цифр у организации, 12 у ИП. Если контрольная сумма не сходится, поле подсветится оранжевым: проверьте опечатку.</li>
+                <li><b>Координаты</b> — можно вводить через запятую, недостающие нули после точки допишутся сами (55.7512 → 55.751200). В Яндекс Картах: правый клик по точке → «Что здесь?».</li>
+                <li><b>Телефон</b> — вводите как удобно (8 909…, +7 (909)…), он приведётся к виду +79091234567.</li>
+                <li><b>Время</b> — 0900, 9:00 или 9.00 станет 09:00. Выходной — оставьте оба поля дня пустыми. Кнопка <b>⏱ Пн→все</b> копирует часы понедельника на всю неделю.</li>
+                <li><b>Из Excel</b> можно скопировать сразу несколько строк и вставить (Ctrl+V) в нужную ячейку. Enter — перейти к ячейке ниже.</li>
+                <li><b>Кодировка</b>: по умолчанию CSV выгружается в Windows-1251, как и раньше. UTF-8 нужен, если файл будут открывать в Google Таблицах, LibreOffice или в системе, которая ждёт UTF-8.</li>
+                <li>Таблица <b>сохраняется автоматически</b> в этом браузере: случайно закрытая вкладка ничего не потеряет.</li>
+            </ul>
+        </details>
+
+        <div class="toolbar">
+            <section class="tool-group">
+                <h3>Таблица</h3>
+                <button class="btn btn-primary" onclick="addEmptyRow()">➕ Добавить строку</button>
+                <button class="btn btn-danger" onclick="clearAll()">🗑️ Очистить всё</button>
+            </section>
+            <section class="tool-group">
+                <h3>Загрузить в редактор</h3>
+                <label class="btn btn-primary">📂 Загрузить CSV<input type="file" accept=".csv,.txt" hidden onchange="loadFile(event)"></label>
+                <label class="btn btn-primary">📊 Загрузить Excel<input type="file" accept=".xlsx,.xls" hidden onchange="loadFile(event)"></label>
+                <label class="field">Кодировка CSV
+                    <select id="importEncoding" class="select">
+                        <option value="auto" selected>Авто (UTF-8 / Windows-1251)</option>
+                        <option value="windows-1251">Windows-1251</option>
+                        <option value="utf-8">UTF-8</option>
+                    </select>
+                </label>
+                <p class="hint">…или перетащите файл в окно</p>
+            </section>
+            <section class="tool-group">
+                <h3>Выгрузить</h3>
+                <button class="btn btn-success" onclick="downloadCSV()">💾 Скачать CSV</button>
+                <button class="btn btn-success" onclick="downloadExcel()">📊 Скачать Excel</button>
+                <button class="btn btn-light" onclick="downloadTemplateCSV()">📄 Шаблон CSV</button>
+                <label class="field">Кодировка CSV
+                    <select id="exportEncoding" class="select">
+                        <option value="windows-1251" selected>Windows-1251</option>
+                        <option value="utf-8-bom">UTF-8 с BOM (для Excel)</option>
+                        <option value="utf-8">UTF-8</option>
+                    </select>
+                </label>
+            </section>
+            <section class="tool-group">
+                <h3>Формат времени</h3>
+                <label class="field">Разделитель
+                    <select id="timeSeparatorSelect" class="select" onchange="setTimeSeparator(this.value)">
+                        <option value=":" selected>09:00</option>
+                        <option value=".">09.00</option>
+                    </select>
+                </label>
+            </section>
+        </div>
+
+        <div class="status-bar">
+            <span id="statRows"></span>
+            <span id="statIssues"></span>
+            <button id="nextIssueBtn" class="link-btn" onclick="focusNextIssue()" hidden>Показать следующую ошибку →</button>
+            <span id="saveStatus" class="save-status"></span>
+        </div>
+        <div id="fieldHint" class="field-hint">Выберите ячейку, и здесь появится подсказка по формату.</div>
+
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead>
+                    <tr class="head-top">
+                        <th rowspan="2" class="sticky-col">№</th>
+                        <th rowspan="2" class="sticky-col-2">Наименование <span class="req">*</span></th>
+                        <th rowspan="2">ИНН <span class="req">*</span></th>
+                        <th rowspan="2">Название точки <span class="req">*</span></th>
+                        <th rowspan="2">Адрес точки <span class="req">*</span></th>
+                        <th rowspan="2">Широта <span class="req">*</span></th>
+                        <th rowspan="2">Долгота <span class="req">*</span></th>
+                        <th rowspan="2">Телефон <span class="req">*</span></th>
+                        <th colspan="2" class="day-shade">Понедельник</th>
+                        <th colspan="2">Вторник</th>
+                        <th colspan="2" class="day-shade">Среда</th>
+                        <th colspan="2">Четверг</th>
+                        <th colspan="2" class="day-shade">Пятница</th>
+                        <th colspan="2">Суббота</th>
+                        <th colspan="2" class="day-shade">Воскресенье</th>
+                        <th rowspan="2">Действия</th>
+                    </tr>
+                    <tr class="head-sub">
+                        <th class="day-shade">начало</th><th class="day-shade">конец</th>
+                        <th>начало</th><th>конец</th>
+                        <th class="day-shade">начало</th><th class="day-shade">конец</th>
+                        <th>начало</th><th>конец</th>
+                        <th class="day-shade">начало</th><th class="day-shade">конец</th>
+                        <th>начало</th><th>конец</th>
+                        <th class="day-shade">начало</th><th class="day-shade">конец</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div class="legend">
+            <span><i class="swatch swatch-error"></i> ошибка — не даст выгрузить файл</span>
+            <span><i class="swatch swatch-warn"></i> стоит проверить — выгрузке не мешает</span>
+            <span>Наведите курсор на подсвеченное поле, чтобы увидеть причину</span>
+        </div>
+    </div>
+
+    <div id="toasts" class="toasts"></div>
+
+    <!-- Модальное окно для отображения ошибок -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚠️ Результат проверки файла</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="errorContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const CSV_HEADERS = [
+            '№', 'Наименование', 'ИНН', 'Название торговой точки', 'Адрес торговой точки',
+            'Широта', 'Долгота', 'Контакты торговой точки',
+            'Время начала работы в понедельник', 'Время окончания работы в понедельник',
+            'Время начала работы во вторник', 'Время окончания работы во вторник',
+            'Время начала работы в среду', 'Время окончания работы в среду',
+            'Время начала работы в четверг', 'Время окончания работы в четверг',
+            'Время начала работы в пятницу', 'Время окончания работы в пятницу',
+            'Время начала работы в субботу', 'Время окончания работы в субботу',
+            'Время начала работы в воскресенье', 'Время окончания работы в воскресенье'
+        ];
+
+        const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+        // Колонки таблицы в порядке CSV, без колонки «№».
+        // Индекс значения в строке данных = индекс в COLUMNS + 1.
+        const COLUMNS = [
+            { type: 'text',  cls: 'wide-input',   ph: 'ООО Компания',              hint: 'Наименование организации или ИП', required: true },
+            { type: 'inn',   cls: 'narrow-input', ph: '1234567894',                hint: 'ИНН: 10 цифр у организации, 12 у ИП', required: true },
+            { type: 'text',  cls: 'wide-input',   ph: 'Магазин Центральный',       hint: 'Название торговой точки', required: true },
+            { type: 'text',  cls: 'wide-input',   ph: 'г. Город, ул. Улица, д. 1', hint: 'Адрес торговой точки', required: true },
+            { type: 'lat',   cls: 'coord-input',  ph: '55.751244',                 hint: 'Широта: от -90 до 90, 6 знаков после точки. Можно через запятую, нули допишутся', required: true },
+            { type: 'lon',   cls: 'coord-input',  ph: '37.618423',                 hint: 'Долгота: от -180 до 180, 6 знаков после точки. Можно через запятую, нули допишутся', required: true },
+            { type: 'phone', cls: 'phone-input',  ph: '+79091234567',              hint: 'Телефон: +7 и 10 цифр. Вводите в любом виде, он приведётся сам', required: true },
+            ...DAYS.flatMap((day, d) => [
+                { type: 'time', cls: 'time-input', ph: d < 5 ? '09:00' : '10:00', hint: `${day}, начало работы: 0900 или 9:00. Оба поля дня пустые — выходной`, day: d },
+                { type: 'time', cls: 'time-input', ph: d < 5 ? '21:00' : '20:00', hint: `${day}, окончание работы: 2100 или 21:00. Оба поля дня пустые — выходной`, day: d },
+            ]),
+        ];
+        const COL_INN = 2, COL_LAT = 5, COL_LON = 6, COL_PHONE = 7, COL_MON = 8;
+
+        const DRAFT_KEY = 'csvEditor_draft';
+        const MAX_SIZE_MB = { csv: 10, excel: 20 };
+
+        let TIME_SEPARATOR = ':';
+        let saveTimer = null;
+        let issueCursor = -1;
+        let draftSaveFailed = false;
+
+        // localStorage может быть недоступен (приватный режим, запрет сайта) — тогда работаем без него
+        function storageGet(key) {
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+
+        function storageSet(key, value) {
+            try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+        }
+
+        // ==================== ФОРМАТЫ ПОЛЕЙ ====================
+
+        function formatHHMM(hh, mm) {
+            return String(hh).padStart(2, '0') + TIME_SEPARATOR + String(mm).padStart(2, '0');
+        }
+
+        // isFinal=false — пока человек печатает, isFinal=true — окончательный вид (уход из поля, загрузка)
+        function normalizeTimeValue(raw, isFinal) {
+            const s = String(raw ?? '').trim();
+            if (!s) return '';
+
+            const match = s.match(/^(\d{1,2})\s*[:.,]\s*(\d{0,2})/);
+            let hh, mm;
+            if (match) {
+                [, hh, mm] = match;
+            } else {
+                const digits = s.replace(/\D/g, '').slice(0, 4);
+                if (!digits) return '';
+                if (digits.length <= 2) {
+                    hh = digits; mm = '';
+                } else if (digits.length === 3 && (isFinal || Number(digits.slice(0, 2)) > 23)) {
+                    // «930» — это 9:30, а не 93:0
+                    hh = digits.slice(0, 1); mm = digits.slice(1);
+                } else {
+                    hh = digits.slice(0, 2); mm = digits.slice(2);
+                }
+            }
+
+            if (isFinal) return formatHHMM(hh, mm || '0');
+            return mm === '' && !match ? hh : hh + TIME_SEPARATOR + mm;
+        }
+
+        function isValidTime(value) {
+            const m = String(value).match(/^(\d{2})[:.](\d{2})$/);
+            return !!m && Number(m[1]) <= 23 && Number(m[2]) <= 59;
+        }
+
+        function timeToMinutes(value) {
+            const [hh, mm] = value.split(/[:.]/).map(Number);
+            return hh * 60 + mm;
+        }
+
+        // Excel хранит время как долю суток: 0.375 = 09:00
+        function excelFractionToTime(value) {
+            // Ровно 1 — это 24:00; не превращаем в 00:00, а оставляем, чтобы проверка подсветила поле
+            if (value === 1) return formatHHMM(24, 0);
+            const minutes = Math.min(Math.round((value % 1) * 1440), 1439);
+            return formatHHMM(Math.floor(minutes / 60), minutes % 60);
+        }
+
+        function typingCoordinate(raw) {
+            let value = raw.replace(',', '.').replace(/[^\d.-]/g, '');
+            const parts = value.split('.');
+            if (parts.length === 2 && parts[1].length > 6) {
+                value = parts[0] + '.' + parts[1].substring(0, 6);
+            }
+            return value;
+        }
+
+        function normalizeCoordinate(raw) {
+            const s = String(raw).trim().replace(',', '.');
+            return /^-?\d+(\.\d+)?$/.test(s) ? Number(s).toFixed(6) : s;
+        }
+
+        function formatPhoneValue(raw) {
+            let digits = String(raw ?? '').replace(/\D/g, '');
+            if (!digits) return '';
+            if (digits[0] === '7' || digits[0] === '8') digits = digits.slice(1);
+            return '+7' + digits.slice(0, 10);
+        }
+
+        function innChecksumOk(inn) {
+            const d = [...inn].map(Number);
+            const check = (weights) => weights.reduce((sum, w, i) => sum + w * d[i], 0) % 11 % 10;
+            if (d.length === 10) return check([2, 4, 10, 3, 5, 9, 4, 6, 8]) === d[9];
+            return check([7, 2, 4, 10, 3, 5, 9, 4, 6, 8]) === d[10]
+                && check([3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8]) === d[11];
+        }
+
+        function isCoordinate(value, limit) {
+            return /^-?\d{1,3}\.\d{6}$/.test(value) && Math.abs(parseFloat(value)) <= limit;
+        }
+
+        // Значение из файла / буфера обмена → окончательный вид поля
+        function normalizeCell(col, raw) {
+            if (raw === null || raw === undefined) return '';
+            if (typeof raw === 'number') {
+                if (col.type === 'time' && raw >= 0) return excelFractionToTime(raw);
+                if (col.type === 'inn') {
+                    // Excel теряет ведущий ноль у ИНН, сохранённого как число
+                    const s = String(Math.trunc(raw));
+                    return s.length === 9 || s.length === 11 ? '0' + s : s;
+                }
+                raw = String(raw);
+            }
+            const s = String(raw).trim();
+            switch (col.type) {
+                case 'inn': return s.replace(/\D/g, '');
+                case 'lat':
+                case 'lon': return normalizeCoordinate(s);
+                case 'phone': return formatPhoneValue(s);
+                case 'time': return normalizeTimeValue(s, true);
+                default: return s;
+            }
+        }
+
+        function formatWhileTyping(col, value) {
+            switch (col.type) {
+                case 'inn': return value.replace(/\D/g, '').slice(0, 12);
+                case 'lat':
+                case 'lon': return typingCoordinate(value);
+                case 'phone': return formatPhoneValue(value);
+                case 'time': return normalizeTimeValue(value, false);
+                default: return value;
+            }
+        }
+
+        // ==================== ПРОВЕРКА СТРОК ====================
+
+        function isRowEmpty(values) {
+            return values.slice(1).every((v) => !String(v).trim());
+        }
+
+        // strict — проверять и незаполненные поля (после загрузки файла или попытки выгрузки),
+        // иначе только формат уже введённых значений, чтобы не краснело всё при наборе
+        function checkRow(values, strict) {
+            const issues = [];
+            const err = (col, msg) => issues.push({ col, level: 'error', msg });
+            const warn = (col, msg) => issues.push({ col, level: 'warn', msg });
+            if (isRowEmpty(values)) return issues;
+
+            if (strict) {
+                COLUMNS.forEach((c, i) => {
+                    if (c.required && !values[i + 1]) err(i + 1, 'Обязательное поле — заполните его');
+                });
+            }
+
+            const inn = values[COL_INN];
+            if (inn) {
+                if (!/^(\d{10}|\d{12})$/.test(inn)) err(COL_INN, `ИНН должен содержать 10 цифр (организация) или 12 (ИП), сейчас ${inn.length}`);
+                else if (!innChecksumOk(inn)) warn(COL_INN, 'Контрольная сумма ИНН не сходится — возможно, опечатка');
+            }
+
+            const lat = values[COL_LAT];
+            const lon = values[COL_LON];
+            if (lat && !isCoordinate(lat, 90)) {
+                err(COL_LAT, Math.abs(parseFloat(lat)) > 90
+                    ? 'Широта больше 90° — похоже, широта и долгота перепутаны местами'
+                    : 'Широта: число от -90 до 90 с 6 знаками после точки, например 55.751244');
+            }
+            if (lon && !isCoordinate(lon, 180)) err(COL_LON, 'Долгота: число от -180 до 180 с 6 знаками после точки, например 37.618423');
+
+            const phone = values[COL_PHONE];
+            if (phone && !/^\+7\d{10}$/.test(phone)) err(COL_PHONE, `Телефон: +7 и ещё 10 цифр, сейчас ${phone.length - 2}`);
+
+            for (let d = 0; d < 7; d++) {
+                const start = COL_MON + d * 2;
+                const end = start + 1;
+                [start, end].forEach((c) => {
+                    if (values[c] && !isValidTime(values[c])) err(c, 'Время в формате ЧЧ:ММ, от 00:00 до 23:59');
+                });
+                if (strict && !values[start] !== !values[end]) {
+                    err(values[start] ? end : start, `${DAYS[d]}: укажите и начало, и окончание (оба пустые — выходной)`);
+                }
+                if (isValidTime(values[start]) && isValidTime(values[end]) && timeToMinutes(values[end]) < timeToMinutes(values[start])) {
+                    warn(end, `${DAYS[d]}: окончание раньше начала — проверьте (если точка работает ночью, всё верно)`);
+                }
+            }
+            return issues;
+        }
+
+        // ==================== ТАБЛИЦА ====================
+
+        const tableBody = () => document.getElementById('tableBody');
+        const allRows = () => [...tableBody().rows];
+
+        function getRowValues(row) {
+            return [row.cells[0].textContent, ...[...row.querySelectorAll('input')].map((i) => i.value.trim())];
+        }
+
+        function hasData() {
+            return allRows().some((r) => !isRowEmpty(getRowValues(r)));
+        }
+
+        function renumber() {
+            allRows().forEach((r, i) => { r.cells[0].textContent = i + 1; });
+        }
+
+        function addRow(values = null, after = null) {
+            const row = document.createElement('tr');
+            const num = row.insertCell();
+            num.className = 'row-number sticky-col';
+
+            COLUMNS.forEach((col, i) => {
+                const td = row.insertCell();
+                if (i === 0) td.className = 'sticky-col-2';
+                if (col.day !== undefined && col.day % 2 === 0) td.classList.add('day-shade');
+                const input = document.createElement('input');
+                input.type = col.type === 'phone' ? 'tel' : 'text';
+                input.className = col.cls;
+                input.placeholder = col.ph;
+                input.title = col.hint;
+                if (col.type === 'inn' || col.type === 'time') input.inputMode = 'numeric';
+                input.value = values ? normalizeCell(col, values[i + 1]) : '';
+                td.appendChild(input);
+            });
+
+            const actions = row.insertCell();
+            actions.className = 'actions';
+            actions.innerHTML = `
+                <button type="button" class="icon-btn" data-action="copy-hours" title="Скопировать часы понедельника на все дни недели">⏱ Пн→все</button>
+                <button type="button" class="icon-btn" data-action="duplicate" title="Дублировать строку — для новой точки той же компании">⧉</button>
+                <button type="button" class="icon-btn delete-btn" data-action="delete" title="Удалить строку">✕</button>`;
+
+            if (after) {
+                after.after(row);
+                renumber();
+            } else {
+                tableBody().appendChild(row);
+                num.textContent = tableBody().rows.length;
+            }
+            return row;
+        }
+
+        function addEmptyRow() {
+            const row = addRow();
+            row.querySelector('input').focus();
+            row.scrollIntoView({ block: 'nearest' });
+            afterTableChange();
+        }
+
+        function validateRow(row) {
+            const issues = checkRow(getRowValues(row), row.dataset.strict === '1');
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach((input, i) => {
+                input.classList.remove('error', 'warn');
+                input.title = COLUMNS[i].hint;
+            });
+            issues.forEach(({ col, level, msg }) => {
+                const input = inputs[col - 1];
+                if (input.classList.contains('error')) return;
+                input.classList.remove('warn');
+                input.classList.add(level);
+                input.title = msg;
+            });
+            const hasError = issues.some((i) => i.level === 'error');
+            row.classList.toggle('row-error', hasError);
+            row.classList.toggle('row-warn', !hasError && issues.length > 0);
+            return issues;
+        }
+
+        function validateAll() {
+            allRows().forEach(validateRow);
+            updateStatus();
+        }
+
+        function updateStatus() {
+            const rows = allRows();
+            const filled = rows.filter((r) => !isRowEmpty(getRowValues(r))).length;
+            const errors = rows.filter((r) => r.classList.contains('row-error')).length;
+            const warns = rows.filter((r) => r.classList.contains('row-warn')).length;
+
+            document.getElementById('statRows').textContent = `Заполнено строк: ${filled} из ${rows.length}`;
+            const issues = document.getElementById('statIssues');
+            issues.className = errors ? 'stat-error' : warns ? 'stat-warn' : 'stat-ok';
+            issues.textContent = errors
+                ? `❌ Строк с ошибками: ${errors}` + (warns ? ` · ⚠️ проверить: ${warns}` : '')
+                : warns ? `⚠️ Стоит проверить строк: ${warns}` : '✅ Ошибок нет';
+            document.getElementById('nextIssueBtn').hidden = !(errors || warns);
+        }
+
+        function updateFieldHint(input) {
+            const hint = document.getElementById('fieldHint');
+            const col = COLUMNS[input.closest('td').cellIndex - 1];
+            const level = input.classList.contains('error') ? 'error' : input.classList.contains('warn') ? 'warn' : '';
+            hint.className = 'field-hint' + (level ? ' hint-' + level : '');
+            hint.textContent = level ? `${level === 'error' ? '❌' : '⚠️'} ${input.title}` : `💡 ${col.hint}`;
+        }
+
+        function focusNextIssue() {
+            let list = [...tableBody().querySelectorAll('input.error')];
+            if (!list.length) list = [...tableBody().querySelectorAll('input.warn')];
+            if (!list.length) return;
+            issueCursor = (issueCursor + 1) % list.length;
+            const input = list[issueCursor];
+            input.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+            input.focus({ preventScroll: true });
+        }
+
+        function afterTableChange() {
+            updateStatus();
+            scheduleSave();
+        }
+
+        // ==================== ДЕЙСТВИЯ СО СТРОКАМИ ====================
+
+        function copyMondayHours(row) {
+            const inputs = row.querySelectorAll('input');
+            const start = inputs[COL_MON - 1].value;
+            const end = inputs[COL_MON].value;
+            if (!start || !end) {
+                showNotification('Сначала заполните начало и окончание в понедельник', 'warning');
+                inputs[start ? COL_MON : COL_MON - 1].focus();
+                return;
+            }
+            for (let d = 1; d < 7; d++) {
+                inputs[COL_MON - 1 + d * 2].value = start;
+                inputs[COL_MON + d * 2].value = end;
+            }
+            validateRow(row);
+            afterTableChange();
+            showNotification('Часы понедельника скопированы на все дни. Поправьте выходные, если они отличаются', 'success');
+        }
+
+        function duplicateRow(row) {
+            const copy = addRow(getRowValues(row), row);
+            copy.dataset.strict = row.dataset.strict || '';
+            validateRow(copy);
+            const pointName = copy.querySelectorAll('input')[2];
+            pointName.focus();
+            pointName.select();
+            afterTableChange();
+            showNotification('Строка продублирована — поменяйте данные точки', 'success');
+        }
+
+        function deleteRow(row) {
+            const next = row.nextElementSibling;
+            row.remove();
+            if (!tableBody().rows.length) addRow();
+            renumber();
+            afterTableChange();
+            showNotification('Строка удалена', 'success', {
+                label: 'Вернуть',
+                run: () => {
+                    if (next && next.parentNode) next.before(row);
+                    else tableBody().appendChild(row);
+                    renumber();
+                    afterTableChange();
+                },
+            });
+        }
+
+        function clearAll() {
+            if (!confirm('Вы уверены, что хотите удалить все строки?')) return;
+            tableBody().innerHTML = '';
+            addRow();
+            afterTableChange();
+            showNotification('Все данные удалены', 'success');
+        }
+
+        // ==================== СОБЫТИЯ ТАБЛИЦЫ ====================
+
+        function columnOf(input) {
+            return COLUMNS[input.closest('td').cellIndex - 1];
+        }
+
+        function onTableInput(e) {
+            const input = e.target;
+            if (input.tagName !== 'INPUT') return;
+            const formatted = formatWhileTyping(columnOf(input), input.value);
+            if (formatted !== input.value) input.value = formatted;
+            // Подсветку снимаем сразу, как только ошибку исправили
+            const row = input.closest('tr');
+            if (row.classList.contains('row-error') || row.classList.contains('row-warn')) {
+                validateRow(row);
+                updateStatus();
+                updateFieldHint(input);
+            }
+            scheduleSave();
+        }
+
+        function onTableFocusOut(e) {
+            const input = e.target;
+            if (input.tagName !== 'INPUT') return;
+            input.value = normalizeCell(columnOf(input), input.value);
+            validateRow(input.closest('tr'));
+            afterTableChange();
+        }
+
+        function onTableFocusIn(e) {
+            if (e.target.tagName === 'INPUT') updateFieldHint(e.target);
+        }
+
+        function onTableKeydown(e) {
+            if (e.target.tagName !== 'INPUT') return;
+            const td = e.target.closest('td');
+            const row = td.parentNode;
+
+            // Tab из последней ячейки последней заполненной строки — новая строка
+            const isLastCell = td.cellIndex === COLUMNS.length && !row.nextElementSibling;
+            if (e.key === 'Tab' && !e.shiftKey && isLastCell && !isRowEmpty(getRowValues(row))) {
+                e.preventDefault();
+                addRow().querySelector('input').focus();
+                afterTableChange();
+                return;
+            }
+
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            let target = e.shiftKey ? row.previousElementSibling : row.nextElementSibling;
+            if (!target && !e.shiftKey && !isRowEmpty(getRowValues(row))) target = addRow();
+            if (target) target.cells[td.cellIndex].querySelector('input').focus();
+        }
+
+        // Вставка блока ячеек из Excel / Google Таблиц
+        function onTablePaste(e) {
+            const input = e.target;
+            if (input.tagName !== 'INPUT') return;
+            const text = e.clipboardData.getData('text/plain').replace(/\r?\n$/, '');
+            if (!/[\t\n]/.test(text)) return;
+            e.preventDefault();
+
+            let grid = parseDelimited(text, '\t');
+            const startCol = input.closest('td').cellIndex;
+            // Строку заголовков узнаём по двум и более совпавшим названиям колонок
+            const isHeader = (cells) => cells.filter((v) => CSV_HEADERS.includes(v.trim())).length >= 2;
+            if (grid.length && isHeader(grid[0])) grid = grid.slice(1);
+            // Скопировали строки целиком вместе с колонкой «№»
+            if (startCol === 1 && grid.length && grid[0].length === CSV_HEADERS.length) grid = grid.map((r) => r.slice(1));
+            if (!grid.length) return;
+
+            let row = input.closest('tr');
+            grid.forEach((cells, r) => {
+                if (r > 0) row = row.nextElementSibling || addRow();
+                const inputs = row.querySelectorAll('input');
+                cells.forEach((value, c) => {
+                    const col = startCol + c;
+                    if (col <= COLUMNS.length) inputs[col - 1].value = normalizeCell(COLUMNS[col - 1], value);
+                });
+                validateRow(row);
+            });
+            afterTableChange();
+            showNotification(`Вставлено строк: ${grid.length}`, 'success');
+        }
+
+        function onTableClick(e) {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const row = btn.closest('tr');
+            ({ 'copy-hours': copyMondayHours, duplicate: duplicateRow, delete: deleteRow })[btn.dataset.action](row);
+        }
+
+        // ==================== ЧЕРНОВИК ====================
+
+        function scheduleSave() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveDraft, 400);
+        }
+
+        function saveDraft() {
+            clearTimeout(saveTimer);
+            const rows = allRows().map(getRowValues).filter((v) => !isRowEmpty(v));
+            const ok = storageSet(DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), rows }));
+            draftSaveFailed = !ok;
+            const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('saveStatus').textContent = ok
+                ? `💾 Сохранено в браузере · ${time}`
+                : '⚠️ Автосохранение недоступно (приватный режим?) — не закрывайте вкладку';
+        }
+
+        function restoreDraft() {
+            let draft = null;
+            // Повреждённый черновик просто игнорируем — начинаем с пустой таблицы
+            try { draft = JSON.parse(storageGet(DRAFT_KEY)); } catch (e) { draft = null; }
+            if (!draft || !Array.isArray(draft.rows) || !draft.rows.length) return false;
+            draft.rows.forEach((values) => addRow(values));
+            const when = new Date(draft.savedAt).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            showNotification(`Восстановлены данные с прошлого раза: ${draft.rows.length} строк (${when})`, 'success');
+            return true;
+        }
+
+        // ==================== КОДИРОВКИ ====================
+
+        // Таблица символ → байт Windows-1251, построенная из встроенного декодера браузера
+        const CP1251_BYTES = (() => {
+            const map = new Map();
+            const decoder = new TextDecoder('windows-1251');
+            for (let b = 0x80; b <= 0xFF; b++) map.set(decoder.decode(Uint8Array.of(b)), b);
+            return map;
+        })();
+
+        function encodeText(text, encoding) {
+            if (encoding === 'utf-8') return { bytes: new TextEncoder().encode(text), lost: [] };
+            if (encoding === 'utf-8-bom') return { bytes: new TextEncoder().encode('\uFEFF' + text), lost: [] };
+
+            const bytes = [];
+            const lost = new Set();
+            for (const ch of text) {
+                const code = ch.codePointAt(0);
+                if (code < 0x80) bytes.push(code);
+                else if (CP1251_BYTES.has(ch)) bytes.push(CP1251_BYTES.get(ch));
+                else { bytes.push(0x3F); lost.add(ch); }
+            }
+            return { bytes: Uint8Array.from(bytes), lost: [...lost] };
+        }
+
+        function decodeBytes(bytes, encoding) {
+            if (encoding === 'auto') {
+                try {
+                    return { text: new TextDecoder('utf-8', { fatal: true }).decode(bytes), used: 'UTF-8' };
+                } catch (e) {
+                    encoding = 'windows-1251';
+                }
+            }
+            return {
+                text: new TextDecoder(encoding).decode(bytes),
+                used: encoding === 'utf-8' ? 'UTF-8' : 'Windows-1251',
+            };
+        }
+
+        // «РџСЂРёРІРµС‚» — UTF-8, прочитанный как Windows-1251; «�» — наоборот
+        function looksMisdecoded(text) {
+            if (text.includes('\uFFFD')) return true;
+            const mojibake = text.match(/[РС][\u0402-\u040F\u0452-\u045F\u00A0-\u00BF\u2018-\u203A\u2116]/g) || [];
+            return mojibake.length > 3;
+        }
+
+        // ==================== ЗАГРУЗКА ====================
+
+        // CSV с поддержкой кавычек: «г. Москва; корп. 2» не разъедется по колонкам
+        function parseDelimited(text, delimiter) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let quoted = false;
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                if (quoted) {
+                    if (c !== '"') field += c;
+                    else if (text[i + 1] === '"') { field += '"'; i++; }
+                    else quoted = false;
+                } else if (c === '"' && field === '') {
+                    quoted = true;
+                } else if (c === delimiter) {
+                    row.push(field); field = '';
+                } else if (c === '\n' || c === '\r') {
+                    if (c === '\r' && text[i + 1] === '\n') i++;
+                    row.push(field); rows.push(row);
+                    row = []; field = '';
+                } else {
+                    field += c;
+                }
+            }
+            if (field !== '' || row.length) { row.push(field); rows.push(row); }
+            return rows;
+        }
+
+        function detectDelimiter(text) {
+            const firstLine = text.split('\n')[0];
+            let best = ';';
+            let bestCount = 0;
+            [';', ',', '\t', '|'].forEach((d) => {
+                const count = firstLine.split(d).length - 1;
+                if (count > bestCount) { best = d; bestCount = count; }
+            });
+            return best;
+        }
+
+        function loadFile(event) {
+            const file = event.target.files[0];
+            event.target.value = '';
+            if (file) importFile(file);
+        }
+
+        function importFile(file) {
+            const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+            const kind = ['.csv', '.txt'].includes(ext) ? 'csv' : ['.xlsx', '.xls'].includes(ext) ? 'excel' : null;
+            if (!kind) {
+                showNotification('Поддерживаются файлы .csv, .xlsx и .xls', 'error');
+                return;
+            }
+            if (file.size > MAX_SIZE_MB[kind] * 1024 * 1024) {
+                showNotification(`Ошибка: файл слишком большой (макс. ${MAX_SIZE_MB[kind]} МБ)`, 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const bytes = new Uint8Array(reader.result);
+                    if (kind === 'csv') importCSVBytes(bytes);
+                    else importExcelBytes(bytes);
+                } catch (error) {
+                    console.error('Ошибка при загрузке файла:', error);
+                    showNotification('Ошибка при чтении файла: ' + error.message, 'error');
+                }
+            };
+            reader.onerror = () => showNotification('Ошибка при чтении файла', 'error');
+            reader.readAsArrayBuffer(file);
+        }
+
+        function importCSVBytes(bytes) {
+            const report = { errors: [], warnings: [] };
+            const { text, used } = decodeBytes(bytes, document.getElementById('importEncoding').value);
+
+            if (!text.trim()) {
+                report.errors.push({ message: 'Файл пустой', solution: 'Убедитесь, что файл содержит данные' });
+                return rejectImport(report);
+            }
+            if (looksMisdecoded(text)) {
+                report.errors.push({
+                    message: `Текст читается с искажениями — файл прочитан как ${used}`,
+                    solution: 'Выберите другую «Кодировку CSV» рядом с кнопкой загрузки (или «Авто») и загрузите файл ещё раз.',
+                });
+                return rejectImport(report);
+            }
+
+            const delimiter = detectDelimiter(text);
+            if (delimiter !== ';') {
+                const name = { ',': 'запятая', '\t': 'табуляция', '|': 'вертикальная черта' }[delimiter];
+                report.warnings.push({
+                    message: `Разделитель в файле — ${name}, а не точка с запятой`,
+                    solution: 'Файл прочитан. При выгрузке будет использована точка с запятой (;).',
+                });
+            }
+            applyImport(parseDelimited(text, delimiter), report, `CSV, ${used}`);
+        }
+
+        function importExcelBytes(bytes) {
+            const report = { errors: [], warnings: [] };
+            const workbook = XLSX.read(bytes, { type: 'array' });
+            if (!workbook.SheetNames.length) {
+                report.errors.push({ message: 'Файл Excel не содержит листов', solution: 'Проверьте, что выбран правильный файл' });
+                return rejectImport(report);
+            }
+            const sheetName = workbook.SheetNames[0];
+            if (workbook.SheetNames.length > 1) {
+                report.warnings.push({
+                    message: `В файле листов: ${workbook.SheetNames.length}. Загружен первый — «${sheetName}»`,
+                    solution: 'Если данные на другом листе, сделайте его первым и загрузите файл снова.',
+                });
+            }
+            // raw: числа остаются числами — так видно время Excel (0.375) и ИНН без ведущего нуля
+            const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true });
+            applyImport(rows, report, 'Excel');
+        }
+
+        function rejectImport(report) {
+            showValidationErrors(report);
+            showNotification('Файл не загружен — смотрите детали', 'error');
+        }
+
+        function applyImport(rows, report, sourceLabel) {
+            const [header, ...body] = rows;
+            const dataRows = body.filter((r) => r.some((v) => String(v).trim() !== ''));
+            const skipped = body.length - dataRows.length;
+
+            if (!header || !dataRows.length) {
+                report.errors.push({ message: 'В файле нет строк с данными', solution: 'Файл должен содержать строку заголовков и хотя бы одну строку данных' });
+            } else if (header.length < CSV_HEADERS.length) {
+                report.errors.push({
+                    message: `Недостаточно колонок: найдено ${header.length}, ожидается ${CSV_HEADERS.length}`,
+                    solution: 'Скачайте «Шаблон CSV» и сверьте колонки: №, Наименование, ИНН, Название точки, Адрес, Широта, Долгота, Телефон и время работы по дням.',
+                });
+            }
+            if (report.errors.length) return rejectImport(report);
+
+            if (header.length > CSV_HEADERS.length) {
+                report.warnings.push({ message: `Колонок больше, чем нужно (${header.length} вместо ${CSV_HEADERS.length})`, solution: 'Лишние колонки справа проигнорированы' });
+            }
+            if (skipped) {
+                report.warnings.push({ message: `Пропущено пустых строк: ${skipped}`, solution: 'В таблицу они не попали' });
+            }
+            if (hasData() && !confirm('Заменить данные в таблице содержимым файла? Текущие строки будут удалены.')) return;
+
+            tableBody().innerHTML = '';
+            dataRows.forEach((values) => { addRow(values).dataset.strict = '1'; });
+            validateAll();
+            scheduleSave();
+
+            const bad = allRows().filter((r) => r.classList.contains('row-error')).length;
+            if (bad) {
+                report.warnings.push({
+                    message: `Строк с ошибками: ${bad}`,
+                    solution: 'Они подсвечены красным в таблице. Нажмите «Показать следующую ошибку» над таблицей, чтобы пройтись по ним.',
+                });
+            }
+            if (report.warnings.length) showValidationErrors(report);
+            showNotification(`Загружено строк: ${dataRows.length} (${sourceLabel})`, 'success');
+        }
+
+        function showValidationErrors(report) {
+            const block = (title, color, items, cls, prefix) => items.length ? `
+                <h3 style="color: ${color}; margin: 10px 0 15px 0;">${title}</h3>
+                <ul class="error-list">${items.map((it) => `
+                    <li class="${cls}">
+                        <strong>${escapeHtml(it.message)}</strong><br>
+                        <small>💡 ${prefix}${escapeHtml(it.solution)}</small>
+                    </li>`).join('')}
+                </ul>` : '';
+
+            document.getElementById('errorContent').innerHTML =
+                block('❌ Критические ошибки:', '#eb3349', report.errors, 'error-item', 'Решение: ')
+                + block('⚠️ Обратите внимание:', '#f2994a', report.warnings, 'warning-item', '');
+            document.getElementById('errorModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        // ==================== ВЫГРУЗКА ====================
+
+        function csvCell(value) {
+            return /[;"\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+        }
+
+        function toCSV(rows) {
+            return rows.map((r) => r.map((v) => csvCell(String(v))).join(';')).join('\n') + '\n';
+        }
+
+        // Все строки проверяются строго; при ошибках выгрузка не делается
+        function collectExportRows() {
+            const rows = allRows();
+            rows.forEach((r) => { r.dataset.strict = '1'; validateRow(r); });
+            updateStatus();
+
+            const bad = rows.filter((r) => r.classList.contains('row-error')).map((r) => r.cells[0].textContent);
+            if (bad.length) {
+                const list = bad.length > 10 ? bad.slice(0, 10).join(', ') + '…' : bad.join(', ');
+                showNotification(`Исправьте ошибки в строках ${list} — поля подсвечены красным`, 'error');
+                issueCursor = -1;
+                focusNextIssue();
+                return null;
+            }
+
+            const data = rows.map(getRowValues)
+                .filter((v) => !isRowEmpty(v))
+                .map((v, i) => [String(i + 1), ...v.slice(1)]);
+            if (!data.length) {
+                showNotification('Нет заполненных строк для сохранения', 'error');
+                return null;
+            }
+            return data;
+        }
+
+        function downloadBytes(bytes, type, fileName) {
+            const url = URL.createObjectURL(new Blob([bytes], { type }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveCSVText(text, prefix) {
+            const encoding = document.getElementById('exportEncoding').value;
+            const { bytes, lost } = encodeText(text, encoding);
+            if (lost.length && !confirm(
+                `Эти символы нельзя записать в Windows-1251, в файле они станут «?»:\n${lost.join('  ')}\n\n`
+                + 'Продолжить? (Отмена — чтобы исправить текст или выбрать кодировку UTF-8)')) {
+                return false;
+            }
+            const charset = encoding === 'windows-1251' ? 'windows-1251' : 'utf-8';
+            downloadBytes(bytes, `text/csv;charset=${charset}`, prefix + new Date().toISOString().split('T')[0] + '.csv');
+            return true;
+        }
+
+        function downloadCSV() {
+            const data = collectExportRows();
+            if (!data) return;
+            if (saveCSVText(toCSV([CSV_HEADERS, ...data]), 'data_')) {
+                showNotification(`CSV файл успешно создан (${data.length} строк)`, 'success');
+            }
+        }
+
+        function downloadTemplateCSV() {
+            const sampleRow = [
+                '1', 'ООО "Компания"', '1234567894', 'Магазин Центральный', 'г. Город, ул. Улица, д. 1',
+                '55.751244', '37.618423', '+79001234567',
+                '09:00', '21:00', '09:00', '21:00', '09:00', '21:00', '09:00', '21:00', '09:00', '21:00',
+                '10:00', '20:00', '10:00', '20:00'
+            ];
+            if (saveCSVText(toCSV([CSV_HEADERS, sampleRow]), 'template_')) {
+                showNotification('Шаблон CSV успешно скачан', 'success');
+            }
+        }
+
+        function downloadExcel() {
+            const data = collectExportRows();
+            if (!data) return;
+
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet([CSV_HEADERS, ...data]);
+            worksheet['!cols'] = CSV_HEADERS.map((h, i) => ({ wch: i === 0 ? 5 : i <= 4 ? 30 : 14 }));
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Данные');
+            XLSX.writeFile(workbook, 'data_' + new Date().toISOString().split('T')[0] + '.xlsx');
+
+            showNotification(`Excel файл успешно создан (${data.length} строк)`, 'success');
+        }
+
+        // ==================== НАСТРОЙКИ И ИНТЕРФЕЙС ====================
+
+        function setTimeSeparator(sep) {
+            if (sep !== ':' && sep !== '.') return;
+            TIME_SEPARATOR = sep;
+            storageSet('time_separator', sep);
+            document.getElementById('timeSeparatorSelect').value = sep;
+            document.querySelectorAll('#tableBody input.time-input').forEach((input) => {
+                input.value = normalizeTimeValue(input.value, true);
+            });
+            validateAll();
+            scheduleSave();
+            showNotification(`Разделитель времени установлен: "${sep}"`, 'success');
+        }
+
+        // Уведомления складываются в стопку; обычные заменяют друг друга,
+        // а уведомление с кнопкой («Вернуть») живёт до своего таймаута
+        function showNotification(message, type, action) {
+            document.querySelectorAll('.notification:not(.has-action)').forEach((n) => n.remove());
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            if (action) {
+                const btn = document.createElement('button');
+                btn.textContent = action.label;
+                btn.onclick = () => { action.run(); notification.remove(); };
+                notification.append(' ', btn);
+                notification.classList.add('has-action');
+            }
+            document.getElementById('toasts').appendChild(notification);
+            setTimeout(() => notification.remove(), action ? 7000 : 4000);
+        }
+
+        function setupDragAndDrop() {
+            let depth = 0;
+            const isFileDrag = (e) => [...e.dataTransfer.types].includes('Files');
+            document.addEventListener('dragenter', (e) => {
+                if (!isFileDrag(e)) return;
+                depth++;
+                document.body.classList.add('dragging');
+            });
+            document.addEventListener('dragleave', (e) => {
+                if (!isFileDrag(e)) return;
+                if (--depth <= 0) { depth = 0; document.body.classList.remove('dragging'); }
+            });
+            document.addEventListener('dragover', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => {
+                e.preventDefault();
+                depth = 0;
+                document.body.classList.remove('dragging');
+                const file = e.dataTransfer.files[0];
+                if (file) importFile(file);
+            });
+        }
+
+        function init() {
+            const savedSep = storageGet('time_separator');
+            if (savedSep === ':' || savedSep === '.') TIME_SEPARATOR = savedSep;
+            document.getElementById('timeSeparatorSelect').value = TIME_SEPARATOR;
+
+            ['importEncoding', 'exportEncoding'].forEach((id) => {
+                const select = document.getElementById(id);
+                const saved = storageGet(id);
+                if (saved && [...select.options].some((o) => o.value === saved)) select.value = saved;
+                select.addEventListener('change', () => storageSet(id, select.value));
+            });
+
+            const help = document.getElementById('helpBlock');
+            help.open = storageGet('help_closed') !== '1';
+            help.addEventListener('toggle', () => storageSet('help_closed', help.open ? '0' : '1'));
+
+            const body = tableBody();
+            body.addEventListener('input', onTableInput);
+            body.addEventListener('focusout', onTableFocusOut);
+            body.addEventListener('focusin', onTableFocusIn);
+            body.addEventListener('keydown', onTableKeydown);
+            body.addEventListener('paste', onTablePaste);
+            body.addEventListener('click', onTableClick);
+
+            window.addEventListener('click', (e) => {
+                if (e.target === document.getElementById('errorModal')) closeModal();
+            });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+            window.addEventListener('pagehide', saveDraft);
+            // Если автосохранение не работает, браузер переспросит перед закрытием вкладки
+            window.addEventListener('beforeunload', (e) => {
+                if (draftSaveFailed && hasData()) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+            setupDragAndDrop();
+
+            if (!restoreDraft()) addRow();
+            validateAll();
+        }
+
+        init();
+</script>
+</body>
+</html>
