@@ -45,9 +45,11 @@ export const HELP = `Поддерживается учебное подмнож�
   kubectl rollout restart deployment/web
   kubectl config current-context
   ls · cat app.yaml · clear · help
+Сокращения: po, deploy, svc, ep, no; также TYPE/NAME (deployment/web).
 ↑ / ↓ — история команд. Tab — дополнение команды или имени Pod.
 Это имитация: shell, сеть, контейнеры и настоящий кластер не запускаются.`;
 const aliases = { pod:'pods',po:'pods',pods:'pods',deploy:'deployments',deployment:'deployments',deployments:'deployments',svc:'services',service:'services',services:'services',no:'nodes',node:'nodes',nodes:'nodes',ep:'endpoints',endpoints:'endpoints',events:'events',all:'all' };
+const NODES = [['control-plane','control-plane'],['worker-1','worker'],['worker-2','worker']];
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const map = v => v && typeof v === 'object' && !Array.isArray(v);
 const labelsOK = v => map(v) && Object.keys(v).length > 0 && Object.values(v).every(x => typeof x === 'string');
@@ -56,7 +58,7 @@ const portOK = n => Number.isInteger(n) && n >= 1 && n <= 65535;
 const table = (headers, rows) => [headers,...rows].map(r => r.map((v,i) => String(v).padEnd(Math.max(...[headers,...rows].map(a=>String(a[i] ?? '').length))+3)).join('').trimEnd()).join('\n');
 export class Cluster {
   constructor(){ this.reset(); }
-  reset(){ this.deployments = new Map(); this.services = new Map(); this.pods = []; this.events = []; this.sequence = 0; this.serviceSequence = 10; this.deletedPod = false; }
+  reset(){ this.deployments = new Map(); this.services = new Map(); this.pods = []; this.events = []; this.sequence = 0; this.serviceSequence = 10; this.replacementPod = null; }
   event(text){ this.events.push(text); this.events = this.events.slice(-40); }
   validate(doc){
     assert(map(doc), 'Документ YAML должен быть объектом.');
@@ -133,7 +135,7 @@ export class Cluster {
   get(resource, name, output){
     const kind = aliases[resource]; assert(kind, 'Неизвестный ресурс. Введите help.');
     if(kind === 'all') return ['deployments','pods','services'].map(k=>this.get(k)).join('\n\n');
-    const items = kind === 'pods' ? this.pods : kind === 'deployments' ? [...this.deployments.values()] : kind === 'services' || kind === 'endpoints' ? [...this.services.values()] : [];
+    const items = kind === 'pods' ? this.pods : kind === 'deployments' ? [...this.deployments.values()] : kind === 'services' || kind === 'endpoints' ? [...this.services.values()] : kind === 'nodes' ? NODES.map(([name]) => ({name})) : [];
     const found = name ? items.filter(x => (x.name ?? x.metadata.name) === name) : items;
     if(name) assert(found.length, `Error from server (NotFound): ${kind} "${name}" not found`);
     if(output === 'yaml'){
@@ -141,10 +143,10 @@ export class Cluster {
       const docs = found.map(x => kind === 'pods' ? {apiVersion:'v1',kind:'Pod',metadata:{name:x.name,namespace:'default',labels:x.labels},spec:{nodeName:x.node,containers:[{name:x.containerName,image:x.image}]},status:{phase:['Pending','ImagePullBackOff'].includes(x.status) ? 'Pending' : 'Running',containerStatuses:[{name:x.containerName,ready:x.status === 'Running',state:x.status === 'Running' ? {running:{}} : {waiting:{reason:x.status}}}]}} : x);
       return dump(name ? docs[0] : {apiVersion:'v1',kind:'List',items:docs}, {noRefs:true});
     }
-    if(kind === 'nodes') return table(['NAME','STATUS','ROLE'],[['control-plane','Ready','control-plane'],['worker-1','Ready','worker'],['worker-2','Ready','worker']]);
+    if(kind === 'nodes') return table(['NAME','STATUS','ROLE'],NODES.filter(([n]) => !name || n === name).map(([n,role]) => [n,'Ready',role]));
     if(kind === 'events') return this.events.length ? this.events.join('\n') : 'No events found in default namespace.';
     if(!found.length) return 'No resources found in default namespace.';
-    if(kind === 'pods') return table(['NAME','READY','STATUS','NODE'],found.map(p=>[p.name,p.status==='Running'?'1/1':'0/1',p.status,p.node ?? '<none>']));
+    if(kind === 'pods') return table(['NAME','READY','STATUS','NODE',...(output === 'wide' ? ['IMAGE'] : [])],found.map(p=>[p.name,p.status==='Running'?'1/1':'0/1',p.status,p.node ?? '<none>',...(output === 'wide' ? [p.image] : [])]));
     if(kind === 'deployments') return table(['NAME','READY','DESIRED'],found.map(d=>[d.metadata.name,`${this.pods.filter(p=>p.owner===d.metadata.name && p.status==='Running').length}/${d.spec.replicas}`,d.spec.replicas]));
     if(kind === 'services') return table(['NAME','TYPE','CLUSTER-IP','PORT'],found.map(s=>[s.metadata.name,'ClusterIP',s.spec.clusterIP,`${s.spec.ports[0].port}/TCP`]));
     return table(['NAME','READY PODS'],found.map(s=>[s.metadata.name,this.endpoints(s).map(p=>p.name).join(', ') || '<none>']));
@@ -182,9 +184,12 @@ export class Cluster {
       const item=kind==='pods'?this.pods.find(p=>p.name===name):(kind==='deployments'?this.deployments:this.services).get(name);
       assert(item, `Error from server (NotFound): ${type} "${name}" not found`);
       if(verb === 'delete'){
-        if(kind==='pods'){ this.pods=this.pods.filter(p=>p!==item); this.deletedPod=true; }
+        const before = this.sequence, noun = kind.slice(0,-1);
+        if(kind==='pods') this.pods=this.pods.filter(p=>p!==item);
         else (kind==='deployments'?this.deployments:this.services).delete(name);
-        this.event(`Deleted ${type}/${name}`); this.reconcile(); return `${type} "${name}" deleted`;
+        this.event(`Deleted ${noun}/${name}`); this.reconcile();
+        if(kind==='pods' && this.sequence > before) this.replacementPod = this.pods.at(-1).name;
+        return `${noun} "${name}" deleted`;
       }
       if(kind==='pods') return `Name: ${name}\nNode: ${item.node ?? '<none>'}\nStatus: ${item.status}\nImage: ${item.image}\nControlled By: ReplicaSet/${item.owner}-lab\nEvents (simulated): ${item.status==='Pending'?'FailedScheduling: все 8 учебных слотов заняты':item.status==='ImagePullBackOff'?'Failed: учебный образ :missing не найден':item.status==='CrashLoopBackOff'?'BackOff: учебный контейнер :broken завершается с ошибкой':'Scheduled; Pulled; Created; Started'}`;
       if(kind==='services') return `Name: ${name}\nSelector: ${JSON.stringify(item.spec.selector)}\nPort: ${item.spec.ports[0].port} → ${item.spec.ports[0].targetPort ?? item.spec.ports[0].port}\nReady Pods: ${this.endpoints(item).map(p=>p.name).join(', ') || '<none>'}`;

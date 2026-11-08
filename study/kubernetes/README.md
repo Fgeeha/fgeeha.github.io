@@ -14,7 +14,8 @@ the exact current draft, including any edits that have not been applied.
 Supported: apply of multi-document YAML; get pods/deployments/services/nodes/
 endpoints/events/all; named lookups and YAML output for pods/deployments/services;
 describe; logs; scale; delete; rollout status/restart; current-context; help, ls,
-cat app.yaml, clear. The on-page help is the exact supported command reference.
+cat app.yaml, clear. The on-page help lists every command form; resource aliases (po, deploy, svc, ep, no)
+and TYPE/NAME are also accepted.
 Unsupported commands/flags produce errors rather than run a shell.
 
 ## Deliberate teaching limits

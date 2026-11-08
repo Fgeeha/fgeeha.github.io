@@ -5,6 +5,25 @@
 <title>Kubernetes с нуля — учебник и песочница</title>
 <meta name="description" content="Разберитесь в Kubernetes: Pod, Deployment, Service. Редактируйте YAML, пробуйте kubectl и наблюдайте учебный кластер прямо в браузере.">
 <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="../images/favicon.webp" type="image/webp">
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(95333846, "init", {
+      clickmap:true,
+      trackLinks:true,
+      accurateTrackBounce:true,
+      webvisor:true
+    });
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
 <link rel="stylesheet" href="navigation.css"><link rel="stylesheet" href="kubernetes/style.css">
 <script type="module" src="kubernetes/app.mjs"></script>
 </head>
@@ -12,7 +31,7 @@
 <div class="grid-bg" aria-hidden="true"></div><div id="progress" aria-hidden="true"></div>
 <button id="menu" aria-expanded="false" aria-controls="sidebar">☰ Оглавление</button>
 <div class="layout">
-<aside id="sidebar"><a class="brand" href="#top">⎈ KUBERNETES</a><p class="sub">От манифеста к кластеру</p><a class="home-link" href="./">← Учебные материалы</a>
+<aside id="sidebar"><a class="brand" href="#top">⎈ KUBERNETES</a><p class="sub">От манифеста к кластеру</p><a class="home-link" href="./" aria-label="Вернуться к учебным материалам">← Учебные материалы</a>
 <nav aria-label="Оглавление"><p class="group">ОСНОВЫ</p><a href="#why">01 <span>Зачем нужен Kubernetes</span></a><a href="#architecture">02 <span>Как устроен кластер</span></a><a href="#objects">03 <span>Pod и Deployment</span></a><a href="#network">04 <span>Service и сеть</span></a><a href="#yaml">05 <span>Как читать YAML</span></a><p class="group">ПРАКТИКА</p><a href="#sandbox">06 <span>Интерактивная песочница</span></a><a href="#debug">07 <span>Поиск ошибок</span></a><a href="#next">08 <span>Настоящий кластер</span></a></nav>
 <div class="aside-note">Читай → пробуй → наблюдай.<br>Все эксперименты остаются в браузере.</div></aside>
 <main id="top">
@@ -22,7 +41,7 @@
 <section id="objects"><div class="sec-head"><b>03</b><h2>Pod → ReplicaSet → Deployment</h2></div><p><strong>Pod</strong> — минимальная единица развёртывания: один или несколько контейнеров с общей сетью и подключёнными томами. Pod может исчезнуть, поэтому приложение обычно запускают через контроллер.</p><p><strong>ReplicaSet</strong> поддерживает число Pod. <strong>Deployment</strong> управляет ReplicaSet и обновлениями приложения. Меняя <code>spec.replicas</code>, ты задаёшь желаемое число копий; меняя шаблон Pod — запускаешь обновление.</p><div class="callout"><strong>Удалить Pod ≠ удалить приложение.</strong><p>Если Pod принадлежит Deployment, его заменят. Чтобы убрать приложение, удали Deployment. Новый Pod получит новое имя и обычно новый IP.</p></div><p>В песочнице ReplicaSet показан как учебная группа <code>NAME-lab</code>. Замена Pod и обновление шаблона происходят сразу: настоящий rolling update с несколькими ReplicaSet здесь не моделируется.</p></section>
 <section id="network"><div class="sec-head"><b>04</b><h2>Service связывает приложение</h2></div><p><strong>Service</strong> предоставляет стабильную точку доступа к группе Pod. Его <code>selector</code> выбирает Pod по меткам, например <code>app: web</code>. Готовые Pod становятся доступными конечными точками.</p><div class="cards"><article><h3>port: 80</h3><p>Порт самого Service, к которому обращается клиент внутри кластера.</p></article><article><h3>targetPort: 80</h3><p>Порт приложения в контейнере. Если не указан, используется значение port. Запись containerPort сама по себе не запускает сервер.</p></article></div><p><code>ClusterIP</code> обычно доступен внутри кластера. Для внешнего доступа используют, например, LoadBalancer, Ingress или Gateway — в зависимости от окружения. В учебной модели запросы не передаются по сети: схема показывает только выбор Pod по меткам и их готовности.</p></section>
 <section id="yaml"><div class="sec-head"><b>05</b><h2>Как читать манифест</h2></div><p>YAML описывает API-объект. Отступы определяют вложенность; используй пробелы. Маркер <code>---</code> разделяет несколько документов в одном файле.</p><div class="table-wrap"><table><thead><tr><th>Поле</th><th>Значение</th></tr></thead><tbody><tr><td><code>apiVersion</code></td><td>Версия API: apps/v1 для Deployment, v1 для Service.</td></tr><tr><td><code>kind</code></td><td>Тип объекта.</td></tr><tr><td><code>metadata.name</code></td><td>Имя объекта в его пространстве имён.</td></tr><tr><td><code>spec</code></td><td>Желаемая конфигурация объекта.</td></tr><tr><td><code>selector.matchLabels</code></td><td>Какими метками Deployment выбирает свои Pod.</td></tr><tr><td><code>template</code></td><td>Шаблон создаваемого Pod, включая метки и контейнеры.</td></tr></tbody></table></div><p>Метки шаблона Pod должны удовлетворять selector Deployment. Selector существующего Deployment неизменяем. Selector Service независим: его можно изменить, но неверные метки оставят сервис без подходящих Pod.</p></section>
-<section id="sandbox"><div class="sec-head"><b>06</b><h2>Твоя первая лаборатория</h2></div><p>Редактор — это виртуальный файл <code>app.yaml</code>. Изменения попадут в кластер только после <code>apply</code>. Команды, схема и задания используют одно состояние.</p><div class="notice"><strong>Симулятор в браузере · не настоящий кластер</strong><p>Только default, Deployment и ClusterIP Service, один контейнер на Pod. Два worker, по 4 условных слота. Произвольные образы не скачиваются: <code>:missing</code> имитирует ошибку загрузки, <code>:broken</code> — сбой процесса. Остальные образы считаются рабочими. Прочие поля YAML могут храниться, но их поведение не моделируется. Сеть, RBAC, тома, probes и реальное распределение ресурсов отсутствуют.</p></div>
+<section id="sandbox"><div class="sec-head"><b>06</b><h2>Твоя первая лаборатория</h2></div><p>Редактор — это виртуальный файл <code>app.yaml</code>. Изменения попадут в кластер только после <code>apply</code>. Команды, схема и задания используют одно состояние.</p><div class="notice"><strong>Симулятор в браузере · не настоящий кластер</strong><p>Только default, Deployment и ClusterIP Service, один контейнер на Pod. Два worker, по 4 условных слота. Произвольные образы не скачиваются: <code>:missing</code> имитирует ошибку загрузки, <code>:broken</code> — сбой процесса. Остальные образы считаются рабочими. Прочие поля YAML могут храниться, но их поведение не моделируется. Сеть, RBAC, тома, probes и реальное распределение ресурсов отсутствуют. Лимиты: до 20 реплик на Deployment, 20 YAML-документов и 50 КБ на манифест.</p></div>
 <div class="lab-toolbar"><label for="scenario">Сценарий <select id="scenario"><option value="start">01 / Первое приложение</option><option value="image">02 / Образ не найден</option><option value="selector">03 / Service без Pod</option><option value="capacity">04 / Не хватает места</option></select></label><button id="load-scenario">Загрузить сценарий</button><button id="reset">Сбросить кластер</button></div>
 <p id="scenario-note" class="muted"></p>
 <div class="workspace"><div class="panel editor-panel"><div class="bar"><h3>app.yaml</h3><span id="draft-status">Черновик</span></div><label class="sr-only" for="manifest">Манифест Kubernetes YAML</label><textarea id="manifest" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea><div class="editor-actions"><button class="primary" id="apply">▶ Применить YAML</button><button id="download">Скачать YAML</button></div></div>

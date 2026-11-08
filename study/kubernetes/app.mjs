@@ -1,4 +1,4 @@
-import { Cluster, EXAMPLE, HELP } from './cluster.mjs';
+import { Cluster, EXAMPLE } from './cluster.mjs';
 const $ = id => document.getElementById(id);
 const cluster = new Cluster();
 const editor = $('manifest'), terminal = $('terminal'), input = $('command');
@@ -19,7 +19,7 @@ function run(command){
   if(!command.trim()) return;
   if(command.trim() === 'clear'){ terminal.textContent=''; return; }
   output(`\nstudent@lab:~$ ${command}`);
-  try { output(cluster.run(command,editor.value)); if(command.trim()==='kubectl apply -f app.yaml') applied=editor.value; }
+  try { output(cluster.run(command,editor.value)); if(command.trim().split(/\s+/).join(' ')==='kubectl apply -f app.yaml') applied=editor.value; }
   catch(error){ output('Ошибка: ' + error.message); }
   dirty(); render();
 }
@@ -56,7 +56,7 @@ function render(){
   const tasks = [
     ['Создай Deployment web и Service web через apply.',!!d && !!s],
     ['Получи минимум 4 работающих Pod приложения web.',cluster.pods.filter(p=>p.owner==='web' && p.status==='Running').length>=4],
-    ['Удали Pod и наблюдай его автоматическую замену.',cluster.deletedPod && cluster.pods.some(p=>p.status==='Running')],
+    ['Удали Pod и наблюдай его автоматическую замену.',cluster.pods.some(p=>p.name===cluster.replacementPod && p.status==='Running')],
     ['Добейся, чтобы Service web выбрал хотя бы один готовый Pod.',!!s && cluster.endpoints(s).length>0]
   ];
   $('tasks').replaceChildren(...tasks.map(([label,done])=>element('li',done?'done':'',`${done?'✓ ':''}${label}`)));

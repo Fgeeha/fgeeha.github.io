@@ -48,3 +48,15 @@ test('existing pods keep their assigned worker after another pod is deleted',()=
  for(const old of before.slice(1))assert.equal(c.pods.find(p=>p.name===old.name).node,old.node);
  assert.equal(c.pods.length,6);
 });
+test('review fixes: replacement tracking, named nodes, wide output, canonical delete message',()=>{
+ const c=new Cluster(); c.apply(EXAMPLE.replace('replicas: 2','replicas: 10'));
+ const pending=c.pods.find(p=>p.status==='Pending'); c.run(`kubectl delete po ${pending.name}`,EXAMPLE);
+ assert.equal(c.pods.find(p=>p.name===c.replacementPod).status,'Pending');
+ const small=new Cluster(); small.apply(EXAMPLE);
+ assert.match(small.run(`kubectl delete po ${small.pods[0].name}`,EXAMPLE),/^pod "/);
+ assert.equal(small.pods.find(p=>p.name===small.replacementPod).status,'Running');
+ assert.match(c.run('kubectl get nodes worker-1',EXAMPLE),/worker-1\s+Ready/);
+ assert.throws(()=>c.run('kubectl get nodes worker-9',EXAMPLE));
+ assert.match(c.run('kubectl get pods -o wide',EXAMPLE),/IMAGE[\s\S]*nginx:stable/);
+ assert.doesNotMatch(c.run('kubectl get pods',EXAMPLE),/IMAGE/);
+});
