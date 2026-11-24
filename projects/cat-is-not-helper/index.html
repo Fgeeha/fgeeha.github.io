@@ -42,19 +42,10 @@
   }
   </script>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="/CSS/style.css">
-  <style>
-    .main a:not(.btn) { color: #0d6efd; }
-    .main a:not(.btn):hover { color: #0a58ca; text-decoration: underline; }
-    .hero-cat { max-width: 320px; width: 100%; }
-    .dl-btn { min-width: 11rem; }
-    .dl-btn small { display: block; font-weight: 400; opacity: .75; font-size: .75rem; }
-    .feature-emoji { font-size: 1.6rem; line-height: 1; }
-    .screenshot { border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.12); max-width: 100%; }
-    kbd { background: #f1f3f5; color: #333; border: 1px solid #d0d4d9; border-bottom-width: 2px; }
-    .table-controls td:first-child { white-space: nowrap; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../../CSS/style.css">
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -69,148 +60,133 @@
 </head>
 <body>
   <header class="site-header">
-    <nav class="navbar navbar-expand-lg portfolio-navbar sticky-top shadow-sm" aria-label="Main navigation">
-      <div class="container-fluid px-3 px-lg-4">
-        <a class="navbar-brand fw-semibold" href="/">Nikita &quot;FgeeHa&quot; Kolesnikov</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav ms-lg-3 me-auto mb-2 mb-lg-0 gap-lg-1">
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/projects/">Проекты</a></li>
-            <li class="nav-item"><a class="nav-link" href="/study/">Учеба</a></li>
-            <li class="nav-item"><a class="nav-link" href="/social/">Ссылки</a></li>
-          </ul>
-        </div>
-      </div>
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="nav__brand" href="/">Nikita &ldquo;FgeeHa&rdquo; Kolesnikov</a>
+      <ul class="nav__links">
+        <li><a href="/">Home</a></li>
+        <li><a aria-current="true" href="/projects/">Проекты</a></li>
+        <li><a href="/study/">Учеба</a></li>
+        <li><a href="/social/">Ссылки</a></li>
+      </ul>
     </nav>
   </header>
 
-  <main>
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-9 col-md-11 col-12">
-          <article class="main">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb small mb-3">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/projects/">Проекты</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Cat Is Not Helper</li>
-              </ol>
-            </nav>
+  <main id="main">
+    <section class="hero">
+      <div class="container">
+        <nav class="crumbs" aria-label="breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/projects/">Проекты</a></li>
+            <li aria-current="page">Cat Is Not Helper</li>
+          </ol>
+        </nav>
+        <div class="stage">
+          <div class="stage__say">
+            <h1>Cat Is Not Helper</h1>
+            <p class="lead">Котик, который сидит поверх всех окон и тапает лапками вместе с тобой. Он не помогает. Он тапает.</p>
+            <ul class="tags"><li>Open source</li><li>macOS</li><li>Windows</li><li>Linux</li><li>Swift</li><li>Rust</li><li>Tauri 2</li><li>SwiftUI</li><li>SVG</li><li id="releaseBadge">релиз</li></ul>
+            <p class="actions">
+              <a href="https://github.com/Fgeeha/cat-is-not-helper" class="btn" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" class="btn btn--quiet" target="_blank" rel="noopener noreferrer">Все релизы</a>
+            </p>
+          </div>
+          <figure class="shot" data-kind="product"><img src="images/cat.png" alt="Котик держит скриншот" class="hero-cat" width="520" height="460" fetchpriority="high"></figure>
+        </div>
+      </div>
+    </section>
 
-            <!-- Герой -->
-            <div class="row align-items-center g-4 mb-4">
-              <div class="col-md-5 text-center">
-                <img src="images/cat.png" alt="Котик держит скриншот" class="hero-cat">
-              </div>
-              <div class="col-md-7">
-                <p class="greeting mb-1">🐾 Open source · macOS · Windows · Linux</p>
-                <h1>Cat Is Not Helper</h1>
-                <p class="lead">Котик, который сидит поверх всех окон и тапает лапками вместе с тобой. Он не помогает. Он тапает.</p>
-                <p class="mb-3">
-                  <span class="badge bg-warning text-dark">Swift</span>
-                  <span class="badge bg-danger">Rust</span>
-                  <span class="badge bg-secondary">Tauri 2</span>
-                  <span class="badge bg-secondary">SwiftUI</span>
-                  <span class="badge bg-secondary">SVG</span>
-                  <span class="badge bg-success" id="releaseBadge">релиз</span>
-                </p>
-                <a href="https://github.com/Fgeeha/cat-is-not-helper" class="btn btn-dark me-2" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">Все релизы</a>
-              </div>
-            </div>
-
-            <!-- Скачать -->
-            <h2 id="download">Скачать</h2>
-            <p class="section-desc">Ссылки ведут на последний релиз на GitHub. Все сборки бесплатные и без регистрации.</p>
-            <div class="d-flex flex-wrap gap-2 mb-2" id="downloads">
-              <a class="btn btn-outline-dark dl-btn" href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">🍎 macOS<small>dmg или zip</small></a>
-              <a class="btn btn-outline-dark dl-btn" href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">🪟 Windows 10/11<small>установщик exe</small></a>
-              <a class="btn btn-outline-dark dl-btn" href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">🐧 RedOS / RPM<small>rpm</small></a>
-              <a class="btn btn-outline-dark dl-btn" href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">🐧 Debian / Ubuntu<small>deb</small></a>
-              <a class="btn btn-outline-dark dl-btn" href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">🐧 Любой Linux<small>AppImage</small></a>
-            </div>
-            <p class="text-muted small mb-4" id="downloadsNote">Версия подставляется автоматически из последнего релиза.</p>
-
-            <div class="accordion mb-4" id="firstRun">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#firstRunBody">Первый запуск: разрешения и предупреждения</button>
-                </h2>
-                <div id="firstRunBody" class="accordion-collapse collapse" data-bs-parent="#firstRun">
-                  <div class="accordion-body small">
-                    <p><b>macOS</b> спросит «Универсальный доступ»: без него котик не видит нажатия в других приложениях. Сборки подписаны ad-hoc, поэтому при первом запуске правый клик по приложению → «Открыть», либо <code>xattr -d com.apple.quarantine CatIsNotHelper.app</code>. При первом скриншоте система попросит «Запись экрана».</p>
+    <section>
+      <div class="container">
+        <div class="head">
+          <h2 id="download">Скачать</h2>
+          <p class="lead">Ссылки ведут на последний релиз на GitHub. Все сборки бесплатные и без регистрации.</p>
+        </div>
+        <div class="downloads" id="downloads">
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">macOS<small>dmg или zip</small></a>
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">Windows 10/11<small>установщик exe</small></a>
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">RedOS / RPM<small>rpm</small></a>
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">Debian / Ubuntu<small>deb</small></a>
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/releases/latest" target="_blank" rel="noopener noreferrer">Любой Linux<small>AppImage</small></a>
+        </div>
+        <details class="fold" id="firstRun">
+          <summary><h3>Первый запуск: разрешения и предупреждения</h3></summary>
+          <div id="firstRunBody">
+            <p><b>macOS</b> спросит «Универсальный доступ»: без него котик не видит нажатия в других приложениях. Сборки подписаны ad-hoc, поэтому при первом запуске правый клик по приложению → «Открыть», либо <code>xattr -d com.apple.quarantine CatIsNotHelper.app</code>. При первом скриншоте система попросит «Запись экрана».</p>
                     <p><b>Windows</b> разрешений не требует. Установщик не подписан, SmartScreen покажет «Неизвестный издатель»: «Подробнее» → «Выполнить в любом случае».</p>
-                    <p class="mb-0"><b>Linux</b> читает нажатия в сессии X11 (Xorg); в чистом Wayland это невозможно, котик скажет об этом сам. Установка: <code>sudo dnf install ./CatIsNotHelper-*.rpm</code> или <code>sudo apt install ./CatIsNotHelper_*.deb</code>.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <p><b>Linux</b> читает нажатия в сессии X11 (Xorg); в чистом Wayland это невозможно, котик скажет об этом сам. Установка: <code>sudo dnf install ./CatIsNotHelper-*.rpm</code> или <code>sudo apt install ./CatIsNotHelper_*.deb</code>.</p>
+          </div>
+        </details>
+        <p class="meta after" id="downloadsNote">Версия подставляется автоматически из последнего релиза.</p>
+      </div>
+    </section>
 
-            <!-- Возможности -->
-            <h2>Что умеет</h2>
-            <div class="row g-3 mb-4">
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">⌨️</div><h5 class="card-title mt-2">Тапает в такт</h5><p class="card-text">Левая половина клавиатуры — левая лапа, правая — правая, клик мышью — тоже лапа. Считается только количество нажатий, не сами клавиши.</p></div></div></div>
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">😸</div><h5 class="card-title mt-2">Живёт своей жизнью</h5><p class="card-text">Моргает, засыпает через две минуты тишины, радуется и виляет хвостом, ворчит, если его забыли, бросает фразы в пузырьке и празднует каждую тысячу тапов.</p></div></div></div>
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">📈</div><h5 class="card-title mt-2">Статистика</h5><p class="card-text">Тапы за сегодня и за всё время, нажатий в минуту, рекорд скорости, серия дней подряд, графики за 14 дней и по часам.</p></div></div></div>
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">📸</div><h5 class="card-title mt-2">Держит скриншоты</h5><p class="card-text">Выдели область экрана из меню, и котик возьмёт картинку в лапки. Перетащи на него любую картинку. Чтобы забрать, потяни картинку из лапок в Finder, проводник или чат.</p></div></div></div>
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">🎀</div><h5 class="card-title mt-2">Настраивается</h5><p class="card-text">Четыре окраса, цвет глаз, бантик, очки, шапка, шарф, цвет клавиатуры, зеркальное отражение, размер от 50% до 250%, прозрачность, автозапуск.</p></div></div></div>
-              <div class="col-md-6"><div class="card project-card h-100"><div class="card-body"><div class="feature-emoji">⬆️</div><h5 class="card-title mt-2">Обновляется сам</h5><p class="card-text">Пункт «Проверить обновления» в меню ставит новую версию там, где это возможно, иначе открывает страницу релиза. Статистика и настройки не теряются.</p></div></div></div>
-            </div>
+    <section>
+      <div class="container">
+        <div class="head"><h2>Что умеет</h2></div>
+        <div class="facts">
+          <div><h3>Тапает в такт</h3><p>Левая половина клавиатуры — левая лапа, правая — правая, клик мышью — тоже лапа. Считается только количество нажатий, не сами клавиши.</p></div>
+          <div><h3>Живёт своей жизнью</h3><p>Моргает, засыпает через две минуты тишины, радуется и виляет хвостом, ворчит, если его забыли, бросает фразы в пузырьке и празднует каждую тысячу тапов.</p></div>
+          <div><h3>Статистика</h3><p>Тапы за сегодня и за всё время, нажатий в минуту, рекорд скорости, серия дней подряд, графики за 14 дней и по часам.</p></div>
+          <div><h3>Держит скриншоты</h3><p>Выдели область экрана из меню, и котик возьмёт картинку в лапки. Перетащи на него любую картинку. Чтобы забрать, потяни картинку из лапок в Finder, проводник или чат.</p></div>
+          <div><h3>Настраивается</h3><p>Четыре окраса, цвет глаз, бантик, очки, шапка, шарф, цвет клавиатуры, зеркальное отражение, размер от 50% до 250%, прозрачность, автозапуск.</p></div>
+          <div><h3>Обновляется сам</h3><p>Пункт «Проверить обновления» в меню ставит новую версию там, где это возможно, иначе открывает страницу релиза. Статистика и настройки не теряются.</p></div>
+        </div>
+      </div>
+    </section>
 
-            <!-- Скриншоты -->
-            <h2>Скриншоты</h2>
-            <p class="section-desc">Окрасы, аксессуары и настроения, а также окно статистики</p>
-            <p class="text-center"><img src="images/variants.png" alt="Варианты внешности и настроения котика" class="screenshot"></p>
-            <p class="text-center mb-4"><img src="images/stats.png" alt="Окно статистики" class="screenshot" style="max-width: 720px"></p>
+    <section>
+      <div class="container">
+        <div class="head">
+          <h2>Скриншоты</h2>
+          <p class="lead">Окрасы, аксессуары и настроения, а также окно статистики</p>
+        </div>
+        <div class="shots">
+          <figure class="shot" data-kind="product"><img src="images/variants.png" alt="Варианты внешности и настроения котика" class="screenshot" width="1120" height="520" loading="lazy"></figure>
+          <figure class="shot" data-kind="product"><img src="images/stats.png" alt="Окно статистики" class="screenshot" width="900" height="760" loading="lazy"></figure>
+        </div>
+      </div>
+    </section>
 
-            <!-- Управление -->
-            <h2>Управление</h2>
-            <div class="table-responsive mb-4">
-              <table class="table table-sm table-controls">
-                <tbody>
-                  <tr><td>Клик по котику</td><td>погладить</td></tr>
+    <section>
+      <div class="container split">
+        <div class="split__head"><h2>Управление</h2></div>
+        <table class="table table--keys table--stack table-controls">
+          <tbody>
+            <tr><td>Клик по котику</td><td>погладить</td></tr>
                   <tr><td>Двойной клик</td><td>открыть то, что он держит</td></tr>
                   <tr><td>Потянуть за котика</td><td>передвинуть</td></tr>
                   <tr><td>Потянуть за картинку в лапках</td><td>забрать её (drag &amp; drop наружу)</td></tr>
                   <tr><td>Перетащить картинку на котика</td><td>он возьмёт её в лапки</td></tr>
                   <tr><td>Правый клик</td><td>меню</td></tr>
                   <tr><td>Иконка 🐾 в меню-баре или трее</td><td>статистика, скриншот, галерея, размер, окрас, настройки, обновления</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Под капотом -->
-            <h2>Под капотом</h2>
-            <p>В репозитории две реализации с одинаковым поведением и общими данными:</p>
-            <ul class="mb-3">
-              <li class="mb-2"><b>Нативная macOS</b> на SwiftUI и AppKit: прозрачная неактивирующаяся панель, глобальный монитор событий, SwiftPM без Xcode-проекта, универсальный бинарник arm64 + x86_64.</li>
-              <li class="mb-2"><b>Кросс-платформенная</b> на Tauri 2: бэкенд на Rust (монитор ввода через rdev, захват экрана, трей, апдейтер с подписью minisign), интерфейс на обычном HTML/JS без сборщика, котик нарисован SVG в тех же координатах, что и в Swift.</li>
-            </ul>
-            <p>CI на GitHub Actions собирает все платформы и публикует релиз по тегу. Приложение считает только количество нажатий и час, какие именно клавиши нажаты — не записывает и не отправляет.</p>
-            <p class="mb-4">
-              <a href="https://github.com/Fgeeha/cat-is-not-helper#readme" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">README</a>
-              <a href="https://github.com/Fgeeha/cat-is-not-helper/issues" class="btn btn-sm btn-outline-secondary ms-1" target="_blank" rel="noopener noreferrer">Сообщить о проблеме</a>
-            </p>
-
-            <p class="text-center"><a href="/projects/" class="btn btn-outline-primary">← Все проекты</a></p>
-          </article>
-        </div>
+          </tbody>
+        </table>
       </div>
-    </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="head"><h2>Под капотом</h2></div>
+        <div class="prose"><p>В репозитории две реализации с одинаковым поведением и общими данными:</p></div>
+        <ul class="notes">
+          <li><b>Нативная macOS</b> на SwiftUI и AppKit: прозрачная неактивирующаяся панель, глобальный монитор событий, SwiftPM без Xcode-проекта, универсальный бинарник arm64 + x86_64.</li>
+          <li><b>Кросс-платформенная</b> на Tauri 2: бэкенд на Rust (монитор ввода через rdev, захват экрана, трей, апдейтер с подписью minisign), интерфейс на обычном HTML/JS без сборщика, котик нарисован SVG в тех же координатах, что и в Swift.</li>
+        </ul>
+        <div class="prose"><p>CI на GitHub Actions собирает все платформы и публикует релиз по тегу. Приложение считает только количество нажатий и час, какие именно клавиши нажаты — не записывает и не отправляет.</p></div>
+        <p class="actions">
+          <a href="https://github.com/Fgeeha/cat-is-not-helper#readme" class="btn btn--quiet" target="_blank" rel="noopener noreferrer">Readme</a>
+          <a href="https://github.com/Fgeeha/cat-is-not-helper/issues" class="btn btn--quiet" target="_blank" rel="noopener noreferrer">Сообщить о проблеме</a>
+          <a href="/projects/" class="btn btn--quiet">Все проекты</a>
+        </p>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    <div class="container text-center">
-      <div class="row align-items-center">
-        <div>&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
-      </div>
-    </div>
+  <footer class="site-footer">
+    <div class="container">&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
   <script>
     // Подставляем прямые ссылки на файлы последнего релиза.
     (async function () {

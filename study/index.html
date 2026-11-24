@@ -4,11 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Учебные материалы</title>
+  <title>Учебные материалы | Nikita Kolesnikov (FgeeHa)</title>
+  <meta name="description" content="Учебные материалы Никиты Колесникова (FgeeHa): учебники по Go, Kubernetes с песочницей kubectl, PyTorch и методичка по Agent Harness.">
+  <meta name="author" content="Nikita Kolesnikov">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fgeeha.github.io/study/">
+  <meta property="og:title" content="Учебные материалы | FgeeHa">
+  <meta property="og:description" content="Учебники по Go, Kubernetes, PyTorch и методичка по Agent Harness.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/33605615">
+  <meta property="og:url" content="https://fgeeha.github.io/study/">
+  <meta property="og:type" content="website">
 
   <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="../images/favicon.webp" type="image/webp">
-  <link rel="stylesheet" href="navigation.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../CSS/style.css">
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
@@ -27,51 +39,42 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/95333846" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
-
-  <style>
-    body {
-      max-width: 800px;
-      margin: 50px auto;
-      padding: 0 20px;
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #222;
-    }
-
-    #pages {
-      display: grid;
-      gap: 12px;
-    }
-
-    .page-link {
-      display: block;
-      padding: 18px 20px;
-      color: #1358c8;
-      text-decoration: none;
-      background: white;
-      border: 1px solid #dfe3e8;
-      border-radius: 10px;
-      transition: 0.2s;
-    }
-
-    .page-link:hover {
-      border-color: #1358c8;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgb(0 0 0 / 8%);
-    }
-
-    .error {
-      color: #b42318;
-    }
-  </style>
 </head>
 
 <body>
-  <a class="home-link" href="/" aria-label="Вернуться на главную страницу">← На главную</a>
+  <header class="site-header">
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="nav__brand" href="/">Nikita &ldquo;FgeeHa&rdquo; Kolesnikov</a>
+      <ul class="nav__links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/projects/">Проекты</a></li>
+        <li><a aria-current="page" href="/study/">Учеба</a></li>
+        <li><a href="/social/">Ссылки</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <h1>Учебные материалы</h1>
+  <main id="main">
+    <section class="hero hero--index">
+      <div class="container">
+        <div class="banner">
+          <h1>Учебные материалы</h1>
+        </div>
+        <!-- The four tutorials are listed in the markup; the script below only adds pages that appear later. -->
+        <div class="pages" id="pages">
+          <a class="page-link" href="start-on-go.html"><span>Go с нуля</span><small>большой учебник по языку программирования</small></a>
+          <a class="page-link" href="kubernetes.html"><span>Kubernetes с нуля</span><small>учебник и песочница</small></a>
+          <a class="page-link" href="pytorch.html"><span>PyTorch</span><small>подробный учебник</small></a>
+          <a class="page-link" href="agent-harness.html"><span>Agent Harness</span><small>методичка по open source решениям</small></a>
+        </div>
+        <p class="actions after"><a class="btn btn--quiet home-link" href="/" aria-label="Вернуться на главную страницу">На главную</a></p>
+      </div>
+    </section>
+  </main>
 
-  <div id="pages">Загрузка страниц...</div>
+  <footer class="site-footer">
+    <div class="container">&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
+  </footer>
 
   <script>
     const owner = "Fgeeha";
@@ -92,23 +95,20 @@
         }
 
         const files = await response.json();
+        const listed = new Set(
+          [...container.querySelectorAll("a")].map(link => link.getAttribute("href"))
+        );
 
-        const htmlFiles = files
+        const newFiles = files
           .filter(file =>
             file.type === "file" &&
             file.name.endsWith(".html") &&
-            file.name !== "index.html"
+            file.name !== "index.html" &&
+            !listed.has(encodeURIComponent(file.name))
           )
           .sort((a, b) => a.name.localeCompare(b.name));
 
-        if (htmlFiles.length === 0) {
-          container.textContent = "HTML-страницы не найдены.";
-          return;
-        }
-
-        container.innerHTML = "";
-
-        for (const file of htmlFiles) {
+        for (const file of newFiles) {
           const link = document.createElement("a");
 
           link.className = "page-link";
@@ -118,9 +118,8 @@
           container.appendChild(link);
         }
       } catch (error) {
-        container.className = "error";
-        container.textContent =
-          "Не удалось загрузить список страниц: " + error.message;
+        // The listed tutorials stay; only the auto-discovery of new pages is skipped.
+        console.warn("Не удалось загрузить список страниц: " + error.message);
       }
     }
 

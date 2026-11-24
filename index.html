@@ -76,7 +76,9 @@
       }
       </script>
 
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="CSS/style.css">
       <!-- Yandex.Metrika counter -->
       <script type="text/javascript" >
@@ -107,595 +109,250 @@
 	<meta name="sputnik-verification" content="r98GsCJqpP9M1EXB" />
 	<!-- /stat.sputnik.ru counter -->
     </head>
-    <body>
+        <body>
         <header class="site-header">
-            <nav class="navbar navbar-expand-lg portfolio-navbar sticky-top shadow-sm" aria-label="Main navigation">
-                <div class="container-fluid px-3 px-lg-4">
-                  <a class="navbar-brand fw-semibold" href="/">Nikita &quot;FgeeHa&quot; Kolesnikov</a>
-                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                  </button>
-                  <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav ms-lg-3 me-auto mb-2 mb-lg-0 gap-lg-1">
-                      <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/" id="head_nav_home">Home</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/projects/" id="head_nav_projects">Проекты</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/study/" id="head_nav_study">Учеба</a>
-                      </li>
-                      <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="head_nav_mini_projects">Мои мини HTML-проекты</a>
-                        <ul class="dropdown-menu dropdown-menu-mini-projects shadow">
-                          <li><a class="dropdown-item" href="/infinity">♾️ infinity</a></li>
-                          <li><a class="dropdown-item" href="/cv">🧾 CV</a></li>
-                          <li><a class="dropdown-item" href="/research/">🔬 research</a></li>
-                          <li><a class="dropdown-item" href="/social">🪪 social</a></li>
-                          <li><a class="dropdown-item" href="/PasswordGenerator">🔐 Password Generator</a></li>
-                          <li><a class="dropdown-item" href="/GreenSentry">🌿 Green Sentry</a></li>
-                          <li><a class="dropdown-item" href="/csvEditor">📊 CSV Editor</a></li>
-                          <li><a class="dropdown-item" href="/FileEncodingIdentifier">🔤 File Encoding Identifier</a></li>
-                          <li><a class="dropdown-item" href="/DungeonDash">⚔️ Dungeon</a></li>
-                          <li><a class="dropdown-item" href="/DoomDash">👹 Doom</a></li>
-                          <li><a class="dropdown-item" href="/WorkDayTimer">⏱️ Work Day Timer</a></li>
-                          <li><a class="dropdown-item" href="/Roulette">🎰 Roulette</a></li>
-						  <li><a class="dropdown-item" href="/hotkeys_mac_niri">⌨️⚡ HotKeys</a></li>
-						  <li><a class="dropdown-item" href="/Candle/">🕯️ Candle</a></li>
-						  <li><a class="dropdown-item" href="/Candles/">🕯️🕯️ Candles</a></li>
-						  <li><a class="dropdown-item" href="/SearchForThePrivate/">🎖️ Розыск рядового</a></li>
-						  <li><a class="dropdown-item" href="/YouTube/">▶️ YouTube Gallery</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/JsonFormatter">🔧 JSON Formatter</a></li>
-                          <li><a class="dropdown-item" href="/Base64Tool">🔒 Base64 Tool</a></li>
-                          <li><a class="dropdown-item" href="/UuidGenerator">🆔 UUID Generator</a></li>
-                          <li><a class="dropdown-item" href="/ContrastChecker">🎨 Contrast Checker</a></li>
-                          <li><a class="dropdown-item" href="/OgPreview">🔗 OG Preview</a></li>
-                          <li><a class="dropdown-item" href="/QrGenerator">📷 QR Generator</a></li>
-                          <li><a class="dropdown-item" href="/TextDiff">📝 Text Diff</a></li>
-                          <li><a class="dropdown-item" href="/GameOfLife">🧬 Game of Life</a></li>
-                          <li><a class="dropdown-item" href="/TypingTest">⌨️ Typing Test</a></li>
-                          <li><a class="dropdown-item" href="/SortVisualizer">📊 Sort Visualizer</a></li>
-                          <li><a class="dropdown-item" href="/WorldClock">🕐 World Clock</a></li>
-                          <li><a class="dropdown-item" href="/ImageCompressor">🖼️ Image Compressor</a></li>
-                        </ul>
-                      </li>
-                      <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="head_nav_link">Ссылки</a>
-                        <ul class="dropdown-menu shadow">
-                          <li><a class="dropdown-item" href="/social/">Страница контактов</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="https://t.me/fgeeha" rel="noopener noreferrer" target="_blank">Telegram</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="mailto:kolesnikov.nikitavlg@gmail.com">Gmail</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="https://github.com/Fgeeha" rel="noopener noreferrer" target="_blank">GitHub</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="https://gitverse.ru/nkolesnikov" rel="noopener noreferrer" target="_blank">GitVerse</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="https://www.linkedin.com/in/nikita-kolesnikov-337b78323/" rel="noopener noreferrer" target="_blank">LinkedIn</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                    <div class="navbar-text ms-lg-2">
-                        <button onclick="switchLanguage()" type="button" class="btn btn-outline-primary btn-sm" id="head_nav_lang" aria-label="Switch language">ru</button>
-                    </div>
-                  </div>
-                </div>
-              </nav>
+          <nav class="nav container" aria-label="Main navigation">
+            <a class="nav__brand" href="/">Nikita &ldquo;FgeeHa&rdquo; Kolesnikov</a>
+            <ul class="nav__links">
+              <li><a aria-current="page" href="/" id="head_nav_home">Home</a></li>
+              <li><a href="/projects/" id="head_nav_projects">Проекты</a></li>
+              <li><a href="/study/" id="head_nav_study">Учеба</a></li>
+              <li><details name="nav"><summary id="head_nav_mini_projects">Мои мини HTML-проекты</summary>
+              <ul class="nav__panel nav__panel--wide">
+                <li><a href="/infinity">infinity</a></li>
+                <li><a href="/cv">CV</a></li>
+                <li><a href="/research/">research</a></li>
+                <li><a href="/social">social</a></li>
+                <li><a href="/PasswordGenerator">Password Generator</a></li>
+                <li><a href="/GreenSentry">Green Sentry</a></li>
+                <li><a href="/csvEditor">CSV Editor</a></li>
+                <li><a href="/FileEncodingIdentifier">File Encoding Identifier</a></li>
+                <li><a href="/DungeonDash">Dungeon</a></li>
+                <li><a href="/DoomDash">Doom</a></li>
+                <li><a href="/WorkDayTimer">Work Day Timer</a></li>
+                <li><a href="/Roulette">Roulette</a></li>
+                <li><a href="/hotkeys_mac_niri">HotKeys</a></li>
+                <li><a href="/Candle/">Candle</a></li>
+                <li><a href="/Candles/">Candles</a></li>
+                <li><a href="/SearchForThePrivate/">Розыск рядового</a></li>
+                <li><a href="/YouTube/">YouTube Gallery</a></li>
+                <li><a href="/JsonFormatter">JSON Formatter</a></li>
+                <li><a href="/Base64Tool">Base64 Tool</a></li>
+                <li><a href="/UuidGenerator">UUID Generator</a></li>
+                <li><a href="/ContrastChecker">Contrast Checker</a></li>
+                <li><a href="/OgPreview">OG Preview</a></li>
+                <li><a href="/QrGenerator">QR Generator</a></li>
+                <li><a href="/TextDiff">Text Diff</a></li>
+                <li><a href="/GameOfLife">Game of Life</a></li>
+                <li><a href="/TypingTest">Typing Test</a></li>
+                <li><a href="/SortVisualizer">Sort Visualizer</a></li>
+                <li><a href="/WorldClock">World Clock</a></li>
+                <li><a href="/ImageCompressor">Image Compressor</a></li>
+              </ul></details></li>
+              <li><details name="nav"><summary id="head_nav_link">Ссылки</summary>
+              <ul class="nav__panel">
+                <li><a href="/social/">Страница контактов</a></li>
+                <li><a href="https://t.me/fgeeha" rel="noopener noreferrer" target="_blank">Telegram</a></li>
+                <li><a href="mailto:kolesnikov.nikitavlg@gmail.com">Gmail</a></li>
+                <li><a href="https://github.com/Fgeeha" rel="noopener noreferrer" target="_blank">GitHub</a></li>
+                <li><a href="https://gitverse.ru/nkolesnikov" rel="noopener noreferrer" target="_blank">GitVerse</a></li>
+                <li><a href="https://www.linkedin.com/in/nikita-kolesnikov-337b78323/" rel="noopener noreferrer" target="_blank">LinkedIn</a></li>
+              </ul></details></li>
+            </ul>
+            <button onclick="switchLanguage()" type="button" class="btn btn--quiet nav__lang" id="head_nav_lang" aria-label="Switch language">ru</button>
+          </nav>
         </header>
-        <main>
+        <main id="main">
+          <section class="hero">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 col-md-10 col-12">
-                        <article class="main">
-                            <p id="heading" class="greeting">Привет!</p>
-                            <h1 id="myName">Колесников Никита <span class="text-muted">(FgeeHa)</span></h1>
-                            <p id="informationAboutMe">Разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. Делаю on-premise RAG-системы, чат-ботов, edge-AI и инструменты мониторинга. 56+ открытых проектов на GitHub.</p>
-
-                            <h2 id="skillsAndTechnologies">Навыки и технологии</h2>
-                            <p class="section-desc" id="skillsDesc">Основные технологии и инструменты, с которыми я работаю</p>
-                            <ul>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillone">&#9989;Языки программирования: <b>Python, Go, PHP, Bash</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skilltwo">&#9989;Backend-фреймворки: <b>Django, FastAPI, Flask, aiogram</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillthree">&#9989;AI / ML: <b>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillfour">&#9989;Базы данных: <b>SQL, PostgreSQL, MySQL</b> (pymysql), <b>Alembic</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillfive">&#9989;DevOps: <b>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillsix">&#9989;Мониторинг: <b>Prometheus, Grafana</b></p></li>
-                                <li><hr class="list-group-item"></li>
-                                <li class="list-group-item"><p id="skillseven">&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)</p></li>
-                            </ul>
-
-                            <h2 id="projectsTitle">Избранные проекты</h2>
-                            <p class="section-desc" id="projectsDesc">Open-source проекты на GitHub и GitVerse</p>
-                            <div class="row g-3 mt-1 mb-4" id="projectsContainer">
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Cat Is Not Helper 🐾</h4>
-                                            <p class="card-text" id="proj_cat">Котик поверх всех окон, который тапает лапками в такт нажатиям клавиш, ведёт статистику и держит скриншоты. Нативная версия на SwiftUI для macOS и кросс-платформенная на Tauri 2 (Rust) для macOS, Windows 10/11 и Linux (RedOS). Автообновление, релизы для всех платформ через GitHub Actions</p>
-                                            <span class="badge bg-warning text-dark">Swift</span>
-                                            <span class="badge bg-danger">Rust</span>
-                                            <span class="badge bg-secondary">Tauri</span>
-                                            <span class="badge bg-secondary">Desktop</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/cat-is-not-helper" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                            <a href="/projects/cat-is-not-helper/" class="btn btn-sm btn-outline-primary ms-1" id="proj_cat_page">Страница</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">MAX Action</h4>
-                                            <p class="card-text" id="proj_maxaction">GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.1 под MIT</p>
-                                            <span class="badge bg-info text-dark">Go</span>
-                                            <span class="badge bg-secondary">GitHub Actions</span>
-                                            <span class="badge bg-secondary">MAX Bot API</span>
-                                            <span class="badge bg-secondary">Docker</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/max-action" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                            <a href="/projects/max-action/" class="btn btn-sm btn-outline-primary ms-1" id="proj_maxaction_page">Страница</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">ROoP</h4>
-                                            <p class="card-text" id="proj_roop">RAG-Ollama-On-Premises -- ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-success">Django</span>
-                                            <span class="badge bg-secondary">RAG</span>
-                                            <span class="badge bg-secondary">Ollama</span>
-                                            <span class="badge bg-secondary">ChromaDB</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/ROoP" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Edge AI Plant Diagnostics</h4>
-                                            <p class="card-text" id="proj_sedm">Код к статье для SEDM-2026: диагностика болезней растений на edge-устройствах. CORAL-адаптация домена, INT8-квантизация и PolarQuant-3bit дают сжатие 10.6x при macro-F1 0.700 и 246 мс на Raspberry Pi 4B</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">PyTorch</span>
-                                            <span class="badge bg-secondary">Edge AI</span>
-                                            <span class="badge bg-secondary">Research</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/sedm2026-edge-ai-plant-diagnostics" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Полка под контролем</h4>
-                                            <p class="card-text" id="proj_lenta">Lenta Tech Life Hack 2026: pipeline распознавания ценников с видеопотока робота. Детекция, OCR и сопоставление с каталогом, 175 тестов, демо на Hugging Face Spaces</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Computer Vision</span>
-                                            <span class="badge bg-secondary">OCR</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/Lenta-Tech-Life-Hack-2026" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                            <a href="https://huggingface.co/spaces/fgeeha/shelf-control" class="btn btn-sm btn-outline-primary ms-1" target="_blank" rel="noopener noreferrer" id="proj_lenta_demo">Демо</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Divoom Timegate PC Info</h4>
-                                            <p class="card-text" id="proj_divoom">Кроссплатформенный монитор ПК для пиксельных часов Divoom Times Gate: CPU/GPU, RAM, температуры и сеть на 5 дисплеев по локальной сети, без облака. Linux и Windows 11</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Hardware</span>
-                                            <span class="badge bg-secondary">Cross-platform</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/Divoom-Timegate-PC-Info" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">MAX Bot Template</h4>
-                                            <p class="card-text" id="proj_maxbot">Шаблон чат-бота для мессенджера MAX, собранный из кода двух работающих ботов: rate limiting, graceful shutdown, разбор конфигурации, режимы polling/webhook, CI/CD под GitHub Actions и Gitea Actions</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Docker</span>
-                                            <span class="badge bg-secondary">CI/CD</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/template-max-bot-github-gitea" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Stress Tester</h4>
-                                            <p class="card-text" id="proj_stress">Кроссплатформенный стресс-тест памяти и CPU на Go с GUI на Fyne. Следит за RAM и swap и сам останавливается при критической нехватке памяти</p>
-                                            <span class="badge bg-info text-dark">Go</span>
-                                            <span class="badge bg-secondary">Fyne</span>
-                                            <span class="badge bg-secondary">GUI</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/stress-tester" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Tg-ollama</h4>
-                                            <p class="card-text" id="proj_tgollama">Telegram-бот поверх Ollama: потоковые ответы, выбор модели, история диалога, rate limiting и админ-панель с авторизацией пользователей</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Ollama</span>
-                                            <span class="badge bg-secondary">aiogram</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/Tg-ollama" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">vuln-scanner</h4>
-                                            <p class="card-text" id="proj_vuln">Контейнеризированный шаблон для сканирования собственных веб-ресурсов на уязвимости: OWASP ZAP, Nikto, Nmap и sqlmap на базе Kali Linux</p>
-                                            <span class="badge bg-dark">Shell</span>
-                                            <span class="badge bg-secondary">Docker</span>
-                                            <span class="badge bg-secondary">Security</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/vuln-scanner" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">csv-to-excel-the-go</h4>
-                                            <p class="card-text" id="proj_csv2xlsx">Конвертер CSV в XLSX на Go с GUI: произвольные разделители, режим фиксированной ширины полей и сохранение всех данных как текста. Сборки под Linux и Windows</p>
-                                            <span class="badge bg-info text-dark">Go</span>
-                                            <span class="badge bg-secondary">GUI</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/csv-to-excel-the-go" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">dotfiles</h4>
-                                            <p class="card-text" id="proj_dotfiles">Конфигурация zsh, VSCode и сопутствующих инструментов: один идемпотентный install.sh, симлинки, Makefile и режим dry-run. Ubuntu и macOS</p>
-                                            <span class="badge bg-dark">Shell</span>
-                                            <span class="badge bg-secondary">Linux</span>
-                                            <span class="badge bg-secondary">zsh</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/dotfiles" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">XML2HTML Converter</h4>
-                                            <p class="card-text" id="proj_xml2html">Конвертер XML-файлов университетской системы в HTML для сайта</p>
-                                            <span class="badge bg-primary">Python</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/XML2HTML-Converter-for-University-Systems" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">rocm-smi-exporter</h4>
-                                            <p class="card-text" id="proj_rocm">Prometheus-экспортер метрик AMD GPU через rocm-smi (температура, мощность, VRAM)</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Prometheus</span>
-                                            <span class="badge bg-secondary">Grafana</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/rocm-smi-exporter" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Fast-Chat-Auth</h4>
-                                            <p class="card-text" id="proj_fastchat">Чат-приложение на FastAPI с регистрацией и JWT-аутентификацией</p>
-                                            <span class="badge bg-success">FastAPI</span>
-                                            <span class="badge bg-secondary">JWT</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/Fast-Chat-Auth" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Green Sentry</h4>
-                                            <p class="card-text" id="proj_greensentry">Мониторинг растений с использованием Python</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-success">FastAPI</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/Green-Sentry" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">PHPNewsHub</h4>
-                                            <p class="card-text" id="proj_phpnews">Система управления новостями на PHP с PostgreSQL</p>
-                                            <span class="badge bg-warning text-dark">PHP</span>
-                                            <span class="badge bg-secondary">PostgreSQL</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://github.com/Fgeeha/PHPNewsHub" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitHub</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 project-card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">monitor-dir</h4>
-                                            <p class="card-text" id="proj_monitordir">Мониторинг целостности файлов с Prometheus-метриками, Docker и CI/CD</p>
-                                            <span class="badge bg-primary">Python</span>
-                                            <span class="badge bg-secondary">Docker</span>
-                                            <span class="badge bg-secondary">Prometheus</span>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <a href="https://gitverse.ru/nkolesnikov/monitor-dir" class="btn btn-sm btn-outline-dark" target="_blank" rel="noopener noreferrer">GitVerse</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-center mb-4">
-                                <a href="https://github.com/Fgeeha?tab=repositories" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer" id="allProjectsBtn">Все проекты на GitHub (56+)</a>
-                                <a href="https://gitverse.ru/nkolesnikov?tab=repos" class="btn btn-outline-dark ms-2" target="_blank" rel="noopener noreferrer" id="allProjectsGitverseBtn">Проекты на GitVerse</a>
-                            </p>
-
-                            <h2 id="miniProjectsTitle">Мини HTML-проекты</h2>
-                            <p class="section-desc" id="miniProjectsDesc">Интерактивные инструменты и игры, работающие прямо в браузере</p>
-                            <div class="row g-3 mt-1 mb-4">
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/PasswordGenerator" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🔐</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Password Generator</div>
-                                    <div class="text-muted" style="font-size:.78rem">Secure passwords</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/GreenSentry" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🌿</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Green Sentry</div>
-                                    <div class="text-muted" style="font-size:.78rem">Plant monitor</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/csvEditor" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">📊</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">CSV Editor</div>
-                                    <div class="text-muted" style="font-size:.78rem">Edit CSV files</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/FileEncodingIdentifier" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🔤</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Encoding Identifier</div>
-                                    <div class="text-muted" style="font-size:.78rem">Detect file encoding</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/DungeonDash" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">⚔️</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Dungeon Dash</div>
-                                    <div class="text-muted" style="font-size:.78rem">Roguelike game</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/DoomDash" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">👹</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Doom Dash</div>
-                                    <div class="text-muted" style="font-size:.78rem">FPS-style game</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/WorkDayTimer" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">⏱️</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Work Day Timer</div>
-                                    <div class="text-muted" style="font-size:.78rem">Track work hours</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/Roulette" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🎰</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Roulette</div>
-                                    <div class="text-muted" style="font-size:.78rem">Spin the wheel</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/infinity" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">♾️</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Infinity</div>
-                                    <div class="text-muted" style="font-size:.78rem">Animation</div>
-                                  </div>
-                                </a>
-                              </div>
-								<div class="col-6 col-md-4 col-lg-3">
-								  <a href="/hotkeys_mac_niri" class="text-decoration-none">
-								    <div class="card h-100 project-card text-center p-3">
-								      <div style="font-size: 2rem;">⌨️⚡</div>
-								      <div class="fw-semibold mt-1" style="font-size: 0.9rem;">HotKeys</div>
-								      <div class="text-muted" style="font-size: 0.78rem;">macOS &amp; niri shortcuts</div>
-								    </div>
-								  </a>
-							</div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/JsonFormatter" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🔧</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">JSON Formatter</div>
-                                    <div class="text-muted" style="font-size:.78rem">Prettify &amp; validate</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/Base64Tool" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🔒</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Base64 Tool</div>
-                                    <div class="text-muted" style="font-size:.78rem">Encode / decode</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/UuidGenerator" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🆔</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">UUID Generator</div>
-                                    <div class="text-muted" style="font-size:.78rem">v4 UUIDs &amp; nanoids</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/ContrastChecker" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🎨</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Contrast Checker</div>
-                                    <div class="text-muted" style="font-size:.78rem">WCAG compliance</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/OgPreview" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🔗</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">OG Preview</div>
-                                    <div class="text-muted" style="font-size:.78rem">Social meta tags</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/QrGenerator" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">📷</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">QR Generator</div>
-                                    <div class="text-muted" style="font-size:.78rem">Create QR codes</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/TextDiff" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">📝</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Text Diff</div>
-                                    <div class="text-muted" style="font-size:.78rem">Compare text</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/GameOfLife" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🧬</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Game of Life</div>
-                                    <div class="text-muted" style="font-size:.78rem">Conway's automaton</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/TypingTest" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">⌨️</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Typing Test</div>
-                                    <div class="text-muted" style="font-size:.78rem">WPM &amp; accuracy</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/SortVisualizer" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">📈</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Sort Visualizer</div>
-                                    <div class="text-muted" style="font-size:.78rem">Algorithm animation</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/WorldClock" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🕐</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">World Clock</div>
-                                    <div class="text-muted" style="font-size:.78rem">Global timezones</div>
-                                  </div>
-                                </a>
-                              </div>
-                              <div class="col-6 col-md-4 col-lg-3">
-                                <a href="/ImageCompressor" class="text-decoration-none">
-                                  <div class="card h-100 project-card text-center p-3">
-                                    <div style="font-size:2rem">🖼️</div>
-                                    <div class="fw-semibold mt-1" style="font-size:.9rem">Image Compressor</div>
-                                    <div class="text-muted" style="font-size:.78rem">Compress images</div>
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
-
-                            <h2 id="contact">Контакт</h2>
-                            <p id="content">Я всегда <b>открыт для сотрудничества и обсуждения новых проектов.</b> Если у вас есть какие-либо вопросы или предложения, пожалуйста, не стесняйтесь обращаться ко мне:</p>
-                            <p><a href="https://t.me/fgeeha" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" rel="noopener noreferrer" target="_blank">Tg: [@FgeeHa]</a></p>
-                            <p><b id="thank">Спасибо, что посетили мой веб-сайт!</b></p>
-                        </article>
-                    </div>
+              <figure class="shore" data-slot="hero" data-alt="Каменистый берег озера с маяком и лесом">
+                <img src="images/shore-hero.webp" width="1800" height="840" alt="Каменистый берег озера, маяк над лесом на мысу" fetchpriority="high">
+              </figure>
+              <div class="hero__base">
+                <h1 id="myName">Колесников Никита (FgeeHa)</h1>
+                <div class="hero__say">
+                  <p class="lead"><span id="heading">Привет!</span> <span id="informationAboutMe">Разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. Делаю on-premise RAG-системы, чат-ботов, edge-AI и инструменты мониторинга. 56+ открытых проектов на GitHub.</span></p>
+                  <p class="actions">
+                    <a class="btn" href="https://t.me/fgeeha" rel="noopener noreferrer" target="_blank">Telegram</a>
+                    <a class="btn btn--quiet" href="https://github.com/Fgeeha" rel="noopener noreferrer" target="_blank">GitHub</a>
+                  </p>
                 </div>
+              </div>
             </div>
+          </section>
+
+          <section>
+            <div class="container">
+              <div class="head">
+                <h2 id="skillsAndTechnologies">Навыки и технологии</h2>
+                <p class="lead" id="skillsDesc">Основные технологии и инструменты, с которыми я работаю</p>
+              </div>
+              <dl class="rows">
+              <div id="skillone"><dt>Языки программирования</dt><dd>Python, Go, PHP, Bash</dd></div>
+              <div id="skilltwo"><dt>Backend-фреймворки</dt><dd>Django, FastAPI, Flask, aiogram</dd></div>
+              <div id="skillthree"><dt>AI / ML</dt><dd>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</dd></div>
+              <div id="skillfour"><dt>Базы данных</dt><dd>SQL, PostgreSQL, MySQL (pymysql), Alembic</dd></div>
+              <div id="skillfive"><dt>DevOps</dt><dd>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</dd></div>
+              <div id="skillsix"><dt>Мониторинг</dt><dd>Prometheus, Grafana</dd></div>
+              <div id="skillseven"><dt>GUI</dt><dd>PyQt6, tkinter, Fyne (Go)</dd></div>
+              </dl>
+            </div>
+          </section>
+
+          <section>
+            <div class="container">
+              <div class="head">
+                <h2 id="projectsTitle">Избранные проекты</h2>
+                <p class="lead" id="projectsDesc">Open-source проекты на GitHub и GitVerse</p>
+              </div>
+              <ul class="index" id="projectsContainer">
+              <li>
+                <div class="index__name"><h3>Cat Is Not Helper</h3><ul class="tags"><li>Swift</li><li>Rust</li><li>Tauri</li><li>Desktop</li></ul></div>
+                <p id="proj_cat">Котик поверх всех окон, который тапает лапками в такт нажатиям клавиш, ведёт статистику и держит скриншоты. Нативная версия на SwiftUI для macOS и кросс-платформенная на Tauri 2 (Rust) для macOS, Windows 10/11 и Linux (RedOS). Автообновление, релизы для всех платформ через GitHub Actions</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/cat-is-not-helper" target="_blank" rel="noopener noreferrer">GitHub</a><a href="/projects/cat-is-not-helper/" id="proj_cat_page">Страница</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>MAX Action</h3><ul class="tags"><li>Go</li><li>GitHub Actions</li><li>MAX Bot API</li><li>Docker</li></ul></div>
+                <p id="proj_maxaction">GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.1 под MIT</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/max-action" target="_blank" rel="noopener noreferrer">GitHub</a><a href="/projects/max-action/" id="proj_maxaction_page">Страница</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>ROoP</h3><ul class="tags"><li>Python</li><li>Django</li><li>RAG</li><li>Ollama</li><li>ChromaDB</li></ul></div>
+                <p id="proj_roop">RAG-Ollama-On-Premises — ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/ROoP" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Edge AI Plant Diagnostics</h3><ul class="tags"><li>Python</li><li>PyTorch</li><li>Edge AI</li><li>Research</li></ul></div>
+                <p id="proj_sedm">Код к статье для SEDM-2026: диагностика болезней растений на edge-устройствах. CORAL-адаптация домена, INT8-квантизация и PolarQuant-3bit дают сжатие 10.6x при macro-F1 0.700 и 246 мс на Raspberry Pi 4B</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/sedm2026-edge-ai-plant-diagnostics" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Полка под контролем</h3><ul class="tags"><li>Python</li><li>Computer Vision</li><li>OCR</li></ul></div>
+                <p id="proj_lenta">Lenta Tech Life Hack 2026: pipeline распознавания ценников с видеопотока робота. Детекция, OCR и сопоставление с каталогом, 175 тестов, демо на Hugging Face Spaces</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/Lenta-Tech-Life-Hack-2026" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://huggingface.co/spaces/fgeeha/shelf-control" target="_blank" rel="noopener noreferrer" id="proj_lenta_demo">Демо</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Divoom Timegate PC Info</h3><ul class="tags"><li>Python</li><li>Hardware</li><li>Cross-platform</li></ul></div>
+                <p id="proj_divoom">Кроссплатформенный монитор ПК для пиксельных часов Divoom Times Gate: CPU/GPU, RAM, температуры и сеть на 5 дисплеев по локальной сети, без облака. Linux и Windows 11</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/Divoom-Timegate-PC-Info" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>MAX Bot Template</h3><ul class="tags"><li>Python</li><li>Docker</li><li>CI/CD</li></ul></div>
+                <p id="proj_maxbot">Шаблон чат-бота для мессенджера MAX, собранный из кода двух работающих ботов: rate limiting, graceful shutdown, разбор конфигурации, режимы polling/webhook, CI/CD под GitHub Actions и Gitea Actions</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/template-max-bot-github-gitea" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Stress Tester</h3><ul class="tags"><li>Go</li><li>Fyne</li><li>GUI</li></ul></div>
+                <p id="proj_stress">Кроссплатформенный стресс-тест памяти и CPU на Go с GUI на Fyne. Следит за RAM и swap и сам останавливается при критической нехватке памяти</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/stress-tester" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Tg-ollama</h3><ul class="tags"><li>Python</li><li>Ollama</li><li>aiogram</li></ul></div>
+                <p id="proj_tgollama">Telegram-бот поверх Ollama: потоковые ответы, выбор модели, история диалога, rate limiting и админ-панель с авторизацией пользователей</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/Tg-ollama" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>vuln-scanner</h3><ul class="tags"><li>Shell</li><li>Docker</li><li>Security</li></ul></div>
+                <p id="proj_vuln">Контейнеризированный шаблон для сканирования собственных веб-ресурсов на уязвимости: OWASP ZAP, Nikto, Nmap и sqlmap на базе Kali Linux</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/vuln-scanner" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>csv-to-excel-the-go</h3><ul class="tags"><li>Go</li><li>GUI</li></ul></div>
+                <p id="proj_csv2xlsx">Конвертер CSV в XLSX на Go с GUI: произвольные разделители, режим фиксированной ширины полей и сохранение всех данных как текста. Сборки под Linux и Windows</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/csv-to-excel-the-go" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>dotfiles</h3><ul class="tags"><li>Shell</li><li>Linux</li><li>zsh</li></ul></div>
+                <p id="proj_dotfiles">Конфигурация zsh, VSCode и сопутствующих инструментов: один идемпотентный install.sh, симлинки, Makefile и режим dry-run. Ubuntu и macOS</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/dotfiles" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>XML2HTML Converter</h3><ul class="tags"><li>Python</li></ul></div>
+                <p id="proj_xml2html">Конвертер XML-файлов университетской системы в HTML для сайта</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/XML2HTML-Converter-for-University-Systems" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>rocm-smi-exporter</h3><ul class="tags"><li>Python</li><li>Prometheus</li><li>Grafana</li></ul></div>
+                <p id="proj_rocm">Prometheus-экспортер метрик AMD GPU через rocm-smi (температура, мощность, VRAM)</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/rocm-smi-exporter" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Fast-Chat-Auth</h3><ul class="tags"><li>FastAPI</li><li>JWT</li></ul></div>
+                <p id="proj_fastchat">Чат-приложение на FastAPI с регистрацией и JWT-аутентификацией</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/Fast-Chat-Auth" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>Green Sentry</h3><ul class="tags"><li>Python</li><li>FastAPI</li></ul></div>
+                <p id="proj_greensentry">Мониторинг растений с использованием Python</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/Green-Sentry" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>PHPNewsHub</h3><ul class="tags"><li>PHP</li><li>PostgreSQL</li></ul></div>
+                <p id="proj_phpnews">Система управления новостями на PHP с PostgreSQL</p>
+                <p class="index__links"><a href="https://github.com/Fgeeha/PHPNewsHub" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+              </li>
+              <li>
+                <div class="index__name"><h3>monitor-dir</h3><ul class="tags"><li>Python</li><li>Docker</li><li>Prometheus</li></ul></div>
+                <p id="proj_monitordir">Мониторинг целостности файлов с Prometheus-метриками, Docker и CI/CD</p>
+                <p class="index__links"><a href="https://gitverse.ru/nkolesnikov/monitor-dir" target="_blank" rel="noopener noreferrer">GitVerse</a></p>
+              </li>
+              </ul>
+              <p class="actions after">
+                <a href="https://github.com/Fgeeha?tab=repositories" class="btn btn--quiet" target="_blank" rel="noopener noreferrer" id="allProjectsBtn">Все проекты на GitHub (56+)</a>
+                <a href="https://gitverse.ru/nkolesnikov?tab=repos" class="btn btn--quiet" target="_blank" rel="noopener noreferrer" id="allProjectsGitverseBtn">Проекты на GitVerse</a>
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <div class="container split">
+              <div class="split__head">
+                <h2 id="miniProjectsTitle">Мини HTML-проекты</h2>
+                <p class="lead" id="miniProjectsDesc">Интерактивные инструменты и игры, работающие прямо в браузере</p>
+              </div>
+              <ul class="listing">
+                <li><a href="/PasswordGenerator"><span>Password Generator</span><small>Secure passwords</small></a></li>
+                <li><a href="/GreenSentry"><span>Green Sentry</span><small>Plant monitor</small></a></li>
+                <li><a href="/csvEditor"><span>CSV Editor</span><small>Edit CSV files</small></a></li>
+                <li><a href="/FileEncodingIdentifier"><span>Encoding Identifier</span><small>Detect file encoding</small></a></li>
+                <li><a href="/DungeonDash"><span>Dungeon Dash</span><small>Roguelike game</small></a></li>
+                <li><a href="/DoomDash"><span>Doom Dash</span><small>FPS-style game</small></a></li>
+                <li><a href="/WorkDayTimer"><span>Work Day Timer</span><small>Track work hours</small></a></li>
+                <li><a href="/Roulette"><span>Roulette</span><small>Spin the wheel</small></a></li>
+                <li><a href="/infinity"><span>Infinity</span><small>Animation</small></a></li>
+                <li><a href="/hotkeys_mac_niri"><span>HotKeys</span><small>macOS &amp; niri shortcuts</small></a></li>
+                <li><a href="/JsonFormatter"><span>JSON Formatter</span><small>Prettify &amp; validate</small></a></li>
+                <li><a href="/Base64Tool"><span>Base64 Tool</span><small>Encode / decode</small></a></li>
+                <li><a href="/UuidGenerator"><span>UUID Generator</span><small>v4 UUIDs &amp; nanoids</small></a></li>
+                <li><a href="/ContrastChecker"><span>Contrast Checker</span><small>WCAG compliance</small></a></li>
+                <li><a href="/OgPreview"><span>OG Preview</span><small>Social meta tags</small></a></li>
+                <li><a href="/QrGenerator"><span>QR Generator</span><small>Create QR codes</small></a></li>
+                <li><a href="/TextDiff"><span>Text Diff</span><small>Compare text</small></a></li>
+                <li><a href="/GameOfLife"><span>Game of Life</span><small>Conway&rsquo;s automaton</small></a></li>
+                <li><a href="/TypingTest"><span>Typing Test</span><small>WPM &amp; accuracy</small></a></li>
+                <li><a href="/SortVisualizer"><span>Sort Visualizer</span><small>Algorithm animation</small></a></li>
+                <li><a href="/WorldClock"><span>World Clock</span><small>Global timezones</small></a></li>
+                <li><a href="/ImageCompressor"><span>Image Compressor</span><small>Compress images</small></a></li>
+              </ul>
+            </div>
+          </section>
+
+          <section>
+            <div class="container contact">
+              <div class="contact__say">
+                <h2 id="contact">Контакт</h2>
+                <p class="lead" id="content">Я всегда <b>открыт для сотрудничества и обсуждения новых проектов.</b> Если у вас есть какие-либо вопросы или предложения, пожалуйста, не стесняйтесь обращаться ко мне:</p>
+              </div>
+              <div class="contact__say">
+                <p class="contact__line"><a href="https://t.me/fgeeha" rel="noopener noreferrer" target="_blank">Tg: [@FgeeHa]</a></p>
+                <p><b id="thank">Спасибо, что посетили мой веб-сайт!</b></p>
+              </div>
+            </div>
+          </section>
         </main>
-        <footer>
-            <div class="container text-center">
-                <div class="row align-items-center">
-                    <div>&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
-                </div>
-            </div>
+        <footer class="site-footer">
+          <div class="container">&copy; 2026 Nikita Kolesnikov (@fgeeha)</div>
         </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
         <script>
             let currentLanguage = 'ru';
 
@@ -708,24 +365,24 @@
                     head_nav_mini_projects: 'Мои мини HTML-проекты',
                     head_nav_link: 'Ссылки',
                     heading: 'Привет!',
-                    myName: 'Колесников Никита <span class="text-muted">(FgeeHa)</span>',
+                    myName: 'Колесников Никита (FgeeHa)',
                     informationAboutMe: 'Разработчик с опытом в <b>backend-разработке</b>, <b>AI/ML</b> и <b>DevOps</b>. Работаю с <b>Python</b>, <b>Go</b> и <b>PHP</b>. Делаю on-premise RAG-системы, чат-ботов, edge-AI и инструменты мониторинга. 56+ открытых проектов на GitHub.',
                     skillsAndTechnologies: 'Навыки и технологии',
                     skillsDesc: 'Основные технологии и инструменты, с которыми я работаю',
-                    skillone: '&#9989;Языки программирования: <b>Python, Go, PHP, Bash</b>',
-                    skilltwo: '&#9989;Backend-фреймворки: <b>Django, FastAPI, Flask, aiogram</b>',
-                    skillthree: '&#9989;AI / ML: <b>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</b>',
-                    skillfour: '&#9989;Базы данных: <b>SQL, PostgreSQL, MySQL</b> (pymysql), <b>Alembic</b>',
-                    skillfive: '&#9989;DevOps: <b>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</b>',
-                    skillsix: '&#9989;Мониторинг: <b>Prometheus, Grafana</b>',
-                    skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
+                    skillone: '<dt>Языки программирования</dt><dd>Python, Go, PHP, Bash</dd>',
+                    skilltwo: '<dt>Backend-фреймворки</dt><dd>Django, FastAPI, Flask, aiogram</dd>',
+                    skillthree: '<dt>AI / ML</dt><dd>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</dd>',
+                    skillfour: '<dt>Базы данных</dt><dd>SQL, PostgreSQL, MySQL (pymysql), Alembic</dd>',
+                    skillfive: '<dt>DevOps</dt><dd>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</dd>',
+                    skillsix: '<dt>Мониторинг</dt><dd>Prometheus, Grafana</dd>',
+                    skillseven: '<dt>GUI</dt><dd>PyQt6, tkinter, Fyne (Go)</dd>',
                     projectsTitle: 'Избранные проекты',
                     projectsDesc: 'Open-source проекты на GitHub и GitVerse',
                     proj_cat: 'Котик поверх всех окон, который тапает лапками в такт нажатиям клавиш, ведёт статистику и держит скриншоты. Нативная версия на SwiftUI для macOS и кросс-платформенная на Tauri 2 (Rust) для macOS, Windows 10/11 и Linux (RedOS). Автообновление, релизы для всех платформ через GitHub Actions',
                     proj_cat_page: 'Страница',
                     proj_maxaction_page: 'Страница',
                     proj_maxaction: 'GitHub Action для отправки уведомлений в мессенджер MAX прямо из workflow: пуши, пул-реквесты, деплои и упавшие сборки приходят в чат, канал или личные сообщения через официальный MAX Bot API. Написан на Go без сторонних зависимостей: токен маскируется в логах, редиректы запрещены, повторы учитывают Retry-After. Релиз v1.0.1 под MIT',
-                    proj_roop: 'RAG-Ollama-On-Premises -- ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте',
+                    proj_roop: 'RAG-Ollama-On-Premises — ассистент по внутренним документам (PDF, DOCX, TXT, MD) полностью в локальном контуре: чанкинг, эмбеддинги, векторный поиск в ChromaDB, ответ Ollama со ссылками на источники. CI/CD в комплекте',
                     proj_sedm: 'Код к статье для SEDM-2026: диагностика болезней растений на edge-устройствах. CORAL-адаптация домена, INT8-квантизация и PolarQuant-3bit дают сжатие 10.6x при macro-F1 0.700 и 246 мс на Raspberry Pi 4B',
                     proj_lenta: 'Lenta Tech Life Hack 2026: pipeline распознавания ценников с видеопотока робота. Детекция, OCR и сопоставление с каталогом, 175 тестов, демо на Hugging Face Spaces',
                     proj_lenta_demo: 'Демо',
@@ -756,24 +413,24 @@
                     head_nav_mini_projects: 'My mini HTML projects',
                     head_nav_link: 'Links',
                     heading: 'Hi there!',
-                    myName: 'Nikita Kolesnikov <span class="text-muted">(FgeeHa)</span>',
+                    myName: 'Nikita Kolesnikov (FgeeHa)',
                     informationAboutMe: "A developer experienced in <b>backend development</b>, <b>AI/ML</b> and <b>DevOps</b>. I work with <b>Python</b>, <b>Go</b> and <b>PHP</b>, building on-premise RAG systems, chat bots, edge AI and monitoring tooling. 56+ open-source projects on GitHub.",
                     skillsAndTechnologies: 'Skills & Technologies',
                     skillsDesc: 'Core technologies and tools I work with',
-                    skillone: '&#9989;Programming Languages: <b>Python, Go, PHP, Bash</b>',
-                    skilltwo: '&#9989;Backend Frameworks: <b>Django, FastAPI, Flask, aiogram</b>',
-                    skillthree: '&#9989;AI / ML: <b>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</b>',
-                    skillfour: '&#9989;Databases: <b>SQL, PostgreSQL, MySQL</b> (pymysql), <b>Alembic</b>',
-                    skillfive: '&#9989;DevOps: <b>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</b>',
-                    skillsix: '&#9989;Monitoring: <b>Prometheus, Grafana</b>',
-                    skillseven: '&#9989;GUI: <b>PyQt6, tkinter, Fyne</b> (Go)',
+                    skillone: '<dt>Programming Languages</dt><dd>Python, Go, PHP, Bash</dd>',
+                    skilltwo: '<dt>Backend Frameworks</dt><dd>Django, FastAPI, Flask, aiogram</dd>',
+                    skillthree: '<dt>AI / ML</dt><dd>RAG, LangChain, Ollama, ChromaDB, PyTorch, Keras, pandas, numpy</dd>',
+                    skillfour: '<dt>Databases</dt><dd>SQL, PostgreSQL, MySQL (pymysql), Alembic</dd>',
+                    skillfive: '<dt>DevOps</dt><dd>Git, Docker, Linux, CI/CD (GitHub Actions, Gitea Actions), Trivy</dd>',
+                    skillsix: '<dt>Monitoring</dt><dd>Prometheus, Grafana</dd>',
+                    skillseven: '<dt>GUI</dt><dd>PyQt6, tkinter, Fyne (Go)</dd>',
                     projectsTitle: 'Featured Projects',
                     projectsDesc: 'Open-source projects on GitHub and GitVerse',
                     proj_cat: 'A desktop cat that sits above all windows and taps its paws along with your keystrokes, keeps stats and holds screenshots. Native SwiftUI build for macOS plus a cross-platform Tauri 2 (Rust) build for macOS, Windows 10/11 and Linux (RedOS). Auto-updates, releases for every platform via GitHub Actions',
                     proj_cat_page: 'Page',
                     proj_maxaction_page: 'Page',
                     proj_maxaction: 'A GitHub Action that sends notifications to the MAX messenger straight from a workflow: pushes, pull requests, deployments and failed builds reach a chat, channel or direct message through the official MAX Bot API. Written in Go with no third-party dependencies: the token is masked in logs, redirects are refused, retries honour Retry-After. Released as v1.0.1 under MIT',
-                    proj_roop: 'RAG-Ollama-On-Premises -- an assistant over internal documents (PDF, DOCX, TXT, MD) that never leaves your network: chunking, embeddings, vector search in ChromaDB, Ollama answers with source references. CI/CD included',
+                    proj_roop: 'RAG-Ollama-On-Premises — an assistant over internal documents (PDF, DOCX, TXT, MD) that never leaves your network: chunking, embeddings, vector search in ChromaDB, Ollama answers with source references. CI/CD included',
                     proj_sedm: 'Code for the SEDM-2026 paper on plant disease diagnostics at the edge. CORAL domain adaptation, INT8 quantization and PolarQuant-3bit give 10.6x compression at 0.700 macro-F1 and 246 ms on a Raspberry Pi 4B',
                     proj_lenta: 'Lenta Tech Life Hack 2026: price tag recognition pipeline from a robot video stream. Detection, OCR and catalogue matching, 175 tests, live demo on Hugging Face Spaces',
                     proj_lenta_demo: 'Demo',
@@ -814,6 +471,14 @@
                     }
                 });
             }
+
+            // Menus close on a click outside and on Escape.
+            document.addEventListener('click', function (e) {
+                document.querySelectorAll('.nav details[open]').forEach(function (d) { if (!d.contains(e.target)) d.open = false; });
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') document.querySelectorAll('.nav details[open]').forEach(function (d) { d.open = false; d.querySelector('summary').focus(); });
+            });
         </script>
     </body>
 </html>
