@@ -2,19 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://fgeeha.github.io/</loc>
-    <lastmod>2026-07-30T19:30:00+03:00</lastmod>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/projects/</loc>
-    <lastmod>2026-10-08T12:00:00+03:00</lastmod>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/projects/cat-is-not-helper/</loc>
-    <lastmod>2026-10-08T12:00:00+03:00</lastmod>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/projects/max-action/</loc>
-    <lastmod>2026-10-17T12:00:00+03:00</lastmod>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
   </url>
   <url>
     <loc>https://fgeeha.github.io/research/</loc>
@@ -123,5 +123,33 @@
   <url>
     <loc>https://fgeeha.github.io/WorkDayTimer/</loc>
     <lastmod>2026-04-12T18:19:25+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/study/</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/study/start-on-go.html</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/study/kubernetes.html</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/study/pytorch.html</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/study/agent-harness.html</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/SearchForThePrivate/</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
+  </url>
+  <url>
+    <loc>https://fgeeha.github.io/csvEditor/v2/</loc>
+    <lastmod>2026-11-25T12:00:00+03:00</lastmod>
   </url>
 </urlset>
